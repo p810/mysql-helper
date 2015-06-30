@@ -1,0 +1,16 @@
+{
+    "name": "p810/mysql-helper",
+    "description": "A library for simplifying interaction with MySQL.",
+    "authors": [
+        {
+            "name": "Payton",
+            "email": "hellopayton@gmail.com"
+        }
+    ],
+    "autoload": {
+      "psr-4": {
+        "p810\\": "src/p810/"
+      }
+    },
+    "require": {}
+}
