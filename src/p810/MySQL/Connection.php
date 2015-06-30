@@ -7,6 +7,15 @@ use p810\MySQL\Exceptions\MySQLConnectionException;
 class Connection
 {
   /**
+   * References an instance of PDO.
+   *
+   * @access protected
+   * @var object
+   */
+  protected $resource;
+
+
+  /**
    * Creates an instance of PDO for the object to wrap around.
    *
    * @param string $username The username of the MySQL user.
@@ -23,5 +32,17 @@ class Connection
     } catch(PDOException $e) {
       throw new MySQLConnectionException($e->getMessage());
     }
+  }
+
+
+  /**
+   * Returns this object's link to the database.
+   *
+   * @return object
+   * @see self::$resource
+   */
+  public function getResource()
+  {
+    return $this->resource;
   }
 }
