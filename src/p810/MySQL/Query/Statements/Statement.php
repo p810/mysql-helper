@@ -53,6 +53,14 @@ abstract class Statement
 
 
   /**
+   * Determines how the result of PDOStatement should be handled.
+   *
+   * @return mixed
+   */
+  abstract public function handleResults();
+
+
+  /**
    * Creates the full statement and returns either false (if the query did not succeed) or an instance of PDOStatement.
    *
    * @return mixed
@@ -61,6 +69,8 @@ abstract class Statement
   {
     $statement = implode(' ', $this->statement);
 
-    return $this->resource->query($statement);
+    $this->result = $this->resource->query($statement);
+
+    return $this->handleResults();
   }
 }
