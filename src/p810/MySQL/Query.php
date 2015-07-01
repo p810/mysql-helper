@@ -1,7 +1,7 @@
 <?php namespace p810\MySQL;
 
 use p810\MySQL\Connection;
-use p810\MySQL\Query\Statements\Select;
+use p810\MySQL\Query\Statements\StatementFactory;
 
 class Query
 {
@@ -14,6 +14,8 @@ class Query
   function __construct(Connection $connection)
   {
     $this->resource = $connection->getResource();
+
+    $this->factory = new StatementFactory($this->resource);
   }
 
 
@@ -24,9 +26,11 @@ class Query
    * @param string $from The table to select data from.
    * @return object An instance of p810\MySQL\Query\Statements\Select.
    */
-  public function select($columns, $from)
+  public function select($columns, $table)
   {
-    $object = (new Select($this->resource))->open($columns, $from);
+    $object = $this->factory->create('select')
+              ->setColumn($columns)
+              ->setTable($table);
 
     return $object;
   }
