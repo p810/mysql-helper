@@ -13,4 +13,5 @@ var_dump(
   $query->select("*", "users")
         ->whereEquals("username", "Bob")
         ->execute()
+        ->fetchAll(PDO::FETCH_ASSOC)
 );
