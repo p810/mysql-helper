@@ -14,5 +14,4 @@ var_dump(
         ->where("username", "Bob")
         ->where("user_id", ">", 1)
         ->execute()
-        ->fetchAll(PDO::FETCH_ASSOC)
 );
