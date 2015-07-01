@@ -15,6 +15,22 @@ abstract class Statement
 
 
   /**
+   * A list of (common) operators that can be used in a query.
+   *
+   * @access protected
+   * @var array
+   */
+  protected $operators = array(
+    '=',
+    '<',
+    '>',
+    '<=',
+    '>=',
+    'IS NOT NULL'
+  );
+
+
+  /**
    * Injects an instance of PDO.
    *
    * @param object $resource The instance of PDO to inject (returned from Connection::getResource()).
