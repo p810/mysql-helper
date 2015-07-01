@@ -8,6 +8,6 @@ $db = new Connection('root', 'secret', 'test');
 
 var_dump(
   $db->query->select("*", "users")
-            ->where("username", "Tom")
+            ->orderAsc("user_id")
             ->execute()
 );
