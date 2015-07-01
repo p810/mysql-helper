@@ -2,6 +2,7 @@
 
 use \PDO;
 use \PDOException;
+use p810\MySQL\Query;
 use p810\MySQL\Exceptions\MySQLConnectionException;
 
 class Connection
@@ -13,6 +14,15 @@ class Connection
    * @var object
    */
   protected $resource;
+
+
+  /**
+   * References an instance of Query.
+   *
+   * @access public
+   * @var object
+   */
+  public $query;
 
 
   /**
@@ -32,6 +42,8 @@ class Connection
     } catch(PDOException $e) {
       throw new MySQLConnectionException($e->getMessage());
     }
+
+    $this->query = new Query($this);
   }
 
 
