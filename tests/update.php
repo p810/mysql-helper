@@ -10,7 +10,7 @@ $connection = new Connection('root', 'secret', 'test');
 $query = new Query($connection);
 
 var_dump(
-  $query->select("*", "users")
-        ->where("username", "Tom")
+  $query->update("users", ['username' => 'Tom'])
+        ->where('user_id', 1)
         ->execute()
 );
