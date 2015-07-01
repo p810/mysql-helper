@@ -3,12 +3,14 @@
 use \PDO;
 use p810\MySQL\Query\Clauses\Where;
 use p810\MySQL\Query\Clauses\OrderBy;
+use p810\MySQL\Query\Clauses\Limit;
 
 class Select
 extends Statement
 {
   use Where;
   use OrderBy;
+  use Limit;
 
   
   /**
