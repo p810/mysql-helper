@@ -3,14 +3,11 @@
 require_once '../vendor/autoload.php';
 
 use p810\MySQL\Connection;
-use p810\MySQL\Query;
 
-$connection = new Connection('root', 'secret', 'test');
-
-$query = new Query($connection);
+$db = new Connection('root', 'secret', 'test');
 
 var_dump(
-  $query->select("*", "users")
-        ->where("username", "Tom")
-        ->execute()
+  $db->query->select("*", "users")
+            ->where("username", "Tom")
+            ->execute()
 );
