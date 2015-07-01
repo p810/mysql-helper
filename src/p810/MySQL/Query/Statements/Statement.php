@@ -23,7 +23,17 @@ abstract class Statement
   function __construct(PDO $resource)
   {
     $this->resource = $resource;
+
+    $this->begin();
   }
+
+
+  /**
+   * Begins the statement. This is a method that must be implemented by child classes.
+   *
+   * @return void
+   */
+  abstract public function begin();
 
 
   /**
