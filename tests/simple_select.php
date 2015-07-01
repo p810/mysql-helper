@@ -8,6 +8,7 @@ $db = new Connection('root', 'secret', 'test');
 
 var_dump(
   $db->query->select("*", "users")
-            ->orderAsc("user_id")
+            ->orderDesc("user_id")
+            ->limit(2)
             ->execute()
 );
