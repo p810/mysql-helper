@@ -34,4 +34,21 @@ class Query
 
     return $object;
   }
+
+
+  /**
+   * Creates a new instance of Update.
+   *
+   * @param string $table The table to update.
+   * @param mixed $columns The columns to update and their corresponding values.
+   * @return object An instance of p810\MySQL\Query\Statements\Update.
+   */
+  public function update($table, $values)
+  {
+    $object = $this->factory->create('update')
+              ->setTable($table)
+              ->setValues($values);
+              
+    return $object;
+  }
 }
