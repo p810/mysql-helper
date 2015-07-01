@@ -1,7 +1,7 @@
 <?php namespace p810\MySQL\Query\Statements;
 
+use \PDO;
 use p810\MySQL\Query\Clauses\Where;
-use p810\MySQL\Query\Statements\StatementContract;
 
 class Select
 extends Statement
@@ -51,5 +51,16 @@ extends Statement
     $this->statement[] = "FROM " . $table;
 
     return $this;
+  }
+
+
+  /**
+   * Returns the resultset as an associative array.
+   *
+   * @return array
+   */
+  public function handleResults()
+  {
+    return $this->result->fetch(PDO::FETCH_ASSOC);
   }
 }
