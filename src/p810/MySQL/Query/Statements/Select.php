@@ -2,11 +2,13 @@
 
 use \PDO;
 use p810\MySQL\Query\Clauses\Where;
+use p810\MySQL\Query\Clauses\OrderBy;
 
 class Select
 extends Statement
 {
   use Where;
+  use OrderBy;
 
   
   /**
@@ -61,6 +63,6 @@ extends Statement
    */
   public function handleResults()
   {
-    return $this->result->fetch(PDO::FETCH_ASSOC);
+    return $this->result->fetchAll(PDO::FETCH_ASSOC);
   }
 }
