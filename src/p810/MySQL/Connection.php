@@ -2,6 +2,7 @@
 
 use \PDO;
 use \PDOException;
+use \BadMethodCallException;
 use p810\MySQL\Query;
 use p810\MySQL\Exceptions\MySQLConnectionException;
 
@@ -44,6 +45,24 @@ class Connection
     }
 
     $this->query = new Query($this);
+  }
+
+
+  /**
+   * Provides access to methods belonging to Query.
+   *
+   * @param string $name The name of the method being called.
+   * @param array $arguments A list of arguments being passed to the method.
+   * @return mixed
+   * @throws BadMethodCallException if the method does not exist.
+   */
+  function __call($name, $arguments)
+  {
+    if(!method_exists($this->query, $name)) {
+      throw new BadMethodCallException;
+    }
+
+    return call_user_func_array([$this->query, $name], $arguments);
   }
 
 
