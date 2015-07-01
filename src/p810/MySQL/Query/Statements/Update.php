@@ -23,16 +23,14 @@ extends Statement
   {
     $this->statement[] = "SET";
 
+    $conditions = array();
+
     foreach($values as $column => $value)
     {
-      $condition = "`" . $column . "` = " . $this->addParam($value);
-
-      if(end($values) !== $value) {
-        $condition .= ", ";
-      }
-
-      $this->statement[] = $condition;
+      $conditions[] = "`" . $column . "` = " . $this->addParam($value);
     }
+
+    $this->statement[] = implode(', ', $conditions);
 
     return $this;
   }
