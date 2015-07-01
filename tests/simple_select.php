@@ -11,7 +11,8 @@ $query = new Query($connection);
 
 var_dump(
   $query->select("*", "users")
-        ->whereEquals("username", "Bob")
+        ->where("username", "Bob")
+        ->where("user_id", ">", 1)
         ->execute()
         ->fetchAll(PDO::FETCH_ASSOC)
 );
