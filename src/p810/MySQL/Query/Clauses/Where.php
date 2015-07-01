@@ -36,7 +36,7 @@ trait Where
     switch(count($arguments))
     {
       case 2:
-        $clause[] = "`" . $arguments[0] . "` = '" . $arguments[1] . "'";
+        $clause[] = "`" . $arguments[0] . "` = " . $this->addParam($arguments[1]);
       break;
 
       case 3:
@@ -44,7 +44,7 @@ trait Where
           throw new InvalidArgumentException;
         }
 
-        $clause[] = "`" . $arguments[0] . '` ' . $arguments[1] . " '" . $arguments[2] . "'";
+        $clause[] = "`" . $arguments[0] . '` ' . $arguments[1] . " " . $this->addParam($arguments[2]);
       break;
 
       default:

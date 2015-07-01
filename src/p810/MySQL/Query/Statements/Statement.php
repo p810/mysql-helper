@@ -2,9 +2,12 @@
 
 use \PDO;
 use \PDOException;
+use p810\MySQL\Query\Statements\Parameters;
 
 abstract class Statement
 {
+  use Parameters;
+
   /**
    * The base statement and optional list of clauses that will be concatenated to create the statement.
    *
@@ -69,7 +72,15 @@ abstract class Statement
   {
     $statement = implode(' ', $this->statement);
 
-    $this->result = $this->resource->query($statement);
+    if(count($this->parameters) > 0) {
+      $statement = $this->resource->prepare($statement);
+
+      $statement->execute($this->parameters);
+
+      $this->result = $statement;
+    } else {
+      $this->result = $this->resource->query($statement);
+    }
 
     return $this->handleResults();
   }
