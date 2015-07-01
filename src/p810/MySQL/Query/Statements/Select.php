@@ -8,14 +8,23 @@ extends Statement
 {
   use Where;
 
+  
   /**
-   * Begins the query by preparing the column names.
+   * {@inheritdoc}
+   */
+  public function begin()
+  {
+    $this->statement[] = 'SELECT';
+  }
+
+
+  /**
+   * Sets the column(s) for the query statement.
    *
    * @param mixed $columns Column name(s) to query.
-   * @param string $table The table to select data from.
-   * @see StatementContract::open()
+   * @return self
    */
-  public function open($columns = '*', $table)
+  public function setColumn($columns = '*')
   {
     if(is_array($columns)) {
       foreach($columns as $column) {
@@ -25,7 +34,21 @@ extends Statement
       $columns = implode(',', $columns);
     }
 
-    $this->statement[] = "SELECT " . $columns . " FROM `" . $table . "`";
+    $this->statement[] = $columns;
+
+    return $this;
+  }
+
+
+  /**
+   * Sets the table for the query statement.
+   *
+   * @param string $table The table to select data from.
+   * @return self
+   */
+  public function setTable($table)
+  {
+    $this->statement[] = "FROM " . $table;
 
     return $this;
   }
