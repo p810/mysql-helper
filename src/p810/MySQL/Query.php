@@ -51,4 +51,21 @@ class Query
               
     return $object;
   }
+
+
+  /**
+   * Creates a new instance of Insert.
+   *
+   * @param string $table The table to insert into.
+   * @param array $values Either a list or dictionary of values to insert. Use a dictionary to specify columns.
+   * @return object An instance of p810\MySQL\Query\Statements\Insert.
+   */
+  public function insert($table, $values)
+  {
+    $object = $this->factory->create('insert')
+              ->setTable($table)
+              ->setValues($values);
+
+    return $object;
+  }
 }
