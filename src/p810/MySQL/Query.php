@@ -62,8 +62,12 @@ class Query
    */
   public function insert($table, $values)
   {
+    $columns = array_keys($values);
+    $values  = array_values($values);
+    
     $object = $this->factory->create('insert')
               ->setTable($table)
+              ->setColumns($columns)
               ->setValues($values);
 
     return $object;
