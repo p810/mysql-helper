@@ -3,11 +3,21 @@
 class Insert
 extends Statement
 {
+  /**
+   * {@inheritdoc}
+   */
   public function begin()
   {
     $this->statement[] = 'INSERT INTO';
   }
 
+
+  /**
+   * Sets the table for the statement.
+   *
+   * @param string $table The table to insert data into.
+   * @return self
+   */
   public function setTable($table)
   {
     $this->statement[] = '`' . $table . '`';
@@ -15,13 +25,15 @@ extends Statement
     return $this;
   }
 
+
+  /**
+   * Sets values for the statement.
+   *
+   * @param array $values A list of values to insert.
+   * @return self
+   */
   public function setValues($values)
   {
-    $keys   = array_keys($values);
-    $values = array_values($values);
-
-    $this->setColumns($keys);
-
     $append = array();
 
     $this->statement[] = 'VALUES (';
@@ -35,6 +47,13 @@ extends Statement
     return $this;
   }
 
+
+  /**
+   * Sets the columns for the statement.
+   *
+   * @param array $keys The columns to target for the table.
+   * @return self
+   */
   public function setColumns($keys)
   {
     $columns = array();
@@ -50,6 +69,12 @@ extends Statement
     return $this;
   }
 
+  
+  /**
+   * Returns the total number of results counted.
+   *
+   * @return int
+   */
   public function handleResults()
   {
     return $this->result->rowCount();
