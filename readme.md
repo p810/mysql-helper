@@ -92,6 +92,7 @@ To create a model, declare a class as an extension of `p810\Model\Model`. Declar
 use p810\Model\Model;
 
 class Users
+extends Model
 {
   public $table = 'users';
   public $pk = 'user_id';
