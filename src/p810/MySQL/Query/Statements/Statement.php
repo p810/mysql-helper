@@ -82,6 +82,10 @@ abstract class Statement
       $this->result = $this->resource->query($statement);
     }
 
+    if(!$this->result) {
+      return false;
+    }
+
     return $this->handleResults();
   }
 }
