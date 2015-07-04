@@ -3,7 +3,7 @@
 use \PDO;
 use \PDOException;
 use \BadMethodCallException;
-use p810\MySQL\Query;
+use p810\MySQL\QueryFactory;
 use p810\MySQL\Exceptions\MySQLConnectionException;
 
 class Connection
@@ -44,7 +44,7 @@ class Connection
       throw new MySQLConnectionException($e->getMessage());
     }
 
-    $this->query = new Query($this);
+    $this->query = new QueryFactory($this);
   }
 
 

@@ -3,7 +3,7 @@
 use p810\MySQL\Connection;
 use p810\MySQL\Query\Statements\StatementFactory;
 
-class Query
+class QueryFactory
 {
   /**
    * Injects an instance of Connection and grabs the PDO instance from it.
