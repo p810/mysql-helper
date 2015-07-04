@@ -9,10 +9,7 @@ $db = new Connection('root', 'secret', 'test');
 
 class Users
 extends Model
-{
-  public $table = 'users';
-  public $pk = 'user_id';
-}
+{}
 
 $users = new Users($db);
 
