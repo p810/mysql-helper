@@ -105,8 +105,6 @@ $users = new Users($db);
 
 You may set the `Model::$table` property in your child class if your class name does not match the plural form of your table name.
 
-If your class name is singular and matches your table name, set `Model::$isPlural` to false. 
-
 The primary key defaults to the table name prepended with `_id`. You can override this by setting `Model::$pk`.
 
 
