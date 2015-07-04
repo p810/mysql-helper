@@ -12,5 +12,7 @@
         "p810\\": "src/p810/"
       }
     },
-    "require": {}
+    "require": {
+        "doctrine/inflector": "~1.0.1"
+    }
 }
