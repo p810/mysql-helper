@@ -82,7 +82,7 @@ My strategy for modeling is still very early in development and not yet mature e
 
 ### Creating a model
 
-To create a model, declare a class as an extension of `p810\Model\Model`. Declare two public properties, the table name and primary key.
+To create a model, declare a class as an extension of `p810\Model\Model`. Your class name should be the plural form of your table's name, e.g. the `Users` class corresponds to the `user` table.
 
 **Note: The first argument passed to your model must be an instance of `p810\MySQL\Connection`.**
 
@@ -93,15 +93,21 @@ use p810\Model\Model;
 
 class Users
 extends Model
-{
-  public $table = 'users';
-  public $pk = 'user_id';
-}
+{}
 
 $users = new Users($db);
 
 ?>
 ```
+
+
+#### Default values and properties
+
+You may set the `Model::$table` property in your child class if your class name does not match the plural form of your table name.
+
+If your class name is singular and matches your table name, set `Model::$isPlural` to false. 
+
+The primary key defaults to the table name prepended with `_id`. You can override this by setting `Model::$pk`.
 
 
 ### Finding a row
