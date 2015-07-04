@@ -6,24 +6,6 @@ use \Doctrine\Common\Inflector\Inflector;
 abstract class Model
 {
   /**
-   * The table being represented by the model.
-   *
-   * @access public
-   * @var string
-   */
-  public $table;
-
-
-  /**
-   * Specifies whether the class name is the pluralized version of the table name.
-   *
-   * @access public
-   * @var bool
-   */
-  public $isPlural = true;
-
-
-  /**
    * Injects an instance of p810\MySQL\Connection.
    *
    * @param object $resource An instance of p810\MySQL\Connection.
@@ -43,7 +25,7 @@ abstract class Model
    */
   public function find($id)
   {
-    $data = $this->resource->select('*', $this->table)
+    $data = $this->resource->select('*', $this->getTableName())
                            ->where($this->getPrimaryKey(), $id)
                            ->execute();
 
@@ -68,7 +50,7 @@ abstract class Model
       return $this->pk;
     }
 
-    return $this->getTableName() . '_id';
+    return Inflector::singularize($this->getTableName()) . '_id';
   }
 
 
@@ -79,12 +61,10 @@ abstract class Model
    */
   protected function getTableName()
   {
-    $classname = lcfirst(get_class($this));
-
-    if($this->isPlural) {
-      return $classname;
+    if(isset($this->table)) {
+      return $this->table;
     }
 
-    return Inflector::singularize($classname);
+    return lcfirst(get_class($this));
   }
 }
