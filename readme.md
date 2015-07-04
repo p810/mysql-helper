@@ -5,7 +5,11 @@ Feel free to fork and contribute or to submit issues and feature requests!
 
 # Installation
 
-Composer is recommended to install this library. Your usual `composer install` in the project directory will create an autoloader. You may also take the `src/` directory and autoload the files yourself. Currently there are no external dependencies that are loaded through Packagist.
+Composer is required to install this library.
+
+```
+composer install
+```
 
 
 # Usage
