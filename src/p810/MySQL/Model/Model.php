@@ -15,6 +15,15 @@ abstract class Model
 
 
   /**
+   * Specifies whether the class name is the pluralized version of the table name.
+   *
+   * @access public
+   * @var bool
+   */
+  public $isPlural = true;
+
+
+  /**
    * Injects an instance of p810\MySQL\Connection.
    *
    * @param object $resource An instance of p810\MySQL\Connection.
