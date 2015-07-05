@@ -9,7 +9,7 @@
     ],
     "autoload": {
       "psr-4": {
-        "p810\\": "src/p810/"
+        "p810\\MySQL\\": "src/p810/MySQL/"
       }
     },
     "require": {
