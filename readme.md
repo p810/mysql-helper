@@ -8,7 +8,7 @@ Feel free to fork and contribute or to submit issues and feature requests!
 Composer is required to install this library.
 
 ```
-composer install
+composer require p810/mysql-helper
 ```
 
 
