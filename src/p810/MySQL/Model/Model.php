@@ -65,6 +65,8 @@ abstract class Model
       return $this->table;
     }
 
-    return lcfirst(get_class($this));
+    $reflection = new \ReflectionClass($this);
+
+    return lcfirst($reflection->getShortName());
   }
 }
