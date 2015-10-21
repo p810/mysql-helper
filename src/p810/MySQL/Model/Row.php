@@ -101,6 +101,14 @@ class Row
       return false;
     }
 
+    foreach($rows as &$row) {
+      unset($row[$key]);
+    }
+
+    if (count($rows) === 1) {
+      $rows = array_shift($rows);
+    }
+
     $this->data[$table] = $rows;
 
     return $rows;
