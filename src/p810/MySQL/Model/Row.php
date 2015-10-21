@@ -51,6 +51,22 @@ class Row
 
 
   /**
+   * Gets a value from the row.
+   * 
+   * @param string $key The column name to access.
+   * @return mixed
+   */
+  public function get($key)
+  {
+    if (!array_key_exists($key, $this->data)) {
+      throw new OutOfBoundsException;
+    }
+
+    return $this->data[$key];
+  }
+
+
+  /**
    * Provides access to columns in the row like they are properties of the class.
    *
    * @param string $key The column name to access.
@@ -58,11 +74,36 @@ class Row
    */
   function __get($key)
   {
-    if(!array_key_exists($key, $this->data)) {
-      throw new OutOfBoundsException;
+    return $this->get($key);
+  }
+
+
+  /**
+   * Fetches foreign rows that this row owns. Relationships are mapped by the primary key of this row's table.
+   *
+   * @param $table The foreign table to pull data from.
+   * @param $key If supplied, the associated key between the two tables.
+   * @return mixed
+   */
+  public function has($table, $key = null)
+  {
+    if (is_null($key)) {
+      $key = substr($table, 0, strlen($table) - 1);
+
+      $key .= '_id';
     }
 
-    return $this->data[$key];
+    $rows = $this->model->resource->select('*', $table)
+              ->where($key, $this->data[$key])
+              ->execute();
+
+    if (count($rows) === 0) {
+      return false;
+    }
+
+    $this->data[$table] = $rows;
+
+    return $rows;
   }
 
 
