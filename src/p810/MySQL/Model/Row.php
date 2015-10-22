@@ -159,11 +159,13 @@ class Row
    */
   public function belongsToMany($table, $foreign_key = null)
   {
+    $intermediary = $this->model->getTableName() . '_to_' . $table;
+
     if (!is_null($foreign_key)) {
       $foreign_key = TableHelper::getPrimaryKey($table);
     }
 
-    $results = $this->relationship->belongsToMany($table, $foreign_key);
+    $results = $this->relationship->belongsToMany($intermediary, $table, $foreign_key);
 
     if ($results) {
       $this->data[$table] = array();
