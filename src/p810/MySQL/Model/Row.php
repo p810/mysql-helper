@@ -28,6 +28,8 @@ class Row
     $this->model    = $model;
     $this->data     = $data;
     $this->id       = $data[$model->getPrimaryKey()];
+
+    $this->model->getRelatedData($this->id, $this->data);
   }
 
 
