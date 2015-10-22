@@ -19,6 +19,7 @@ class Relationship
         $query = $this->row->model->resource->select('*', $table);
 
         $query->where($key, $this->id);
+        $query->limit(1);
 
         $result = $query->execute();
 
