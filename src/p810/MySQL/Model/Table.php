@@ -1,8 +1,9 @@
 <?php
 
 namespace p810\MySQL\Model;
-use \p810\MySQL\Helpers\Table as TableHelper;
+
 use \p810\MySQL\Connection;
+use \p810\MySQL\Helpers\Table as TableHelper;
 
 abstract class Table
 {
@@ -68,7 +69,9 @@ abstract class Table
                         }
                     }
 
-                    $relationship = new Relationship($relationship);
+                    $method = $relationship;
+
+                    $relationship = new Relationship($this->resource);
 
                     $relationship->setTables($this->getTableName(), $table);
                     $relationship->setColumns($columns);

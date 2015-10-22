@@ -2,51 +2,28 @@
 
 namespace p810\MySQL;
 
-use Helpers\Table;
+use p810\MySQL\Model\Row;
+use p810\MySQL\Helpers\Table;
 
 class Relationship
 {
-    function __construct($type, Connection $resource)
+    function __construct(Row $row, $id)
     {
-        $this->type = $type;
-
-        $this->query = $resource->query->factory->create('select');
-    }
-
-    
-    public function setTables($table1, $table2)
-    {
-        $this->tables = [$table1, $table2];
-
-        $this->keys = [
-            Table::getPrimaryKey($table1),
-            Table::getPrimaryKey($table2)
-        ];
-    }
-
-    
-    public function setColumns($columns)
-    {
-        $this->columns = $columns;
-    }
-
-
-    public function setID($id)
-    {
+        $this->row = $row;
         $this->id = $id;
     }
 
-
-    public function hasOne()
+    
+    public function hasOne($table, $key)
     {
-        $result = $this->query
-                    ->setTable($this->tables[1])
-                    ->setColumn($this->columns)
-                    ->where($this->keys[0], $this->id)
-                    ->execute();
+        $query = $this->row->model->resource->select('*', $table);
 
-        if (count($result) === 0) {
-            return false;
+        $query->where($key, $this->id);
+
+        $result = $query->execute();
+
+        if (is_array($result) && count($result) > 0) {
+            $result = array_shift($result);
         }
 
         return $result;

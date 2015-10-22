@@ -1,9 +1,14 @@
-<?php namespace p810\MySQL\Model;
+<?php
 
-use p810\MySQL\Connection;
+namespace p810\MySQL\Model;
+
 use PDO;
 use Exception;
 use OutOfBoundsException;
+use p810\MySQL\Connection;
+use p810\MySQL\Relationship;
+use p810\MySQL\Helpers\TableHelper;
+use \Doctrine\Common\Inflector\Inflector;
 
 class Row
 {
@@ -25,11 +30,11 @@ class Row
    */
   function __construct(Model $model, $data)
   {
-    $this->model    = $model;
-    $this->data     = $data;
-    $this->id       = $data[$model->getPrimaryKey()];
+    $this->model = $model;
+    $this->data  = $data;
+    $this->id    = $data[$model->getPrimaryKey()];
 
-    $this->model->getRelatedData($this->id, $this->data);
+    $this->relationship = new Relationship($this, $this->id);
   }
 
 
@@ -81,39 +86,94 @@ class Row
 
 
   /**
-   * Fetches foreign rows that this row owns. Relationships are mapped by the primary key of this row's table.
-   *
-   * @param $table The foreign table to pull data from.
-   * @param $key If supplied, the associated key between the two tables.
-   * @return mixed
+   * {@todo}
    */
-  public function has($table, $key = null)
+  public function hasOne($table, $foreign_key = null)
   {
-    if (is_null($key)) {
-      $key = substr($table, 0, strlen($table) - 1);
+    $table = Inflector::pluralize($table);
 
-      $key .= '_id';
+    if (is_null($foreign_key)) {
+      $foreign_key = $this->model->getPrimaryKey( $this->model->getTableName() );
     }
 
-    $rows = $this->model->resource->select('*', $table)
-              ->where($key, $this->data[$key])
-              ->execute();
+    $result = $this->relationship->hasOne($table, $foreign_key);
 
-    if (count($rows) === 0) {
-      return false;
+    if ($result) {
+      $table = Inflector::singularize($table);
+
+      $this->data[$table] = $result;
     }
 
-    foreach($rows as &$row) {
-      unset($row[$key]);
+    return $result;
+  }
+
+
+  /**
+   * {@todo}
+   */
+  public function hasMany($table, $foreign_key = null)
+  {
+    if (!is_null($foreign_key)) {
+      $foreign_key = $this->model->getPrimaryKey( $this->model->getTableName() );
     }
 
-    if (count($rows) === 1) {
-      $rows = array_shift($rows);
+    $results = $this->relationship->hasMany($table, $foreign_key);
+
+    if ($results) {
+      $this->data[$table] = array();
+
+      foreach($results as $result) {
+        $this->data[$table][] = $result;
+      }
     }
 
-    $this->data[$table] = $rows;
+    return $results;
+  }
 
-    return $rows;
+
+  /**
+   * {@todo}
+   */
+  public function belongsToOne($table, $foreign_key = null)
+  {
+    $table = Inflector::pluralize($table);
+
+    if (is_null($foreign_key)) {
+      $foreign_key = TableHelper::getPrimaryKey($table);
+    }
+
+    $result = $this->relationship->belongsToOne($table, $foreign_key);
+
+    if ($result) {
+      $table = Inflector::singularize($table);
+
+      $this->data[$name] = $result;
+    }
+
+    return $result;
+  }
+
+
+  /**
+   * {@todo}
+   */
+  public function belongsToMany($table, $foreign_key = null)
+  {
+    if (!is_null($foreign_key)) {
+      $foreign_key = TableHelper::getPrimaryKey($table);
+    }
+
+    $results = $this->relationship->belongsToMany($table, $foreign_key);
+
+    if ($results) {
+      $this->data[$table] = array();
+
+      foreach ($results as $result) {
+        $this->data[$table][] = $result;
+      }
+    }
+
+    return $results;
   }
 
 
