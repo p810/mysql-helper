@@ -7,8 +7,8 @@ use Exception;
 use OutOfBoundsException;
 use p810\MySQL\Connection;
 use p810\MySQL\Relationship;
-use p810\MySQL\Helpers\TableHelper;
 use \Doctrine\Common\Inflector\Inflector;
+use p810\MySQL\Helpers\Table as TableHelper;
 
 class Row
 {
@@ -113,8 +113,8 @@ class Row
    */
   public function hasMany($table, $foreign_key = null)
   {
-    if (!is_null($foreign_key)) {
-      $foreign_key = $this->model->getPrimaryKey( $this->model->getTableName() );
+    if (is_null($foreign_key)) {
+      $foreign_key = $this->model->getPrimaryKey();
     }
 
     $results = $this->relationship->hasMany($table, $foreign_key);
@@ -147,7 +147,7 @@ class Row
     if ($result) {
       $table = Inflector::singularize($table);
 
-      $this->data[$name] = $result;
+      $this->data[$table] = $result;
     }
 
     return $result;
@@ -161,8 +161,8 @@ class Row
   {
     $intermediary = $this->model->getTableName() . '_to_' . $table;
 
-    if (!is_null($foreign_key)) {
-      $foreign_key = TableHelper::getPrimaryKey($table);
+    if (is_null($foreign_key)) {
+      $foreign_key = $this->model->getPrimaryKey();
     }
 
     $results = $this->relationship->belongsToMany($intermediary, $table, $foreign_key);

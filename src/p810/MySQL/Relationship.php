@@ -3,7 +3,7 @@
 namespace p810\MySQL;
 
 use p810\MySQL\Model\Row;
-use p810\MySQL\Helpers\Table;
+use p810\MySQL\Helpers\Table as TableHelper;
 
 class Relationship
 {
@@ -76,7 +76,9 @@ class Relationship
 
                 $query->where($primary_key, $result[$primary_key]);
 
-                $return[] = $query->execute();
+                $result = $query->execute();
+
+                $return[] = array_shift($result);
             }
 
             $results = $return;
