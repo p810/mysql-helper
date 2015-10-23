@@ -154,7 +154,9 @@ A `Row` can automatically populate itself with (and returns, if you need the dat
 
 To map a relationship, call `Row::relationship()`, passing in one of the following types as the first argument, followed by the table you're relating the current model to:
 
-* hasOne  - One to one
-* hasMany - One to many
-* belongsToOne  - Inverse one to one
-* belongsToMany - Many to many
+Relationship       | Method
+------------------ | ------
+One-to-one         | `hasOne`
+One-to-many        | `hasMany`
+Inverse one-to-one | `belongsToOne`
+Many-to-many       | `belongsToMany`
