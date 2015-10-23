@@ -13,7 +13,7 @@ class Table
             $class = $reflection->getShortName();
         }
 
-        return lcfirst($class);
+        return lcfirst(Inflector::pluralize($class));
     }
 
 
