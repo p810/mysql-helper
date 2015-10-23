@@ -1,3 +1,5 @@
+# mysql-helper
+
 This is my experimental query builder and modeling library developed for use with PHP and MySQL. The overall goal of this project is to create an easily expressed API for interacting with MySQL in projects I develop down the road. I'm also doing it to gain more knowledge of SQL and best design practices in OOP.
 
 Feel free to fork and contribute or to submit issues and feature requests!
