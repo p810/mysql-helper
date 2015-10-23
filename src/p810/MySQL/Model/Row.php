@@ -93,6 +93,13 @@ class Row
   }
 
 
+  /**
+   * Makes calls to the Relationship object (Row::$relationship) and stores the results in this Row.
+   *
+   * @param $relationship string The name of the relationship to attempt to map.
+   * @param $arguments array A variadic list of arguments. The foreign table name is required as the first, and a primary key may be supplied as the second.
+   * @return bool|array
+   */
   public function relationship($relationship, ...$arguments)
   {
     $results = call_user_func_array([$this->relationship, $relationship], $arguments);

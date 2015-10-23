@@ -5,6 +5,12 @@ use \Doctrine\Common\Inflector\Inflector;
 
 class Table
 {
+    /**
+     * Resolves a table's name, following the plural naming scheme.
+     *
+     * @param $class string|object An instance of p810\Model\Model or a string.
+     * @return string
+     */
     public static function getTableName($class)
     {
         if (is_object($class)) {
@@ -17,6 +23,12 @@ class Table
     }
 
 
+    /**
+     * Resolves a table's primary key, following the naming scheme where the table's singular name is prepended with _id.
+     *
+     * @param $table string The name of the table.
+     * @return string
+     */
     public static function getPrimaryKey($table)
     {
         return Inflector::singularize($table) . '_id';

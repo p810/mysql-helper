@@ -9,9 +9,13 @@ use p810\MySQL\Helpers\Table as TableHelper;
 class Relationship
 extends Query
 {
-    private $relationships = ['hasOne', 'hasMany', 'belongsToOne', 'belongsToMany'];
-
-    
+    /**
+     * Injects an instance of p810\MySQL\Connection and the ID of the model this relationship correlates.
+     *
+     * @param $resource object An instance of p810\MySQL\Connection.
+     * @param $id int The model's primary ID.
+     * @return void
+     */    
     function __construct(Connection $resource, $id)
     {
         $this->resource = $resource;
@@ -20,15 +24,28 @@ extends Query
     }
 
 
+    /**
+     * Sets the local table of this relationship. 
+     *
+     * @param $local string The name of the local table.
+     * @return void
+     */
     public function setLocalTable($local)
     {
         $this->local = Inflector::pluralize($local);
     }
 
 
+    /**
+     * Calls a method belonging to Query and returns its result.
+     *
+     * @param $method string The name of the method to call.
+     * @param $arguments array A variadic list of arguments.
+     * @return bool|array
+     */
     function __call($method, $arguments)
     {
-        if (!method_exists($this, $method) || !in_array($method, $this->relationships)) {
+        if (!method_exists($this, $method)) {
             throw new \BadMethodCallException;
         }
 
