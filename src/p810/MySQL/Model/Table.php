@@ -7,8 +7,6 @@ use \p810\MySQL\Helpers\Table as TableHelper;
 
 abstract class Table
 {
-    protected $relationships = ['hasOne', 'hasMany', 'belongsToOne', 'belongsToMany'];
-
    /**
     * Injects an instance of p810\MySQL\Connection.
     *
@@ -48,40 +46,5 @@ abstract class Table
         }
 
         return TableHelper::getTableName($this);
-    }
-
-
-    /**
-     * @todo: write documentation
-     */
-    protected function getRelatedData($id, &$data)
-    {
-        foreach ($this->relationships as $relationship) {
-            if (property_exists($this, $relationship)) {
-                foreach ($this->$relationship as $table => $columns) {
-                    if (is_numeric($table)) {
-                        $table = $columns;
-                        
-                        $columns = '*';
-                    } else {
-                        if (is_array($columns)) {
-                            $columns = implode(',', $table);
-                        }
-                    }
-
-                    $method = $relationship;
-
-                    $relationship = new Relationship($this->resource);
-
-                    $relationship->setTables($this->getTableName(), $table);
-                    $relationship->setColumns($columns);
-                    $relationship->setID($id);
-
-                    $data[$table] = call_user_func_array([$relationship, $method], [$this->resource]);
-
-                    unset($relationship);
-                }
-            }
-        }
     }
 }
