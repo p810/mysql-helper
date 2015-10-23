@@ -2,12 +2,9 @@
 
 namespace p810\MySQL\Model;
 
-use PDO;
-use Exception;
-use OutOfBoundsException;
 use p810\MySQL\Connection;
-use p810\MySQL\Relationship;
 use \Doctrine\Common\Inflector\Inflector;
+use p810\MySQL\Relationships\Relationship;
 use p810\MySQL\Helpers\Table as TableHelper;
 
 class Row
@@ -19,6 +16,15 @@ class Row
    * @var int
    */
   protected $id;
+
+
+  /**
+   * Possible relationship method names.
+   *
+   * @access private
+   * @var array
+   */
+  private $relationships = ['hasOne', 'belongsToOne', 'hasMany', 'belongsToMany'];
 
 
   /**
@@ -34,7 +40,9 @@ class Row
     $this->data  = $data;
     $this->id    = $data[$model->getPrimaryKey()];
 
-    $this->relationship = new Relationship($this, $this->id);
+    $this->relationship = new Relationship($this->model->resource, $this->id);
+
+    $this->relationship->setLocalTable($this->model->getTableName());
   }
 
 
@@ -48,7 +56,7 @@ class Row
   public function set($key, $value)
   {
     if(!array_key_exists($key, $this->data)) {
-      throw new OutOfBoundsException;
+      throw new \OutOfBoundsException;
     }
 
     $this->data[$key] = $value;
@@ -66,7 +74,7 @@ class Row
   public function get($key)
   {
     if (!array_key_exists($key, $this->data)) {
-      throw new OutOfBoundsException;
+      throw new \OutOfBoundsException;
     }
 
     return $this->data[$key];
@@ -85,94 +93,23 @@ class Row
   }
 
 
-  /**
-   * {@todo}
-   */
-  public function hasOne($table, $foreign_key = null)
+  public function relationship($relationship, ...$arguments)
   {
-    $table = Inflector::pluralize($table);
+    $results = call_user_func_array([$this->relationship, $relationship], $arguments);
 
-    if (is_null($foreign_key)) {
-      $foreign_key = $this->model->getPrimaryKey( $this->model->getTableName() );
-    }
+    switch ($relationship) {
+      case 'hasOne':
+      case 'belongsToOne':
+        $this->data[$arguments[0]] = $results;
+      break;
 
-    $result = $this->relationship->hasOne($table, $foreign_key);
+      case 'hasMany':
+      case 'belongsToMany':
+        $this->data[$arguments[0]] = array();
 
-    if ($result) {
-      $table = Inflector::singularize($table);
-
-      $this->data[$table] = $result;
-    }
-
-    return $result;
-  }
-
-
-  /**
-   * {@todo}
-   */
-  public function hasMany($table, $foreign_key = null)
-  {
-    if (is_null($foreign_key)) {
-      $foreign_key = $this->model->getPrimaryKey();
-    }
-
-    $results = $this->relationship->hasMany($table, $foreign_key);
-
-    if ($results) {
-      $this->data[$table] = array();
-
-      foreach($results as $result) {
-        $this->data[$table][] = $result;
-      }
-    }
-
-    return $results;
-  }
-
-
-  /**
-   * {@todo}
-   */
-  public function belongsToOne($table, $foreign_key = null)
-  {
-    $table = Inflector::pluralize($table);
-
-    if (is_null($foreign_key)) {
-      $foreign_key = TableHelper::getPrimaryKey($table);
-    }
-
-    $result = $this->relationship->belongsToOne($table, $foreign_key);
-
-    if ($result) {
-      $table = Inflector::singularize($table);
-
-      $this->data[$table] = $result;
-    }
-
-    return $result;
-  }
-
-
-  /**
-   * {@todo}
-   */
-  public function belongsToMany($table, $foreign_key = null)
-  {
-    $intermediary = $this->model->getTableName() . '_to_' . $table;
-
-    if (is_null($foreign_key)) {
-      $foreign_key = $this->model->getPrimaryKey();
-    }
-
-    $results = $this->relationship->belongsToMany($intermediary, $table, $foreign_key);
-
-    if ($results) {
-      $this->data[$table] = array();
-
-      foreach ($results as $result) {
-        $this->data[$table][] = $result;
-      }
+        foreach ($results as $result) {
+          $this->data[$arguments[0]][] = $result;
+        }
     }
 
     return $results;
