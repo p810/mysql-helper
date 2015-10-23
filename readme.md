@@ -86,9 +86,7 @@ My strategy for modeling is still very early in development and not yet mature e
 
 ### Creating a model
 
-To create a model, declare a class as an extension of `p810\Model\Model`. Your class name should be the plural form of your table's name, e.g. the `Users` class corresponds to the `user` table.
-
-**Note: The first argument passed to your model must be an instance of `p810\MySQL\Connection`.**
+To create a model, declare a class as an extension of `p810\Model\Model`. The library assumes your table name will be pluralized, however see the section below on how to override this.
 
 ```php
 <?php
@@ -99,7 +97,7 @@ class Users
 extends Model
 {}
 
-$users = new Users($db);
+$users = new Users($connection);
 
 ?>
 ```
@@ -112,7 +110,7 @@ You may set the `Model::$table` property in your child class if your class name 
 The primary key defaults to the table name prepended with `_id`. You can override this by setting `Model::$pk`.
 
 
-### Finding a row
+### Find a row by ID
 
 Find a row by its ID by calling the `find()` method.
 
@@ -127,7 +125,7 @@ $some_person = $users->find(1);
 This will return an instance of `p810\Model\Row`.
 
 
-### Data access and updating
+### Getting and setting values
 
 You can access data by requesting a column name like it were a property of the class.
 
@@ -148,3 +146,15 @@ $some_person->set('username', 'NewNameForThisGuy');
 
 ?>
 ```
+
+
+### Relationships
+
+A `Row` can automatically populate itself with (and returns, if you need the data elsewhere) related data that is has or belongs to. 
+
+To map a relationship, call `Row::relationship()`, passing in one of the following types as the first argument, followed by the table you're relating the current model to:
+
+* hasOne  - One to one
+* hasMany - One to many
+* belongsToOne  - Inverse one to one
+* belongsToMany - Many to many
