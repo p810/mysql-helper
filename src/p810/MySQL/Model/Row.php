@@ -39,10 +39,6 @@ class Row
     $this->model = $model;
     $this->data  = $data;
     $this->id    = $data[$model->getPrimaryKey()];
-
-    $this->relationship = new Relationship($this->model->resource, $this->id);
-
-    $this->relationship->setLocalTable($this->model->getTableName());
   }
 
 
@@ -53,15 +49,17 @@ class Row
    * @param mixed $value The value to set on the row's column.
    * @return void
    */
-  public function set($key, $value)
+  public function set($key, $value, $commit = true)
   {
     if(!array_key_exists($key, $this->data)) {
-      throw new \OutOfBoundsException;
+      $commit = false;
     }
 
     $this->data[$key] = $value;
 
-    $this->commit(array($key => $value));
+    if ($commit) {
+      $this->commit(array($key => $value));
+    }
   }
 
 
@@ -94,7 +92,7 @@ class Row
 
 
   /**
-   * Makes calls to the Relationship object (Row::$relationship) and stores the results in this Row.
+   * Returns a new instance of Relationship.
    *
    * @param $relationship string The name of the relationship to attempt to map.
    * @param $arguments array A variadic list of arguments. The foreign table name is required as the first, and a primary key may be supplied as the second.
@@ -102,24 +100,11 @@ class Row
    */
   public function relationship($relationship, ...$arguments)
   {
-    $results = call_user_func_array([$this->relationship, $relationship], $arguments);
+    $relationship = new Relationship($this->model->resource, $this, $relationship, $arguments, $this->id);
 
-    switch ($relationship) {
-      case 'hasOne':
-      case 'belongsToOne':
-        $this->data[$arguments[0]] = $results;
-      break;
+    $relationship->setLocalTable($this->model->getTableName());
 
-      case 'hasMany':
-      case 'belongsToMany':
-        $this->data[$arguments[0]] = array();
-
-        foreach ($results as $result) {
-          $this->data[$arguments[0]][] = $result;
-        }
-    }
-
-    return $results;
+    return $relationship;
   }
 
 

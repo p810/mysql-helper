@@ -162,3 +162,5 @@ One-to-one         | `hasOne`
 One-to-many        | `hasMany`
 Inverse one-to-one | `belongsToOne`
 Many-to-many       | `belongsToMany`
+
+When you're ready to execute the query that will retrieve the results for you, call `Relationship::map()`.
