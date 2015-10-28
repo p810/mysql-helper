@@ -1,11 +1,11 @@
-<?php namespace p810\MySQL\Query\Statements;
+<?php
 
-use p810\MySQL\Query\Clauses\Where;
+namespace p810\MySQL\Query\Commands;
 
 class Update
-extends Statement
+extends \p810\MySQL\Query\Statement
 {
-  use Where;
+  use \p810\MySQL\Query\Clauses\Where;
 
 
   /**

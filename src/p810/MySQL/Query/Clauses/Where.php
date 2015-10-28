@@ -1,7 +1,18 @@
-<?php namespace p810\MySQL\Query\Clauses;
+<?php
+
+namespace p810\MySQL\Query\Clauses;
 
 trait Where
 {
+  /**
+   * Provides access to Where::_and and Where::_or through non-prefixed names.
+   *
+   * This is done because both are words reserved to the compiler.
+   *
+   * @param $method string The name of the method being called.
+   * @param $arguments null|array An optional list of arguments passed to the call.
+   * @return self
+   */
   function __call($method, $arguments)
   {
     if ($method == 'and') {
@@ -20,7 +31,7 @@ trait Where
    * @param string $column The name of the column to look up.
    * @param string $operator (Optional) The operator to use.
    * @param mixed $value The value that the column should be compared against.
-   * @return $this
+   * @return self
    */
   public function where(...$arguments)
   {
@@ -42,7 +53,7 @@ trait Where
    * @param string $column The name of the column to look up.
    * @param string $operator (Optional) The operator to use.
    * @param mixed $value The value that the column should be compared against.
-   * @return $this
+   * @return self
    */
   protected function _and(...$arguments)
   {
@@ -64,7 +75,7 @@ trait Where
    * @param string $column The name of the column to look up.
    * @param string $operator (Optional) The operator to use.
    * @param mixed $value The value that the column should be compared against.
-   * @return $this
+   * @return self
    */
   protected function _or(...$arguments)
   {

@@ -1,6 +1,8 @@
-<?php namespace p810\MySQL\Query\Statements;
+<?php
 
-trait Parameters
+namespace p810\MySQL\Helpers;
+
+trait PDOParameters
 {
   /**
    * Stores a list of parameters to be bound to the query.

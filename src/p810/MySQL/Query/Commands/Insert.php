@@ -1,7 +1,9 @@
-<?php namespace p810\MySQL\Query\Statements;
+<?php
+
+namespace p810\MySQL\Query\Commands;
 
 class Insert
-extends Statement
+extends \p810\MySQL\Query\Statement
 {
   /**
    * {@inheritdoc}
@@ -71,7 +73,7 @@ extends Statement
 
   
   /**
-   * Returns the total number of results counted.
+   * Returns the total number of results inserted.
    *
    * @return int
    */

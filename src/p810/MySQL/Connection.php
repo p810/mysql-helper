@@ -3,7 +3,7 @@
 use \PDO;
 use \PDOException;
 use \BadMethodCallException;
-use p810\MySQL\QueryFactory;
+use p810\MySQL\Factories\Command as CommandFactory;
 use p810\MySQL\Exceptions\MySQLConnectionException;
 
 class Connection
@@ -44,7 +44,7 @@ class Connection
       throw new MySQLConnectionException($e->getMessage());
     }
 
-    $this->query = new QueryFactory($this);
+    $this->query = new CommandFactory($this);
   }
 
 
@@ -70,7 +70,7 @@ class Connection
    * Returns this object's link to the database.
    *
    * @return object
-   * @see self::$resource
+   * @see Connection::$resource
    */
   public function getResource()
   {

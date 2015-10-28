@@ -1,9 +1,11 @@
-<?php namespace p810\MySQL;
+<?php
+
+namespace p810\MySQL\Factories;
 
 use p810\MySQL\Connection;
-use p810\MySQL\Query\Statements\StatementFactory;
+use p810\MySQL\Factories\Statement as StatementFactory;
 
-class QueryFactory
+class Command
 {
   /**
    * Injects an instance of Connection and grabs the PDO instance from it.

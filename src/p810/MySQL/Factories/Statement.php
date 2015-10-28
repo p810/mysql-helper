@@ -1,8 +1,10 @@
-<?php namespace p810\MySQL\Query\Statements;
+<?php
+
+namespace p810\MySQL\Factories;
 
 use \PDO;
 
-class StatementFactory
+class Statement
 {
   /**
    * Injects an instance of PDO to the object.
@@ -24,7 +26,7 @@ class StatementFactory
    */
   public function create($type)
   {
-    $class = 'p810\\MySQL\\Query\\Statements\\' . ucfirst($type);
+    $class = 'p810\\MySQL\\Query\\Commands\\' . ucfirst($type);
 
     return new $class($this->resource);
   }
