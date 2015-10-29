@@ -37,6 +37,15 @@ class Row
 
 
   /**
+   * Stores columns and values of the row.
+   *
+   * @access protected
+   * @var array
+   */
+  protected $data;
+
+
+  /**
    * Injects an instance of p810\Model\Model, sets the row's data, and determines its ID.
    *
    * @param $model object An instance of p810\Model\Model.
@@ -95,31 +104,6 @@ class Row
     }
 
     return $this->data[$key];
-  }
-
-
-  /**
-   * Provides access to columns in the row like they are properties of the class.
-   *
-   * @param $key string The column name to access.
-   * @return mixed
-   */
-  function __get($key)
-  {
-    return $this->get($key);
-  }
-
-
-  /**
-   * Allows the user to update the row by assigning values to properties returned from Row::get().
-   *
-   * @param $key string The column name to update.
-   * @param $value mixed The value to set the column to.
-   * @return void 
-   */
-  function __set($key, $value)
-  {
-    $this->set($key, $value, $this->commit);
   }
 
 
