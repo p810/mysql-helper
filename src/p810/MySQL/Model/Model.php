@@ -37,7 +37,20 @@ extends Table
      */
     public function where(...$arguments)
     {
-      $handler = function ($results) {
+      return $this->resource->select('*', $this->getTableName())
+              ->setResultHandler([$this, 'resultToRow'])
+              ->where(...$arguments);
+    }
+
+
+    /**
+     * Handles PDO resultsets, returning a list of rows, a single row, or false if the query returned nothing.
+     *
+     * @param $results object A resultset from a PDO query.
+     * @return mixed
+     */
+    public function resultToRow($results)
+    {
         $results = $results->fetchAll(\PDO::FETCH_ASSOC);
 
         if (count($results) > 1) {
@@ -53,10 +66,5 @@ extends Table
         } elseif (count($results) === 0 || !$results) {
           return false;
         }
-      };
-
-      return $this->resource->select('*', $this->getTableName())
-              ->setResultHandler($handler)
-              ->where(...$arguments);
     }
 }
