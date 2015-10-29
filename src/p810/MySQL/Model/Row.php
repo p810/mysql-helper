@@ -19,7 +19,7 @@ class Row
 
 
   /**
-   * Possible relationship method names.
+   * A list of relationship method names.
    *
    * @access private
    * @var array
@@ -28,10 +28,19 @@ class Row
 
 
   /**
+   * A flag telling whether or not to autocommit database updates.
+   *
+   * @access public
+   * @var boolean
+   */
+  public $autoCommit = true;
+
+
+  /**
    * Injects an instance of p810\Model\Model, sets the row's data, and determines its ID.
    *
-   * @param object $model An instance of p810\Model\Model.
-   * @param array $data The data returned by Model::find()
+   * @param $model object An instance of p810\Model\Model.
+   * @param $data array The data returned by Model::find()
    * @return void
    */
   function __construct(Model $model, $data)
@@ -45,8 +54,8 @@ class Row
   /**
    * Sets a value for the row and commits it to the database.
    *
-   * @param mixed $key The name of the column to update.
-   * @param mixed $value The value to set on the row's column.
+   * @param $key mixed The name of the column to update.
+   * @param $value mixed The value to set on the row's column.
    * @return void
    */
   public function set($key, $value, $commit = true)
@@ -66,11 +75,21 @@ class Row
   /**
    * Gets a value from the row.
    * 
-   * @param string $key The column name to access.
+   * @param $key string|array The column name to access.
    * @return mixed
    */
   public function get($key)
   {
+    if (is_array($key)) {
+      $list = array();
+
+      foreach ($key as $column) {
+        $list[] = $this->get($column);
+      }
+
+      return $list;
+    }
+
     if (!array_key_exists($key, $this->data)) {
       throw new \OutOfBoundsException;
     }
@@ -82,7 +101,7 @@ class Row
   /**
    * Provides access to columns in the row like they are properties of the class.
    *
-   * @param string $key The column name to access.
+   * @param $key string The column name to access.
    * @return mixed
    */
   function __get($key)
@@ -92,11 +111,24 @@ class Row
 
 
   /**
+   * Allows the user to update the row by assigning values to properties returned from Row::get().
+   *
+   * @param $key string The column name to update.
+   * @param $value mixed The value to set the column to.
+   * @return void 
+   */
+  function __set($key, $value)
+  {
+    $this->set($key, $value, $this->commit);
+  }
+
+
+  /**
    * Returns a new instance of Relationship.
    *
    * @param $relationship string The name of the relationship to attempt to map.
    * @param $arguments array A variadic list of arguments. The foreign table name is required as the first, and a primary key may be supplied as the second.
-   * @return bool|array
+   * @return boolean|array
    */
   public function relationship($relationship, ...$arguments)
   {
@@ -111,8 +143,8 @@ class Row
   /**
    * Updates the database.
    *
-   * @param array $data A dictionary with the column => value to set.
-   * @return bool
+   * @param $data array A dictionary with the column => value to set.
+   * @return boolean
    */
   private function commit($data)
   {
