@@ -98,6 +98,8 @@ abstract class Statement
   public function setResultHandler(Callable $callback)
   {
     $this->resultHandler = $callback;
+
+    return $this;
   }
 
 
