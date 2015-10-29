@@ -127,14 +127,27 @@ $some_person = $users->find(1);
 This will return an instance of `p810\Model\Row`.
 
 
-### Getting and setting values
+### Conditionally find a row
 
-You can access data by requesting a column name like it were a property of the class.
+A row can also be found by using the `Where` clause.
 
 ```php
 <?php
 
-print $some_person->username;
+$some_person = $users->where('username', 'Joe')->execute();
+
+?>
+```
+
+
+### Getting and setting values
+
+You can access a column by calling the `get()` method on the row.
+
+```php
+<?php
+
+print $some_person->get('username');
 
 ?>
 ```
