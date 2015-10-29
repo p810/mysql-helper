@@ -17,13 +17,7 @@ extends Table
                                ->where($this->getPrimaryKey(), $id)
                                ->execute();
 
-        if(!$data) {
-          return false;
-        }
-
-        $data = array_shift($data);
-
-        return new Row($this, $data);
+        return $this->resultToRow($data);
     }
 
 
