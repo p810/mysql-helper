@@ -45,7 +45,9 @@ extends Table
      */
     public function resultToRow($results)
     {
-        $results = $results->fetchAll(\PDO::FETCH_ASSOC);
+        if (is_object($results) && $results instanceof \PDOStatement) {
+          $results = $results->fetchAll(\PDO::FETCH_ASSOC);
+        }
 
         if (count($results) > 1) {
           $rows = array();
