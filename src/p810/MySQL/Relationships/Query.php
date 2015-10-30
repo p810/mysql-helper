@@ -22,7 +22,7 @@ abstract class Query
      */
     protected function hasOne($table, $key)
     {
-        $query = $this->resource->select('*', $table);
+        $query = $this->resource->select($this->columns, $table);
 
         $query->where($key, $this->id);
         $query->limit(1);
@@ -53,7 +53,7 @@ abstract class Query
      */
     protected function hasMany($table, $key)
     {
-        $query = $this->resource->select('*', $table);
+        $query = $this->resource->select($this->columns, $table);
 
         $query->where($key, $this->id);
 
@@ -81,7 +81,7 @@ abstract class Query
      */
     protected function belongsToOne($table, $key)
     {
-        $query = $this->resource->select('*', $table);
+        $query = $this->resource->select($this->columns, $table);
 
         $query->where($key, $this->id);
         $query->limit(1);
@@ -118,7 +118,7 @@ abstract class Query
      */
     protected function belongsToMany($table, $key, $intermediary)
     {
-        $query = $this->resource->select('*', $intermediary);
+        $query = $this->resource->select($this->columns, $intermediary);
 
         $query->where($key, $this->id);
 
