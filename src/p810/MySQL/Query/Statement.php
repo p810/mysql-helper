@@ -124,4 +124,15 @@ abstract class Statement
 
     return $this->_return($this->result);
   }
+
+
+  /**
+   * An alias for Statement::execute().
+   *
+   * @see Statement::execute()
+   */
+  public function get()
+  {
+    return $this->execute();
+  }
 }
