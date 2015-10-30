@@ -1,6 +1,6 @@
 {
     "name": "p810/mysql-helper",
-    "description": "A library for simplifying interaction with MySQL.",
+    "description": "A MySQL DBAL with a human friendly API.",
     "authors": [
         {
             "name": "Payton",
