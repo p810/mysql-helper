@@ -39,10 +39,10 @@ class Row
     /**
      * Stores columns and values of the row.
      *
-     * @access protected
+     * @access public
      * @var array
      */
-    protected $data;
+    public $data;
 
 
     /**
