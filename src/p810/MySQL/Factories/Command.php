@@ -74,4 +74,19 @@ class Command
 
     return $object;
   }
+
+
+  /**
+   * Creates a new instance of Delete.
+   *
+   * @param string $table The table to remove rows from.
+   * @return object An instance of p810\MySQL\Query\Statements\Delete.
+   */
+  public function delete($table)
+  {
+    $object = $this->factory->create('delete')
+              ->setTable($table);
+
+    return $object;
+  }
 }
