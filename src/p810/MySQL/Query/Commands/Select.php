@@ -71,6 +71,10 @@ extends \p810\MySQL\Query\Statement
 
       $rows = array();
 
+      if ($results === false || count($results) == 0) {
+          return $rows;
+      }
+
       foreach ($results as $result) {
           $rows[] = new Row($this->connection, $this->table, $result);
       }
