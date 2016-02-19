@@ -3,6 +3,7 @@
 namespace p810\MySQL\Query\Commands;
 
 use \PDO;
+use p810\MySQL\Model\Row;
 
 class Select
 extends \p810\MySQL\Query\Statement
@@ -51,6 +52,8 @@ extends \p810\MySQL\Query\Statement
    */
   public function setTable($table)
   {
+    $this->table = $table;
+
     $this->statement[] = "FROM " . $table;
 
     return $this;
@@ -58,12 +61,20 @@ extends \p810\MySQL\Query\Statement
 
 
   /**
-   * Returns the resultset as an associative array.
+   * Returns the result set as a list of instances of p810\MySQL\Model\Row.
    *
    * @return array
    */
   public function handleResults()
   {
-    return $this->result->fetchAll(PDO::FETCH_ASSOC);
+      $results = $this->result->fetchAll(PDO::FETCH_ASSOC);
+
+      $rows = array();
+
+      foreach ($results as $result) {
+          $rows[] = new Row($this->resource, $this->table, $result);
+      }
+
+      return $rows;
   }
 }
