@@ -53,12 +53,12 @@ extends Table
           $rows = array();
 
           foreach ($results as $data) {
-            $rows[] = new Row($this, $data);
+            $rows[] = new Row($this->resource, $this, $data);
           }
 
           return $rows;
         } elseif (count($results) === 1) {
-          return new Row($this, array_shift($results));
+          return new Row($this->resource, $this, array_shift($results));
         } elseif (count($results) === 0 || !$results) {
           return false;
         }

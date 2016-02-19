@@ -10,6 +10,15 @@ use p810\MySQL\Helpers\Table as TableHelper;
 class Row
 {
     /**
+     * An instance of p810\MySQL\Connection.
+     *
+     * @access protected
+     * @var object
+     */
+    protected $resource;
+
+
+    /**
      * The ID of the row.
      *
      * @access protected
@@ -66,12 +75,15 @@ class Row
     /**
      * Sets meta data for the object.
      *
+     * @param $resource object An instance of p810\MySQL\Connection.
      * @param $table object|string An instance of p810\Model\Model or the table name as a string.
      * @param $data array Data returned by the query.
      * @return void
      */
-    function __construct($table, $data)
+    function __construct(Connection $resource, $table, $data)
     {
+        $this->resource = $resource;
+
         if (is_object($table) && $table instanceof 'p810\\MySQL\\Model\\Model') {
             $this->table = $this->model->getTableName();
 
