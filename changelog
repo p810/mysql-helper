@@ -1,0 +1,5 @@
+v1.3.0 [02/19/2016]
+- - - - - - - - - - - - - - - -
+
+* SELECT statements will now return instances of p810\MySQL\Model\Row. This allows for all results to use relationship mapping methods.
+* p810\MySQL\Model\Row is less opinionated and objects of it can be created by supplying an instance of p810\MySQL\Model\Model or a string for the table name.
