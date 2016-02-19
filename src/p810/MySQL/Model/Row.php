@@ -85,6 +85,8 @@ class Row
     {
         $this->resource = $resource;
 
+        $this->data = $data;
+
         if (is_object($table) && $table instanceof Model) {
             $this->table = $table->getTableName();
 
@@ -99,8 +101,6 @@ class Row
                 $this->identifyBy($primaryKey);
             }
         }
-
-        $this->data = $data;
     }
 
 
