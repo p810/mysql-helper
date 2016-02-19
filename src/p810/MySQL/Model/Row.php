@@ -111,7 +111,7 @@ class Row
      */
     public function set($key, $value, $commit = true)
     {
-        if (!array_key_exists($key, $this->data)) {
+        if (!array_key_exists($key, $this->data) || !isset($this->primaryKey)) {
             $commit = false;
         }
 
