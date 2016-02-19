@@ -72,7 +72,7 @@ extends \p810\MySQL\Query\Statement
       $rows = array();
 
       foreach ($results as $result) {
-          $rows[] = new Row($this->resource, $this->table, $result);
+          $rows[] = new Row($this->connection, $this->table, $result);
       }
 
       return $rows;

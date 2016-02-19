@@ -3,18 +3,21 @@
 namespace p810\MySQL\Factories;
 
 use \PDO;
+use p810\MySQL\Connection;
 
 class Statement
 {
   /**
-   * Injects an instance of PDO to the object.
+   * Locally stores a reference to the connection and the PDO resource.
    *
-   * @param object $resource An instance of PDO.
+   * @param object $resource An instance of p810\MySQL\Connection.
    * @return void
    */
-  function __construct(PDO $resource)
+  function __construct(Connection $connection)
   {
-    $this->resource = $resource;
+    $this->connection = $connection;
+
+    $this->resource = $connection->getResource();
   }
 
 
@@ -28,6 +31,6 @@ class Statement
   {
     $class = 'p810\\MySQL\\Query\\Commands\\' . ucfirst($type);
 
-    return new $class($this->resource);
+    return new $class($this->connection, $this->resource);
   }
 }

@@ -4,6 +4,7 @@ namespace p810\MySQL\Query;
 
 use \PDO;
 use \PDOException;
+use p810\MySQL\Connection;
 
 abstract class Statement
 {
@@ -55,12 +56,14 @@ abstract class Statement
   /**
    * Injects an instance of PDO.
    *
-   * @param object $resource The instance of PDO to inject (returned from Connection::getResource()).
+   * @param object $connection An instance of p810\MySQL\Connection.
    * @return void
    */
-  function __construct(PDO $resource)
+  function __construct(Connection $connection)
   {
-      $this->resource = $resource;
+      $this->connection = $connection;
+
+      $this->resource = $connection->getResource();
 
       $this->begin();
   }

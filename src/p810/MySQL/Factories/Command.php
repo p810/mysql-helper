@@ -15,9 +15,7 @@ class Command
    */
   function __construct(Connection $connection)
   {
-    $this->resource = $connection->getResource();
-
-    $this->factory = new StatementFactory($this->resource);
+    $this->factory = new StatementFactory($connection);
   }
 
 
