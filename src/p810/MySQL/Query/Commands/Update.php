@@ -25,6 +25,8 @@ extends \p810\MySQL\Query\Statement
    */
   public function setTable($table)
   {
+    $this->table = $table;
+
     $this->statement[] = "`" . $table . "`";
 
     return $this;
