@@ -44,6 +44,15 @@ abstract class Statement
 
 
   /**
+   * The name of the table being queried by the statement.
+   *
+   * @access protected
+   * @var string
+   */
+  protected $table;
+
+
+  /**
    * Injects an instance of PDO.
    *
    * @param object $resource The instance of PDO to inject (returned from Connection::getResource()).
@@ -51,9 +60,9 @@ abstract class Statement
    */
   function __construct(PDO $resource)
   {
-    $this->resource = $resource;
+      $this->resource = $resource;
 
-    $this->begin();
+      $this->begin();
   }
 
 
