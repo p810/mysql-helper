@@ -33,7 +33,7 @@ class Row
      * @access public
      * @var boolean
      */
-    public $autoCommit = true;
+    public $autoCommit = false;
 
 
     /**
@@ -46,17 +46,47 @@ class Row
 
 
     /**
-     * Injects an instance of p810\Model\Model, sets the row's data, and determines its ID.
+     * The name of the table being represented by this row.
      *
-     * @param $model object An instance of p810\Model\Model.
-     * @param $data array The data returned by Model::find()
+     * @access protected
+     * @var string
+     */
+    protected $table;
+
+
+    /**
+     * The primary key of the table being represented by this row.
+     *
+     * @access protected
+     * @var string
+     */
+    protected $primaryKey;
+
+
+    /**
+     * Sets meta data for the object.
+     *
+     * @param $table object|string An instance of p810\Model\Model or the table name as a string.
+     * @param $data array Data returned by the query.
      * @return void
      */
-    function __construct(Model $model, $data)
+    function __construct($table, $data)
     {
-        $this->model = $model;
-        $this->data  = $data;
-        $this->id    = $data[$model->getPrimaryKey()];
+        if (is_object($table) && $table instanceof 'p810\\MySQL\\Model\\Model') {
+            $this->table = $this->model->getTableName();
+
+            $this->primaryKey = $this->model->getPrimaryKey();
+        } else {
+            $this->table = TableHelper::getTableName($table);
+
+            $this->primaryKey = TableHelper::getPrimaryKey($table);
+        }
+
+        $this->data = $data;
+
+        if (array_key_exists($this->primaryKey, $data)) {
+            $this->id = $data[$this->primaryKey];
+        }
     }
 
 
@@ -69,14 +99,14 @@ class Row
      */
     public function set($key, $value, $commit = true)
     {
-        if(!array_key_exists($key, $this->data)) {
-          $commit = false;
+        if (!array_key_exists($key, $this->data)) {
+            $commit = false;
         }
 
         $this->data[$key] = $value;
 
         if ($commit) {
-          $this->commit(array($key => $value));
+            $this->commit(array($key => $value));
         }
     }
 
@@ -90,17 +120,17 @@ class Row
     public function get($key)
     {
         if (is_array($key)) {
-          $list = array();
+            $list = array();
 
-          foreach ($key as $column) {
-            $list[] = $this->get($column);
-          }
+            foreach ($key as $column) {
+              $list[] = $this->get($column);
+            }
 
-          return $list;
+            return $list;
         }
 
         if (!array_key_exists($key, $this->data)) {
-          throw new \OutOfBoundsException;
+            throw new \OutOfBoundsException;
         }
 
         return $this->data[$key];
@@ -116,9 +146,9 @@ class Row
      */
     public function relationship($relationship, ...$arguments)
     {
-        $relationship = new Relationship($this->model->resource, $this, $relationship, $arguments, $this->id);
+        $relationship = new Relationship($this->resource, $this, $relationship, $arguments, $this->id);
 
-        $relationship->setLocalTable($this->model->getTableName());
+        $relationship->setLocalTable($this->table);
 
         return $relationship;
     }
@@ -132,13 +162,12 @@ class Row
      */
     private function commit($data)
     {
-        $query = $this->model->resource->update($this->model->table, $data)
-                                       ->where($this->model->getPrimaryKey(), $this->id);
+        $query = $this->resource->update($this->table, $data)->where($this->primaryKey, $this->id);
 
         $result = $query->execute();
 
-        if(!$result) {
-          return false;
+        if (!$result) {
+            return false;
         }
 
         return true;
