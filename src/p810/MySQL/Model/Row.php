@@ -84,7 +84,7 @@ class Row
     {
         $this->resource = $resource;
 
-        if (is_object($table) && $table instanceof 'p810\\MySQL\\Model\\Model') {
+        if (is_object($table) && $table instanceof Model) {
             $this->table = $this->model->getTableName();
 
             $this->primaryKey = $this->model->getPrimaryKey();
