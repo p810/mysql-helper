@@ -132,7 +132,7 @@ extends Query
         switch ($this->method) {
             case 'hasOne':
             case 'belongsToOne':
-                $this->row->set($this->arguments[0], $results);
+                $this->row->set($this->arguments[0], $results, false);
             break;
 
             case 'hasMany':
@@ -143,7 +143,7 @@ extends Query
                     $set[] = $result;
                 }
 
-                $this->row->set($this->arguments[0], $set);
+                $this->row->set($this->arguments[0], $set, false);
             break;
         }
     }
