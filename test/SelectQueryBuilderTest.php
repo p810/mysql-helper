@@ -30,7 +30,21 @@ class SelectQueryBuilderTest extends TestCase {
     /**
      * @depends testQueryValuesAreCorrect
      */
+    public function testClausesAreAppended(Select $query): Select {
+        $query->where([
+            'foo'  => 'bar',
+            'quux' => ['!=', 'test']
+        ]);
+
+        $this->assertEquals('WHERE foo = \'bar\' AND quux != \'test\'', $query->getWhere());
+
+        return $query;
+    }
+
+    /**
+     * @depends testClausesAreAppended
+     */
     public function testQueryBuildsQueryString(Select $query) {
-        $this->assertEquals('SELECT * FROM test_table', $query->build());
+        $this->assertEquals('SELECT * FROM test_table WHERE foo = \'bar\' AND quux != \'test\'', $query->build());
     }
 }
