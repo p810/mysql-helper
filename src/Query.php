@@ -14,7 +14,7 @@ class Query {
 
     /**
      * The Builder object used to construct the query.
-     * @var Builder\BuilderInterface
+     * @var Builder\Builder
      */
     protected $builder;
 
