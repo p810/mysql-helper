@@ -4,7 +4,10 @@ namespace p810\MySQL\Builder;
 
 class Select extends Builder {
     public function build(): string {
-        return sprintf('SELECT %s FROM %s', $this->getColumns(), $this->getTable());
+        return sprintf(
+            'SELECT %s FROM %s %s',
+            $this->getColumns(), $this->getTable(), $this->getWhere()
+        );
     }
 
     public function getColumns(): string {
@@ -36,7 +39,7 @@ class Select extends Builder {
             return '';
         }
 
-        $clauseString = '';
+        $clauseString = 'WHERE ';
         foreach ($this->fragments['where'] as $column => $clause) {
             if (is_array($clause)) {
                 [$operator, $value] = $clause;
@@ -46,7 +49,7 @@ class Select extends Builder {
                 $value = $clause;
             }
 
-            $clauseString .= "$column $operator $value";
+            $clauseString .= "$column $operator '$value'";
 
             if (count($this->fragments['where']) > 1) {
                 end($this->fragments['where']);
