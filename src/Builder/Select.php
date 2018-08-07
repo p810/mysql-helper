@@ -30,4 +30,39 @@ class Select extends Builder {
 
         return $this;
     }
+
+    public function getWhere(): string {
+        if (!isset($this->fragments['where'])) {
+            return '';
+        }
+
+        $clauseString = '';
+        foreach ($this->fragments['where'] as $column => $clause) {
+            if (is_array($clause)) {
+                [$operator, $value] = $clause;
+            } else {
+                $operator = '=';
+                
+                $value = $clause;
+            }
+
+            $clauseString .= "$column $operator $value";
+
+            if (count($this->fragments['where']) > 1) {
+                end($this->fragments['where']);
+
+                if (key($this->fragments['where']) !== $column) {
+                    $clauseString .= ' AND ';
+                }
+            }
+        }
+        
+        return $clauseString;
+    }
+
+    public function where(array $clauses): self {
+        $this->fragments['where'] = $clauses;
+
+        return $this;
+    }
 }
