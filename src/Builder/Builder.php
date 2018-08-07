@@ -16,8 +16,14 @@ abstract class Builder {
      */
     protected $query;
 
-    function __construct(Query $query) {
+    function __construct(\p810\MySQL\Query $query) {
         $this->query = $query;
+    }
+
+    public function get() {
+        $query = $this->query->setQueryString( $this->build() );
+
+        return $query->execute();
     }
 
     /**
