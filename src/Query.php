@@ -25,7 +25,9 @@ class Query {
 
     public function getQueryString(): string {
         if ($query == null) {
-            throw new Exception\UnexecutedQueryException;
+            // Would this be better as BadMethodCallException?
+            // Not sure if a custom exception is necessary here
+            throw new Exception\QueryNotBuiltException;
         }
 
         return $this->query;
