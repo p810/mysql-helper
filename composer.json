@@ -13,6 +13,7 @@
       }
     },
     "require": {
-        "doctrine/inflector": "~1.0.1"
+        "doctrine/inflector": "~1.0.1",
+        "php": "^7.1"
     }
 }
