@@ -2,6 +2,7 @@
 
 namespace p810\MySQL;
 
+use \PDO;
 use p810\MySQL\Builder\Select;
 use p810\MySQL\Builder\Builder;
 
@@ -13,19 +14,21 @@ class Query {
     protected $query;
 
     /**
-     * The Builder object used to construct the query.
-     * @var Builder\Builder
+     * Disallow direct instantiation. Requires the use of
+     * one of the static command methods.
      */
-    protected $builder;
+    private function __construct() {}
 
     function __toString(): string {
-        return $this->query;
+        return $this->getQueryString();
     }
 
-    protected function setBuilder(Builder $builder): self {
-        $this->builder = $builder;
+    public function getQueryString(): string {
+        if ($query == null) {
+            throw new Exception\UnexecutedQueryException;
+        }
 
-        return $this;
+        return $this->query;
     }
 
     public function setQueryString(string $query): self {
@@ -40,12 +43,10 @@ class Query {
      */
     public function execute() {}
 
-    public function select($columns = '*'): Builder {
-        $builder = new Select($this);
+    public static function select($columns = '*'): Builder {        
+        $builder = new Select(new Query);
 
         $builder->setColumns($columns);
-
-        $this->setBuilder($builder);
         
         return $builder;
     }
