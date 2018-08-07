@@ -44,11 +44,7 @@ trait Where {
         return $this->setWhere($column, $value, $operator, 'OR');
     }
 
-    protected function setWhere(
-        string $column, $value,
-        string $comparison = '=',
-        string $operator = 'AND'
-    ): self {
+    protected function setWhere(string $column, $value, string $comparison = '=', string $operator = 'AND'): self {
         $this->fragments['where'][$column] = [
             'comparison' => $comparison,
             'value'      => $value,
@@ -59,10 +55,7 @@ trait Where {
     }
 
     public function getWhere(): ?string {
-        if (
-            ! array_key_exists('where', $this->fragments)
-            || empty($this->fragments['where'])
-        ) {
+        if (! array_key_exists('where', $this->fragments) || empty($this->fragments['where'])) {
             return null;
         }
 
