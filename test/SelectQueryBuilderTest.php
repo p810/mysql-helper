@@ -31,12 +31,19 @@ class SelectQueryBuilderTest extends TestCase {
      * @depends testQueryValuesAreCorrect
      */
     public function testClausesAreAppended(Select $query): Select {
-        $query->where([
-            'foo'  => 'bar',
-            'quux' => ['!=', 'test']
-        ]);
-
-        $this->assertEquals('WHERE foo = \'bar\' AND quux != \'test\'', $query->getWhere());
+        // #1: One condition per call
+        $query
+            ->where('foo', 'bar')
+            ->or('quux', 'test', '!=')
+            ->where([
+                'bam' => 'borp',
+                'wae' => ['caw', '!=', 'OR']
+            ]);
+        
+        $this->assertEquals(
+            "WHERE foo = 'bar' OR quux != 'test' AND bam = 'borp' OR wae != 'caw'",
+            $query->getWhere()
+        );
 
         return $query;
     }
@@ -45,15 +52,9 @@ class SelectQueryBuilderTest extends TestCase {
      * @depends testClausesAreAppended
      */
     public function testQueryBuildsQueryString(Select $query) {
-        $this->assertEquals('SELECT * FROM test_table WHERE foo = \'bar\' AND quux != \'test\'', $query->build());
-    }
-
-    /**
-     * @expectedException p810\MySQL\Exception\QueryNotBuiltException
-     */
-    public function testQueryNotBuiltExceptionIsRaised() {
-        $query = Query::select()->from('test');
-
-        (string) $query;
+        $this->assertEquals(
+            'SELECT * FROM test_table WHERE foo = \'bar\' OR quux != \'test\' AND bam = \'borp\' OR wae != \'caw\'',
+            $query->build()
+        );
     }
 }
