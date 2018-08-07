@@ -25,7 +25,7 @@ class Select extends Builder {
         return $this->fragments['table'];
     }
 
-    public function setTable(string $table): self {
+    public function from(string $table): self {
         $this->fragments['table'] = $table;
 
         return $this;
