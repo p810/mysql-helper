@@ -20,7 +20,7 @@ class Connection {
         }
         
         try {
-            $this->resource = new \PDO(...$arguments);
+            $this->database = new \PDO(...$arguments);
         } catch (\PDOException $e) {
             throw new Exception\ConnectionException($e->getMessage(), $e->getCode(), $e);
         }
