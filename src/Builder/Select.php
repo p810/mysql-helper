@@ -3,11 +3,17 @@
 namespace p810\MySQL\Builder;
 
 class Select extends Builder {
+    use \p810\MySQL\Query\Where;
+
     public function build(): string {
-        return sprintf(
-            'SELECT %s FROM %s %s',
-            $this->getColumns(), $this->getTable(), $this->getWhere()
-        );
+        $query = sprintf('SELECT %s FROM %s', $this->getColumns(), $this->getTable());
+
+        $where = $this->getWhere();
+        if ($where !== null) {
+            $query .= ' ' . $where;
+        }
+
+        return $query;
     }
 
     public function getColumns(): string {
@@ -30,41 +36,6 @@ class Select extends Builder {
 
     public function from(string $table): self {
         $this->fragments['table'] = $table;
-
-        return $this;
-    }
-
-    public function getWhere(): string {
-        if (!isset($this->fragments['where'])) {
-            return '';
-        }
-
-        $clauseString = 'WHERE ';
-        foreach ($this->fragments['where'] as $column => $clause) {
-            if (is_array($clause)) {
-                [$operator, $value] = $clause;
-            } else {
-                $operator = '=';
-                
-                $value = $clause;
-            }
-
-            $clauseString .= "$column $operator '$value'";
-
-            if (count($this->fragments['where']) > 1) {
-                end($this->fragments['where']);
-
-                if (key($this->fragments['where']) !== $column) {
-                    $clauseString .= ' AND ';
-                }
-            }
-        }
-        
-        return $clauseString;
-    }
-
-    public function where(array $clauses): self {
-        $this->fragments['where'] = $clauses;
 
         return $this;
     }
