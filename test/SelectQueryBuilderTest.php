@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class SelectQueryBuilderTest extends TestCase {
     public function testQueryReturnsBuilder(): Select {
-        $query = (new Query)->select('*');
+        $query = Query::select('*');
 
         $this->assertInstanceOf(Select::class, $query);
 
