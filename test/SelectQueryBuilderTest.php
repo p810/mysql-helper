@@ -31,7 +31,6 @@ class SelectQueryBuilderTest extends TestCase {
      * @depends testQueryValuesAreCorrect
      */
     public function testClausesAreAppended(Select $query): Select {
-        // #1: One condition per call
         $query
             ->where('foo', 'bar')
             ->or('quux', 'test', '!=')
