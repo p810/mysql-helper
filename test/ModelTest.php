@@ -25,8 +25,8 @@ class ModelTest extends TestCase {
     public function testQueryBuilderDefaultValues(Model $model) {
         $query = $model->where([
             'foo' => 'bar'
-        ]);
+        ])->and('bar', 'bam');
 
-        $this->assertEquals('SELECT * FROM test WHERE foo = \'bar\'', $query->build());
+        $this->assertEquals('SELECT * FROM test WHERE foo = \'bar\' AND bar = \'bam\'', $query->build());
     }
 }
