@@ -2,6 +2,7 @@
 
 namespace p810\MySQL;
 
+use p810\MySQL\Builder\Select;
 use p810\MySQL\Builder\Builder;
 
 class Query {
@@ -27,19 +28,20 @@ class Query {
         return $this;
     }
 
-    public function get(): self {
-        if (! ($this->builder instanceof Builder)) {
-            /** @todo: Need a better name for this exception */
-            throw new \Exception;
-        }
-
-        $this->query = $this->builder->build();
+    public function setQueryString(string $query): self {
+        $this->query = $query;
 
         return $this;
     }
 
+    /**
+     * @todo: Populate this method with functionality to
+     * tap into PDO and run the query.
+     */
+    public function execute() {}
+
     public function select($columns = '*'): Builder {
-        $builder = new Builder\Select($this);
+        $builder = new Select($this);
 
         $builder->setColumns($columns);
 
