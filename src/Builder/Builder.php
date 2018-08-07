@@ -20,12 +20,6 @@ abstract class Builder {
         $this->query = $query;
     }
 
-    public function get() {
-        $query = $this->query->setQueryString( $this->build() );
-
-        return $query->execute();
-    }
-
     /**
      * Using the Query object passed into BuilderInterface::setQuery()
      * the class that implements this interface should be able to construct
