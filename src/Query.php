@@ -37,12 +37,6 @@ class Query {
         return $this;
     }
 
-    /**
-     * @todo: Populate this method with functionality to
-     * tap into PDO and run the query.
-     */
-    public function execute() {}
-
     public static function select($columns = '*'): Builder {        
         $builder = new Select(new Query);
 
