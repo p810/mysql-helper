@@ -23,10 +23,14 @@ abstract class Model {
         return $this->database->execute( $query->build() );
     }
 
-    public function where(array $clauses): Select {
+    public function where(...$clauses): Select {
         $query = Query::select();
 
         $query->from( $this->getTable() );
+
+        if (count($clauses) === 1) {
+            $clauses = array_shift($clauses);
+        }
         
         $query->where($clauses);
 
