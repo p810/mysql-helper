@@ -47,4 +47,13 @@ class SelectQueryBuilderTest extends TestCase {
     public function testQueryBuildsQueryString(Select $query) {
         $this->assertEquals('SELECT * FROM test_table WHERE foo = \'bar\' AND quux != \'test\'', $query->build());
     }
+
+    /**
+     * @expectedException p810\MySQL\Exception\QueryNotBuiltException
+     */
+    public function testQueryNotBuiltExceptionIsRaised() {
+        $query = Query::select()->from('test');
+
+        (string) $query;
+    }
 }
