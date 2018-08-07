@@ -27,12 +27,8 @@ abstract class Model {
         $query = Query::select();
 
         $query->from( $this->getTable() );
-
-        if (count($clauses) === 1) {
-            $clauses = array_shift($clauses);
-        }
         
-        $query->where($clauses);
+        $query->where(...$clauses);
 
         return $query;
     }
