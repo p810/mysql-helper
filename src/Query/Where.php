@@ -8,7 +8,7 @@ trait Where {
     public function where(...$arguments): self {
         if (count($arguments) === 1 && is_array($arguments[0])) {
             foreach ($arguments[0] as $column => $condition) {
-                $data = [];
+                $_condition = [];
 
                 if (is_array($condition)) {
                     switch (count($condition)) {
@@ -20,12 +20,12 @@ trait Where {
                             break;
                     }
 
-                    $data = $condition;
+                    $_condition = $condition;
                 } else {
-                    array_push($data, $condition, '=', 'AND');
+                    array_push($_condition, $condition, '=', 'AND');
                 }
 
-                array_unshift($data, $column);
+                array_unshift($_condition, $column);
 
                 $this->setWhere(...$data);
             }
@@ -60,7 +60,6 @@ trait Where {
         }
 
         $where = 'WHERE ';
-        
         foreach ($this->fragments['where'] as $column => $data) {
             [$comparison, $value, $operator] = array_values($data);
 
