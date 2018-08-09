@@ -50,19 +50,15 @@ class Query {
 
         try {
             $statement = static::$database->prepare($this->query);
+            
+            $results = $statement->execute($bindings);
         } catch (\PDOException $e) {
             // do nothing -- we'll check for the return val of $statement
             // this is just to prevent a PDOException from stopping execution
         }
 
-        if (! $statement) {
+        if (! $statement || ! $results) {
             throw new Exception\QueryExecutionException;
-        }
-
-        $results = $statement->execute($bindings);
-
-        if (! $results) {
-            return [];
         }
 
         return array_map(function ($row) {
