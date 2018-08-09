@@ -2,6 +2,9 @@
 
 namespace p810\MySQL\Builder;
 
+use \p810\MySQL\Query;
+use \p810\MySQL\ResultSet;
+
 abstract class Builder {
     /**
      * An associative array mapping parts of a
@@ -16,8 +19,18 @@ abstract class Builder {
      */
     protected $query;
 
-    function __construct(\p810\MySQL\Query $query) {
+    function __construct(Query $query) {
         $this->query = $query;
+    }
+
+    final public function execute(): ResultSet {
+        if (! is_string($this->query->query)) {
+            $this->query->setQueryString( $this->build() );
+        }
+        
+        $rows = $this->query->execute();
+
+        return new ResultSet($rows);
     }
 
     /**

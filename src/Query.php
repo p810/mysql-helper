@@ -14,6 +14,12 @@ class Query {
     protected $query;
 
     /**
+     * A PDO resource from the Connection object.
+     * @var \PDO
+     */
+    protected static $database;
+
+    /**
      * Disallow direct instantiation. Requires the use of
      * one of the static command methods.
      */
@@ -37,6 +43,23 @@ class Query {
         $this->query = $query;
 
         return $this;
+    }
+
+    public static function setConnection(Connection $connection) {
+        static::$database = $connection->getResource();
+    }
+
+    /**
+     * @return Row[]
+     */
+    public function execute(): array {
+        if (! is_string($this->query)) {
+            throw new Exception\QueryNotBuiltException;
+        }
+
+        return array_map(function ($row): Row {
+            $row = new Row($row);
+        }, static::$database->execute($this->query));
     }
 
     public static function select($columns = '*'): Builder {        
