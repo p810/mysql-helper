@@ -11,8 +11,19 @@ abstract class Model {
      */
     protected $table;
 
+    /**
+     * An instance of PDO obtained from the
+     * Connection instance.
+     * @var \PDO
+     */
+    protected $database;
+
     function __construct(Connection $connection) {
         $this->database = $connection->getResource();
+
+        if (! Query::isConnected()) {
+            Query::setConnection($this->database);
+        }
     }
 
     final public function getTable(): string {
