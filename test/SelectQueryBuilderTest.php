@@ -40,7 +40,7 @@ class SelectQueryBuilderTest extends TestCase {
             ]);
         
         $this->assertEquals(
-            "WHERE foo = 'bar' OR quux != 'test' AND bam = 'borp' OR wae != 'caw'",
+            "WHERE foo = ? OR quux != ? AND bam = ? OR wae != ?",
             $query->getWhere()
         );
 
@@ -52,8 +52,10 @@ class SelectQueryBuilderTest extends TestCase {
      */
     public function testQueryBuildsQueryString(Select $query) {
         $this->assertEquals(
-            'SELECT * FROM test_table WHERE foo = \'bar\' OR quux != \'test\' AND bam = \'borp\' OR wae != \'caw\'',
+            'SELECT * FROM test_table WHERE foo = ? OR quux != ? AND bam = ? OR wae != ?',
             $query->build()
         );
+
+        $this->assertEquals(['bar', 'test', 'borp', 'caw'], $query->getBindings());
     }
 }

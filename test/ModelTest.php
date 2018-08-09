@@ -27,6 +27,6 @@ class ModelTest extends TestCase {
             'foo' => 'bar'
         ])->and('bar', 'bam');
 
-        $this->assertEquals('SELECT * FROM test WHERE foo = \'bar\' AND bar = \'bam\'', $query->build());
+        $this->assertEquals('SELECT * FROM test WHERE foo = ? AND bar = ?', $query->build());
     }
 }
