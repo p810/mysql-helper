@@ -19,6 +19,12 @@ abstract class Builder {
      */
     protected $query;
 
+    /**
+     * Bindings for prepared statements.
+     * @var mixed[]
+     */
+    protected $bindings;
+
     function __construct(Query $query) {
         $this->query = $query;
     }
@@ -28,7 +34,7 @@ abstract class Builder {
             $this->query->setQueryString( $this->build() );
         }
         
-        $rows = $this->query->execute();
+        $rows = $this->query->execute($this->bindings);
 
         if (! empty($rows)) {
             $set = new ResultSet;
@@ -39,6 +45,16 @@ abstract class Builder {
         }
 
         return empty($rows) ? null : $set;
+    }
+
+    protected function bind($value): self {
+        $this->bindings[] = $value;
+
+        return $this;
+    }
+
+    public function getBindings(): array {
+        return $this->bindings;
     }
 
     /**
