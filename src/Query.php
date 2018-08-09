@@ -25,10 +25,6 @@ class Query {
      */
     private function __construct() {}
 
-    function __toString(): string {
-        return $this->getQueryString();
-    }
-
     public function getQueryString(): ?string {
         return $this->query;
     }
