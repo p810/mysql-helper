@@ -29,8 +29,13 @@ abstract class Builder {
         }
         
         $rows = $this->query->execute();
+        $set  = new ResultSet;
 
-        return new ResultSet($rows);
+        foreach ($rows as $row) {
+            $set->attach($row);
+        }
+
+        return $set;
     }
 
     /**
