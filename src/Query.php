@@ -56,12 +56,11 @@ class Query {
         }
 
         if (! $statement) {
-            return [];
+            throw new Exception\QueryExecutionException;
         }
 
         $results = $statement->execute($bindings);
 
-        /** @todo: Fix this to throw an Exception (?) */
         if (! $results) {
             return [];
         }
