@@ -44,14 +44,26 @@ class Query {
     }
 
     /**
+     * @param array? $bindings Bindings for a prepared statement.
      * @return Row[]
      */
-    public function execute(): array {
+    public function execute(?array $bindings = null): array {
         if (! is_string($this->query)) {
             throw new Exception\QueryNotBuiltException;
         }
 
-        $results = static::$database->query($this->query);
+        try {
+            $statement = static::$database->prepare($this->query);
+        } catch (\PDOException $e) {
+            // do nothing -- we'll check for the return val of $statement
+            // this is just to prevent a PDOException from stopping execution
+        }
+
+        if (! $statement) {
+            return [];
+        }
+
+        $results = $statement->execute($bindings);
 
         /** @todo: Fix this to throw an Exception (?) */
         if (! $results) {
