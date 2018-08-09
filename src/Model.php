@@ -19,10 +19,6 @@ abstract class Model {
         return $this->table;
     }
 
-    public function execute(Query $query) {
-        return $this->database->execute( $query->build() );
-    }
-
     public function where(...$clauses): Select {
         $query = Query::select();
 
