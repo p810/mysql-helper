@@ -24,7 +24,7 @@ abstract class Builder {
     }
 
     final public function execute(): ResultSet {
-        if (! is_string($this->query->query)) {
+        if (! is_string($this->query->getQueryString())) {
             $this->query->setQueryString( $this->build() );
         }
         
