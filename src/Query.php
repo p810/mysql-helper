@@ -40,6 +40,15 @@ class Query {
     }
 
     /**
+     * Used primarily in Model classes, to tell whether the database/PDO
+     * link needs to be updated - but could be used anywhere that this
+     * check is useful.
+     */
+    public static function isConnected(): bool {
+        return (! is_null(static::$database));
+    }
+
+    /**
      * @param array? $bindings Bindings for a prepared statement.
      * @return Row[]
      */
