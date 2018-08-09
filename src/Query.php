@@ -29,7 +29,7 @@ class Query {
         return $this->getQueryString();
     }
 
-    public function getQueryString(): string {
+    public function getQueryString(): ?string {
         return $this->query;
     }
 
