@@ -45,7 +45,7 @@ class Query {
      * check is useful.
      */
     public static function isConnected(): bool {
-        return (! is_null(static::$database));
+        return static::$database !== null;
     }
 
     /**
