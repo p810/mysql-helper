@@ -72,7 +72,7 @@ class Query {
 
         return array_map(function ($row) {
             return new Row($row);
-        }, $results->fetchAll(\PDO::FETCH_ASSOC));
+        }, $statement->fetchAll(\PDO::FETCH_ASSOC));
     }
 
     public static function select($columns = '*'): Builder {        
