@@ -51,9 +51,16 @@ class Query {
             throw new Exception\QueryNotBuiltException;
         }
 
-        return array_map(function ($row): Row {
-            $row = new Row($row);
-        }, static::$database->execute($this->query));
+        $results = static::$database->query($this->query);
+
+        /** @todo: Fix this to throw an Exception (?) */
+        if (! $results) {
+            return [];
+        }
+
+        return array_map(function ($row) {
+            return new Row($row);
+        }, $results->fetchAll(\PDO::FETCH_ASSOC));
     }
 
     public static function select($columns = '*'): Builder {        
