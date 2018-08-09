@@ -43,7 +43,7 @@ class Query {
      * @param array? $bindings Bindings for a prepared statement.
      * @return Row[]
      */
-    public function execute(?array $bindings = null): array {
+    public function execute(array $bindings = []): array {
         if (! is_string($this->query)) {
             throw new Exception\QueryNotBuiltException;
         }
