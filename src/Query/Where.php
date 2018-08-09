@@ -27,13 +27,13 @@ trait Where {
 
                 array_unshift($_condition, $column);
 
-                $this->setWhere(...$data);
+                $this->setWhere(...$_condition);
             }
-
-            return $this;
+        } else {
+            $this->setWhere(...$arguments);
         }
 
-        return $this->setWhere(...$arguments);
+        return $this;
     }
 
     public function and(string $column, $value, string $operator = '='): self {
@@ -45,9 +45,11 @@ trait Where {
     }
 
     protected function setWhere(string $column, $value, string $comparison = '=', string $operator = 'AND'): self {
+        $this->bind($value);
+        
         $this->fragments['where'][$column] = [
             'comparison' => $comparison,
-            'value'      => $value,
+            'value'      => '?',
             'operator'   => $operator
         ];
 
@@ -63,7 +65,7 @@ trait Where {
         foreach ($this->fragments['where'] as $column => $data) {
             [$comparison, $value, $operator] = array_values($data);
 
-            $where .= "$column $comparison '$value'";
+            $where .= "$column $comparison $value";
 
             if (count($this->fragments['where']) > 1) {
                 end($this->fragments['where']);
