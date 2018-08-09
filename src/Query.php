@@ -66,7 +66,7 @@ class Query {
         }, $statement->fetchAll(\PDO::FETCH_ASSOC));
     }
 
-    public static function select($columns = '*'): Builder {        
+    public static function select($columns = '*'): Builder {
         $builder = new Select(new Query);
 
         $builder->setColumns($columns);
