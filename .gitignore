@@ -1,3 +1,5 @@
 vendor/
 docker-compose.yml
 docker/
+html/
+public/
