@@ -22,7 +22,7 @@ abstract class Model {
         $this->database = $connection->getResource();
 
         if (! Query::isConnected()) {
-            Query::setConnection($this->database);
+            Query::setConnection($connection);
         }
     }
 
