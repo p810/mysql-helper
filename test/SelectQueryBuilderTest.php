@@ -33,10 +33,10 @@ class SelectQueryBuilderTest extends TestCase {
     public function testClausesAreAppended(Select $query): Select {
         $query
             ->where('foo', 'bar')
-            ->or('quux', 'test', '!=')
+            ->or('quux', '!=', 'test')
             ->where([
                 'bam' => 'borp',
-                'wae' => ['caw', '!=', 'OR']
+                'wae' => ['!=', 'caw', 'OR']
             ]);
         
         $this->assertEquals(

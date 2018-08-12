@@ -5,43 +5,70 @@ namespace p810\MySQL\Query;
 use p810\MySQL\Exception\QueryBuildException;
 
 trait Where {
+    /**
+     * Prepares a WHERE clause to be appended to the query string.
+     * 
+     * This is a flexible method that may be called a number of ways.
+     * Some examples:
+     * 
+     * - where('column', 'value')
+     * - where('column', '>=', 'value')
+     * - where( ['column' => 'value', 'column2' => ['!=', 'value2', 'OR']] )
+     * - where('column', '=', 'value', 'AND')
+     */
     public function where(...$arguments): self {
-        if (count($arguments) === 1 && is_array($arguments[0])) {
-            foreach ($arguments[0] as $column => $condition) {
-                $_condition = [];
+        // Assume this is a list of arguments if only one is supplied
+        if (count($arguments) === 1) {
+            $conditions = array_shift($arguments);
 
-                if (is_array($condition)) {
-                    switch (count($condition)) {
-                        case 1:
-                            array_push($condition, '=', 'AND');
-                            break;
-                        case 2:
-                            array_push($condition, 'AND');
-                            break;
-                    }
-
-                    $_condition = $condition;
+            foreach ($conditions as $column => $data) {
+                if (is_array($data)) {
+                    $this->where($column, ...$data);
                 } else {
-                    array_push($_condition, $condition, '=', 'AND');
+                    $this->where($column, $data);
                 }
-
-                array_unshift($_condition, $column);
-
-                $this->setWhere(...$_condition);
             }
-        } else {
-            $this->setWhere(...$arguments);
+
+            return $this;
         }
 
-        return $this;
+        $column = array_shift($arguments);
+
+        if (is_array($arguments[0])) {
+            return $this->where($column, ...$arguments[0]);
+        }
+
+        switch (count($arguments)) {
+            case 1:
+                $comparison = '=';
+                $value      = $arguments[0];
+                $operator   = 'AND';
+                break;
+            case 2:
+                $comparison = $arguments[0];
+                $value      = $arguments[1];
+                $operator   = 'AND';
+                break;
+            default:
+                [$comparison, $value, $operator] = $arguments;
+                break;
+        }
+
+        return $this->setWhere($column, $value, $comparison, $operator);
     }
 
-    public function and(string $column, $value, string $operator = '='): self {
-        return $this->setWhere($column, $value, $operator);
+    public function and(...$arguments): self {
+        return $this->where(...$arguments);
     }
 
-    public function or(string $column, $value, string $operator = '='): self {
-        return $this->setWhere($column, $value, $operator, 'OR');
+    public function or(...$arguments): self {
+        if (count($arguments) === 4) {
+            $arguments[4] = 'OR';
+        } else {
+            array_push($arguments, 'OR');
+        }
+
+        return $this->where(...$arguments);
     }
 
     protected function setWhere(string $column, $value, string $comparison = '=', string $operator = 'AND'): self {
