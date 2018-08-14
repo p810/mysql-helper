@@ -19,7 +19,7 @@ trait Where {
     public function where(...$arguments): self {
         // Assume this is a list of arguments if only one is supplied
         if (count($arguments) === 1) {
-            $conditions = array_shift($arguments);
+            $conditions = $arguments[0];
 
             foreach ($conditions as $column => $data) {
                 if (is_array($data)) {
@@ -32,29 +32,30 @@ trait Where {
             return $this;
         }
 
-        $column = array_shift($arguments);
-
-        if (is_array($arguments[0])) {
-            return $this->where($column, ...$arguments[0]);
-        }
-
         switch (count($arguments)) {
             case 1:
-                $comparison = '=';
-                $value      = $arguments[0];
-                $operator   = 'AND';
+                if (is_array($arguments[1])) {
+                    return $this->where($arguments[0], ...$arguments[1]);
+                } else {
+                    /** @todo: improve this exception */
+                    throw new \UnexpectedValueException;
+                }
+
                 break;
             case 2:
-                $comparison = $arguments[0];
-                $value      = $arguments[1];
-                $operator   = 'AND';
+                $arguments = [$arguments[0], '=', $arguments[1], 'AND'];
                 break;
-            default:
-                [$comparison, $value, $operator] = $arguments;
+            case 3:
+                array_push($arguments, 'AND');
                 break;
         }
 
-        return $this->setWhere($column, $value, $comparison, $operator);
+        return $this->setWhere([
+            'column'     => $arguments[0],
+            'value'      => $arguments[2],
+            'operator'   => $arguments[3],
+            'comparison' => $arguments[1]
+        ]);
     }
 
     public function and(...$arguments): self {
@@ -62,22 +63,45 @@ trait Where {
     }
 
     public function or(...$arguments): self {
-        if (count($arguments) === 4) {
-            $arguments[4] = 'OR';
-        } else {
-            array_push($arguments, 'OR');
+        switch (count($arguments)) {
+            case 1:
+                if (! is_array($arguments[0])) {
+                    /** @todo: improve this exception (?) */
+                    throw new \UnexpectedValueException;
+                }
+
+                foreach ($arguments[0] as $column => $data) {
+                    $this->or($column, ...$data);
+                }
+
+                return $this;
+
+                break;
+            case 2:
+                array_push($arguments, '=', 'OR');
+                break;
+            case 3:
+                array_push($arguments, 'OR');
+                break;
+            case 4:
+                if ($arguments[3] !== 'OR') {
+                    $arguments[3] = 'OR';
+                }
+                break;
         }
 
         return $this->where(...$arguments);
     }
 
-    protected function setWhere(string $column, $value, string $comparison = '=', string $operator = 'AND'): self {
-        $this->bind($value);
+    protected function setWhere(array $data): self {
+        $this->bind($data['value']);
+
+        $data['value'] = '?';
         
-        $this->fragments['where'][$column] = [
-            'comparison' => $comparison,
+        $this->fragments['where'][ $data['column'] ] = [
+            'comparison' => $data['comparison'],
             'value'      => '?',
-            'operator'   => $operator
+            'operator'   => $data['operator']
         ];
 
         return $this;
@@ -90,7 +114,11 @@ trait Where {
 
         $where = 'WHERE ';
         foreach ($this->fragments['where'] as $column => $data) {
-            [$comparison, $value, $operator] = array_values($data);
+            list (
+                'value'      => $value,
+                'comparison' => $comparison,
+                'operator'   => $operator
+            ) = $data;
 
             $where .= "$column $comparison $value";
 
