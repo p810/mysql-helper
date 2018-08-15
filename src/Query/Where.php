@@ -40,14 +40,15 @@ trait Where {
                     /** @todo: improve this exception */
                     throw new \UnexpectedValueException;
                 }
-
-                break;
+            break;
+            
             case 2:
-                $arguments = [$arguments[0], '=', $arguments[1], 'AND'];
-                break;
+                $arguments = [$arguments[0], '=', $arguments[1], 'AND'];    
+            break;
+            
             case 3:
-                array_push($arguments, 'AND');
-                break;
+                array_push($arguments, 'AND');   
+            break;
         }
 
         return $this->setWhere([
@@ -75,19 +76,21 @@ trait Where {
                 }
 
                 return $this;
-
-                break;
+            break;
+            
             case 2:
-                array_push($arguments, '=', 'OR');
-                break;
+                $arguments = [$arguments[0], '=', $arguments[1], 'OR'];
+            break;
+            
             case 3:
                 array_push($arguments, 'OR');
-                break;
+            break;
+            
             case 4:
                 if ($arguments[3] !== 'OR') {
                     $arguments[3] = 'OR';
                 }
-                break;
+            break;
         }
 
         return $this->where(...$arguments);
