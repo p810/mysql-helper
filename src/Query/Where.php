@@ -19,20 +19,19 @@ trait Where {
     public function where(...$arguments): self {
         switch (count($arguments)) {
             case 1:
-                if (is_array($arguments[0])) {
-                    foreach ($arguments[0] as $column => $data) {
-                        if (is_array($data)) {
-                            $this->where($column, ...$data);
-                        } else {
-                            $this->where($column, $data);
-                        }
-                    }
-
-                    return $this;
-                } else {
-                    /** @todo: improve this exception */
+                if (! is_array($arguments[0])) {
                     throw new \UnexpectedValueException;
                 }
+                
+                foreach ($arguments[0] as $column => $data) {
+                    if (is_array($data)) {
+                        $this->where($column, ...$data);
+                    } else {
+                        $this->where($column, $data);
+                    }
+                }
+
+                return $this;
             break;
             
             case 2:
