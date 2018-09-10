@@ -4,6 +4,8 @@ namespace p810\MySQL;
 
 use \PDO;
 use p810\MySQL\Builder\Select;
+use p810\MySQL\Builder\Update;
+use p810\MySQL\Builder\Delete;
 use p810\MySQL\Builder\Builder;
 
 class Query {
@@ -85,6 +87,14 @@ class Query {
 
     public static function delete(): Builder {
         $builder = new Delete(new Query);
+
+        return $builder;
+    }
+
+    public static function update(string $table): Builder {
+        $builder = new Update(new Query);
+
+        $builder->setTable($table);
 
         return $builder;
     }
