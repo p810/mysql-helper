@@ -40,6 +40,10 @@ trait Values {
         return $this->setValues(...$arguments);
     }
 
+    public function values(...$arguments): self {
+        return $this->setValues(...$arguments);
+    }
+
     public function getValues(): string {        
         $string = '';
         foreach ($this->fragments['values'] as $column => $questionMark) {
