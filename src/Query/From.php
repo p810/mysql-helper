@@ -33,4 +33,8 @@ trait From {
     public function from(string $table): self {
         return $this->setTable($table);
     }
+
+    public function columns($columns): self {
+        return $this->setColumns($columns);
+    }
 }
