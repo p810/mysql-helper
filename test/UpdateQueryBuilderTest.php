@@ -23,7 +23,9 @@ class UpdateQueryBuilderTest extends TestCase {
             'bar' => 'world'
         ]);
 
-        $this->assertEquals('foo = ?, bar = ?', $query->getValues());
+        $query->set('quux', '!');
+
+        $this->assertEquals('foo = ?, bar = ?, quux = ?', $query->getValues());
 
         return $query;
     }
@@ -44,7 +46,7 @@ class UpdateQueryBuilderTest extends TestCase {
      */
     public function testQueryString(Update $query) {
         $this->assertEquals(
-            'UPDATE test_table SET foo = ?, bar = ? WHERE message != ?',
+            'UPDATE test_table SET foo = ?, bar = ?, quux = ? WHERE message != ?',
             $query->build()
         );
     }
