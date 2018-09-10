@@ -2,7 +2,7 @@
 
 namespace p810\MySQL\Builder;
 
-class Update {
+class Update extends Builder {
     use \p810\MySQL\Query\From;
     use \p810\MySQL\Query\Where;
 

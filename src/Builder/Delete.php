@@ -2,7 +2,7 @@
 
 namespace p810\MySQL\Builder;
 
-class Delete {
+class Delete extends Builder {
     use \p810\MySQL\Query\Where;
     use \p810\MySQL\Query\From;
 
