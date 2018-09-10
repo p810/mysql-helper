@@ -6,6 +6,7 @@ use \PDO;
 use p810\MySQL\Builder\Select;
 use p810\MySQL\Builder\Update;
 use p810\MySQL\Builder\Delete;
+use p810\MySQL\Builder\Insert;
 use p810\MySQL\Builder\Builder;
 
 class Query {
@@ -77,7 +78,7 @@ class Query {
         }, $statement->fetchAll(\PDO::FETCH_ASSOC));
     }
 
-    public static function select($columns = '*'): Builder {
+    public static function select($columns = '*'): Select {
         $builder = new Select(new Query);
 
         $builder->setColumns($columns);
@@ -85,14 +86,22 @@ class Query {
         return $builder;
     }
 
-    public static function delete(): Builder {
+    public static function delete(): Delete {
         $builder = new Delete(new Query);
 
         return $builder;
     }
 
-    public static function update(string $table): Builder {
+    public static function update(string $table): Update {
         $builder = new Update(new Query);
+
+        $builder->setTable($table);
+
+        return $builder;
+    }
+
+    public static function insert(string $table): Insert {
+        $builder = new Insert(new Query);
 
         $builder->setTable($table);
 
