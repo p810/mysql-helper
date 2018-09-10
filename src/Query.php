@@ -82,4 +82,10 @@ class Query {
         
         return $builder;
     }
+
+    public static function delete(): Builder {
+        $builder = new Delete(new Query);
+
+        return $builder;
+    }
 }
