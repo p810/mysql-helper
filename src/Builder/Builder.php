@@ -29,22 +29,18 @@ abstract class Builder {
         $this->query = $query;
     }
 
-    final public function execute(): ?ResultSet {
+    final public function execute() {
         if (! is_string($this->query->getQueryString())) {
             $this->query->setQueryString( $this->build() );
         }
-        
-        $rows = $this->query->execute($this->bindings);
 
-        if (! empty($rows)) {
-            $set = new ResultSet;
+        $statement = $this->query->execute($this->bindings);
 
-            foreach ($rows as $row) {
-                $set->attach($row);
-            }
+        if (! $statement) {
+            return null;
         }
 
-        return empty($rows) ? null : $set;
+        return $this->handleResults($statement);
     }
 
     protected function bind($value): self {

@@ -3,6 +3,7 @@
 namespace p810\MySQL;
 
 use \PDO;
+use \PDOStatement;
 use p810\MySQL\Builder\Select;
 use p810\MySQL\Builder\Update;
 use p810\MySQL\Builder\Delete;
@@ -55,7 +56,7 @@ class Query {
      * @param array? $bindings Bindings for a prepared statement.
      * @return Row[]
      */
-    public function execute(array $bindings = []): array {
+    public function execute(array $bindings = []): PDOStatement {
         if (! is_string($this->query)) {
             throw new Exception\QueryNotBuiltException;
         }
@@ -64,18 +65,16 @@ class Query {
             $statement = static::$database->prepare($this->query);
             
             $results = $statement->execute($bindings);
+
+            if (! $statement || ! $results) {
+                throw new Exception\QueryExecutionException;
+            }
         } catch (\PDOException $e) {
             // do nothing -- we'll check for the return val of $statement
             // this is just to prevent a PDOException from stopping execution
         }
 
-        if (! $statement || ! $results) {
-            throw new Exception\QueryExecutionException;
-        }
-
-        return array_map(function ($row) {
-            return new Row($row);
-        }, $statement->fetchAll(\PDO::FETCH_ASSOC));
+        return $statement;
     }
 
     public static function select($columns = '*'): Select {
