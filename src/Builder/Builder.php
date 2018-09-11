@@ -59,4 +59,12 @@ abstract class Builder {
      * a query string via this method.
      */
     abstract public function build(): string;
+
+    /**
+     * After a query is successfully executed, this method will be called.
+     * 
+     * @todo Come up with a way to invoke additional callbacks
+     * @return mixed
+     */
+    abstract public function handleResults(\PDOStatement $statement);
 }
