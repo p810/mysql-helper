@@ -20,20 +20,7 @@ class Select extends Builder {
         return $query;
     }
 
-    protected function handleResults(\PDOStatement $statement): ?ResultSet {
-        $results = array_map(function ($row) {
-            return new Row($row);
-        }, $statement->fetchAll(\PDO::FETCH_ASSOC));
-
-        if (! empty($results)) {
-            $set = new ResultSet;
-            foreach ($results as $result) {
-                $set->attach($result);
-            }
-
-            return $set;
-        }
-
-        return null;
+    protected function handleResults(\PDOStatement $statement): array {
+        return $statement->fetchAll(\PDO::FETCH_ASSOC);
     }
 }
