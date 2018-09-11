@@ -39,6 +39,10 @@ class Query {
         return $this;
     }
 
+    public function getCursor(): PDO {
+        return static::$database;
+    }
+
     public static function setConnection(Connection $connection) {
         static::$database = $connection->getResource();
     }
@@ -63,8 +67,10 @@ class Query {
 
         try {
             $statement = static::$database->prepare($this->query);
-            
-            $results = $statement->execute($bindings);
+
+            if ($statement instanceof PDOStatement) {
+                $results = $statement->execute($bindings);
+            }
 
             if (! $statement || ! $results) {
                 throw new Exception\QueryExecutionException;
