@@ -2,6 +2,9 @@
 
 namespace p810\MySQL\Builder;
 
+use p810\MySQL\Row;
+use p810\MySQL\ResultSet;
+
 class Select extends Builder {
     use \p810\MySQL\Query\Where;
     use \p810\MySQL\Query\From;
