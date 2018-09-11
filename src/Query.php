@@ -23,12 +23,6 @@ class Query {
      */
     protected static $database;
 
-    /**
-     * Disallow direct instantiation. Requires the use of
-     * one of the static command methods.
-     */
-    private function __construct() {}
-
     public function getQueryString(): ?string {
         return $this->query;
     }
@@ -47,19 +41,10 @@ class Query {
         static::$database = $connection->getResource();
     }
 
-    /**
-     * Used primarily in Model classes, to tell whether the database/PDO
-     * link needs to be updated - but could be used anywhere that this
-     * check is useful.
-     */
     public static function isConnected(): bool {
         return static::$database !== null;
     }
 
-    /**
-     * @param array? $bindings Bindings for a prepared statement.
-     * @return Row[]
-     */
     public function execute(array $bindings = []): PDOStatement {
         if (! is_string($this->query)) {
             throw new Exception\QueryNotBuiltException;
@@ -112,4 +97,7 @@ class Query {
 
         return $builder;
     }
+
+    private function __construct() {}
+    private function __clone() {}
 }
