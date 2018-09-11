@@ -30,4 +30,8 @@ class Insert extends Builder {
     public function getValues(): string {
         return implode(', ', $this->fragments['values']);
     }
+
+    protected function handleResults(\PDOStatement $statement) {
+        return $this->query->getCursor()->lastInsertId();
+    }
 }

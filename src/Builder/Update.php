@@ -17,4 +17,8 @@ class Update extends Builder {
 
         return $query;
     }
+
+    protected function handleResults(\PDOStatement $statement) {
+        return $statement->rowCount();
+    }
 }
