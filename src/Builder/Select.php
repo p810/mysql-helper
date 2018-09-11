@@ -17,7 +17,7 @@ class Select extends Builder {
         return $query;
     }
 
-    protected function handleResults(\PDOStatement $result): ?ResultSet {
+    protected function handleResults(\PDOStatement $statement): ?ResultSet {
         $results = array_map(function ($row) {
             return new Row($row);
         }, $statement->fetchAll(\PDO::FETCH_ASSOC));
