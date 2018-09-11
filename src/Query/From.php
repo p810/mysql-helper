@@ -27,9 +27,6 @@ trait From {
         return $this;
     }
 
-    /**
-     * An alias of From::setTable() for looks.
-     */
     public function from(string $table): self {
         return $this->setTable($table);
     }

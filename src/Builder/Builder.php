@@ -53,11 +53,6 @@ abstract class Builder {
         return $this->bindings;
     }
 
-    /**
-     * Using the Query object passed into BuilderInterface::setQuery()
-     * the class that implements this interface should be able to construct
-     * a query string via this method.
-     */
     abstract public function build(): string;
 
     /**
