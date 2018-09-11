@@ -103,7 +103,10 @@ trait Where {
     }
 
     public function getWhere(): ?string {
-        if (! array_key_exists('where', $this->fragments) || empty($this->fragments['where'])) {
+        if (
+            ! array_key_exists('where', $this->fragments) ||
+            empty($this->fragments['where'])
+        ) {
             return null;
         }
 
