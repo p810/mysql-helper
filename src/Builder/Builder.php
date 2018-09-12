@@ -23,7 +23,7 @@ abstract class Builder {
      * Bindings for prepared statements.
      * @var mixed[]
      */
-    protected $bindings;
+    protected $bindings = [];
 
     function __construct(Query $query) {
         $this->query = $query;
