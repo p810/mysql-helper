@@ -67,16 +67,21 @@ abstract class Model {
         return $this->primaryKey;
     }
 
-    public function where(...$clauses): ?Row {
+    public function where(...$clauses): ?array {
         $data = Query::select()
             ->from( $this->getTable() )
             ->where(...$clauses)
             ->execute();
 
-        if (! $data) {
+        if (! $data || empty($data)) {
             return null;
         }
 
-        return new Row($data, $this);
+        $rows = [];
+        foreach ($data as $row) {
+            $rows[] = new Row($row, $this);
+        }
+
+        return $rows;
     }
 }
