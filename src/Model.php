@@ -84,4 +84,19 @@ abstract class Model {
 
         return $rows;
     }
+
+    public function create(array $data): ?array {
+        $primaryKey = $this->getPrimaryKey();
+
+        $id = Query::insert( $this->getTable() )
+            ->columns( array_keys($data) )
+            ->values( array_values($data) )
+            ->execute();
+
+        if (! $id || ! $primaryKey) {
+            return null;
+        }
+
+        return $this->where($primaryKey, $id);
+    }
 }
