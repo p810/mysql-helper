@@ -12,7 +12,7 @@ class Row {
         $this->model = $model;
     }
 
-    public function save(): bool {
+    public function update(): bool {
         $table = $this->model->getTable();
         $primaryKey = $this->model->getPrimaryKey();
 
@@ -26,6 +26,25 @@ class Row {
             ->execute();
         
         return (bool) $result;
+    }
+
+    public function save(): bool {
+        return $this->update();
+    }
+
+    public function delete(): bool {
+        $primaryKey = $this->model->getPrimaryKey();
+
+        if (! $primaryKey) {
+            throw new ModelException('Row::delete() failed: No primary key is set for the model');
+        }
+
+        $deleted = Query::delete()
+            ->from( $this->model->getTable() )
+            ->where($primaryKey, $this->data[$primaryKey])
+            ->execute();
+
+        return (bool) $deleted;
     }
 
     public function getColumn(string $column) {
