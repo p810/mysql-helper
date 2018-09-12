@@ -99,4 +99,24 @@ abstract class Model {
 
         return $this->where($primaryKey, $id);
     }
+
+    public function delete(...$clauses): bool {
+        $deleted = Query::delete( $this->getTable() )
+            ->where(...$clauses)
+            ->execute();
+
+        return (bool) $deleted;
+    }
+
+    public function count(): ?int {
+        $query = Query::select('COUNT(*)')
+            ->from( $this->getTable() )
+            ->execute();
+
+        if (! $query) {
+            return null;
+        }
+
+        return $query[0]['COUNT(*)'];
+    }
 }
