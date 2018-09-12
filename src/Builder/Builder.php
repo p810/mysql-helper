@@ -61,5 +61,5 @@ abstract class Builder {
      * @todo Come up with a way to invoke additional callbacks
      * @return mixed
      */
-    abstract public function handleResults(\PDOStatement $statement);
+    abstract protected function handleResults(\PDOStatement $statement);
 }
