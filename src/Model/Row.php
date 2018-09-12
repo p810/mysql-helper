@@ -4,6 +4,7 @@ namespace p810\MySQL\Model;
 
 use p810\MySQL\Query;
 use p810\MySQL\Model;
+use p810\MySQL\Exception\ModelException;
 
 class Row {
     function __construct(array $data, Model $model) {
@@ -25,5 +26,23 @@ class Row {
             ->execute();
         
         return (bool) $result;
+    }
+
+    public function getAttribute(string $column) {
+        if (! array_key_exists($column, $this->data)) {
+            return null;
+        }
+
+        return $this->data[$column];
+    }
+
+    public function setAttribute(string $column, $value): self {
+        if (! array_key_exists($column, $this->data)) {
+            throw new ModelException('Row::setAttribute() failed: Unknown column: ' . $column);
+        }
+
+        $this->data[$column] = $value;
+
+        return $this;
     }
 }
