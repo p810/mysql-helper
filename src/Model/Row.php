@@ -28,7 +28,7 @@ class Row {
         return (bool) $result;
     }
 
-    public function getAttribute(string $column) {
+    public function getColumn(string $column) {
         if (! array_key_exists($column, $this->data)) {
             return null;
         }
@@ -36,7 +36,7 @@ class Row {
         return $this->data[$column];
     }
 
-    public function setAttribute(string $column, $value): self {
+    public function setColumn(string $column, $value): self {
         if (! array_key_exists($column, $this->data)) {
             throw new ModelException('Row::setAttribute() failed: Unknown column: ' . $column);
         }
