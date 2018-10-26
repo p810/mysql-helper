@@ -34,4 +34,18 @@ trait From {
     public function columns($columns): self {
         return $this->setColumns($columns);
     }
+
+    public function as(string $alias): self {
+        return $this->setAlias($alias);
+    }
+
+    public function setAlias(string $alias) {
+        $this->fragments['as'] = $alias;
+
+        return $this;
+    }
+
+    public function getAlias(): ?string {
+        return isset($this->fragments['as']) ? $this->fragments['as'] : null;
+    }
 }

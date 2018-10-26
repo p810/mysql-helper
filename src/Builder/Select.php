@@ -12,9 +12,14 @@ class Select extends Builder {
     public function build(): string {
         $query = sprintf('SELECT %s FROM %s', $this->getColumns(), $this->getTable());
 
+        $alias = $this->getAlias();
+        if ($alias) {
+            $query .= " AS $alias";
+        }
+
         $where = $this->getWhere();
         if ($where !== null) {
-            $query .= ' ' . $where;
+            $query .= " $where";
         }
 
         return $query;
