@@ -39,7 +39,7 @@ trait From {
         return $this->setAlias($alias);
     }
 
-    public function setAlias(string $alias) {
+    public function setAlias(string $alias): self {
         $this->fragments['as'] = $alias;
 
         return $this;
