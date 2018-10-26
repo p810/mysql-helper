@@ -10,7 +10,10 @@
     "autoload": {
       "psr-4": {
         "p810\\MySQL\\": "src/"
-      }
+      },
+      "files": [
+          "src/functions.php"
+      ]
     },
     "require": {
         "doctrine/inflector": "~1.0.1",
