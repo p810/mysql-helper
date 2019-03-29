@@ -12,9 +12,6 @@ use p810\MySQL\Exception\TransactionCouldNotBeginException;
 class ConnectionTest extends TestCase {
     use Credentials;
 
-    /**
-     * @expectedException p810\MySQL\Exception\ConnectionException
-     */
     public function testConnectionExceptionIsRaised() {
         $this->expectException(ConnectionException::class);
         
