@@ -2,13 +2,14 @@
 
 namespace p810\MySQL;
 
-use \PDO;
-use \PDOStatement;
+use PDO;
+use PDOStatement;
 use p810\MySQL\Builder\Select;
 use p810\MySQL\Builder\Update;
 use p810\MySQL\Builder\Delete;
 use p810\MySQL\Builder\Insert;
 use p810\MySQL\Builder\Builder;
+use p810\MySQL\Exception\TransactionCouldNotBeginException;
 
 class Query {
     /**
@@ -22,6 +23,49 @@ class Query {
      * @var \PDO
      */
     protected static $database;
+
+    /**
+     * An instance of \p810\MySQL\Connection.
+     * @var \p810\MySQL\Connection
+     */
+    protected static $connection;
+
+    /**
+     * @throws \PDOException from PDO::beginTransaction() if the attempt to start a transaction fails
+     * @throws \p810\MySQL\Exception\TransactionCouldNotBeginException if PDO::beginTransaction() returns false
+     */
+    public function transact(): self {
+        if (! static::$database->inTransaction()) {
+            static::$connection->beginTransaction();
+        }
+        return $this;
+    }
+
+    /**
+     * @throws \PDOException from PDO::beginTransaction() if the attempt to start a transaction fails
+     * @throws \p810\MySQL\Exception\TransactionCouldNotBeginException if PDO::beginTransaction() returns false
+     */
+    public function beginTransaction(): self {
+        return $this->transact();
+    }
+
+    /**
+     * @throws \PDOException if there isn't an active transaction
+     */
+    public function commit(): self {
+        static::$connection->commit();
+        
+        return $this;
+    }
+
+    /**
+     * @throws \PDOException if there isn't an active transaction
+     */
+    public function rollback(): self {
+        static::$connection->rollback();
+
+        return $this;
+    }
 
     public function getQueryString(): ?string {
         return $this->query;
@@ -38,7 +82,8 @@ class Query {
     }
 
     public static function setConnection(Connection $connection) {
-        static::$database = $connection->getResource();
+        static::$database   = $connection->getResource();
+        static::$connection = $connection;
     }
 
     public static function isConnected(): bool {
