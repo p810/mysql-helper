@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <testsuites>
+        <testsuite name="p810/mysql-helper Unit Tests">
+            <directory suffix="Test.php">./test</directory>
+        </testsuite>
+    </testsuites>
+
+    <php>
+        <!-- Points the test suite to the file that should load database credentials -->
+        <env name="database_credentials" value=".db.env" />
+    </php>
+</phpunit>
