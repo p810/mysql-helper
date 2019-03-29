@@ -12,5 +12,14 @@ This package is available through Packagist.
 composer require p810/mysql-helper --no-dev
 ```
 
+### For development purposes
+```
+git clone https://github.com/p810/mysql-helper.git
+cd mysql-helper/
+composer install
+```
+
+A file named `.db.env` is loaded when PHPUnit is run. An example of this file's contents can be found in `.db.env.example`. You may also have PHPUnit load a different file by modifying `phpunit.xml`.
+
 ## Documentation
 Documentation is available under the `docs/` subdirectory.
