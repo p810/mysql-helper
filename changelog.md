@@ -1,3 +1,13 @@
+### 2.1.1
+- Code clean up!
+    * Import functions that belong to the global namespace
+    * Each open brace for functions and classes belongs on a new line
+    * Import all the things, no directory separators before class names
+    * Mark methods that raise exceptions with `@throws` annotation
+- Adds "Getting started" section to readme.md
+
+There was also a slight change to `p810\MySQL\Query\Where` (`where()`/`or()`) and `p810\MySQL\Query\Values` (`setValues()`): These methods of these traits previously raised an `UnexpectedValueException` when one of their variadic arguments was invalid. I've replaced this for `InvalidArgumentException` which obviously makes more sense, out of the SPL exceptions. Technically this is a change that could be considered backwards incompatible, and may warrant more than just a patch version, but since no one uses this library, I'm taking some liberties with it.
+
 ### 2.1.0
 - Added methods for PDO's transactions functionality to `p810\MySQL\Connection` and `p810\MySQL\Query`
     * Added `p810\MySQL\Exception\TransactionCouldNotBeginException`
