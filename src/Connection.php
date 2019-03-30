@@ -63,7 +63,8 @@ class Connection {
     }
 
     /**
-     * @inheritdoc
+     * @throws \PDOException from PDO::beginTransaction() if the attempt to start a transaction fails
+     * @throws \p810\MySQL\Exception\TransactionCouldNotBeginException if PDO::beginTransaction() returns false
      */
     public function beginTransaction(): bool {
         return $this->transact();
