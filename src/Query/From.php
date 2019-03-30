@@ -2,8 +2,12 @@
 
 namespace p810\MySQL\Query;
 
-trait From {
-    public function getColumns(): string {
+use function implode;
+
+trait From
+{
+    public function getColumns(): string
+    {
         if (is_array($this->fragments['columns'])) {
             return implode(', ', $this->fragments['columns']);
         }
@@ -11,41 +15,49 @@ trait From {
         return $this->fragments['columns'];
     }
 
-    public function setColumns($columns): self {
+    public function setColumns($columns): self
+    {
         $this->fragments['columns'] = $columns;
 
         return $this;
     }
 
-    public function getTable(): string {
+    public function getTable(): string
+    {
         return $this->fragments['table'];
     }
 
-    public function setTable(string $table): self {
+    public function setTable(string $table): self
+    {
         $this->fragments['table'] = $table;
 
         return $this;
     }
 
-    public function from(string $table): self {
+    public function from(string $table): self
+    {
         return $this->setTable($table);
     }
 
-    public function columns($columns): self {
+    public function columns($columns): self
+    {
         return $this->setColumns($columns);
     }
 
-    public function as(string $alias): self {
+    public function as(string $alias): self
+    {
         return $this->setAlias($alias);
     }
 
-    public function setAlias(string $alias): self {
+    public function setAlias(string $alias): self
+    {
         $this->fragments['as'] = $alias;
 
         return $this;
     }
 
-    public function getAlias(): ?string {
+    public function getAlias(): ?string
+    {
         return isset($this->fragments['as']) ? $this->fragments['as'] : null;
     }
 }

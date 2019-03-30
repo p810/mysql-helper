@@ -6,13 +6,18 @@ use p810\MySQL\Query;
 use p810\MySQL\Model;
 use p810\MySQL\Exception\ModelException;
 
-class Row {
-    function __construct(array $data, Model $model) {
+use function array_key_exists;
+
+class Row
+{
+    function __construct(array $data, Model $model)
+    {
         $this->data  = $data;
         $this->model = $model;
     }
 
-    public function update(): bool {
+    public function update(): bool
+    {
         $table = $this->model->getTable();
         $primaryKey = $this->model->getPrimaryKey();
 
@@ -28,11 +33,13 @@ class Row {
         return (bool) $result;
     }
 
-    public function save(): bool {
+    public function save(): bool
+    {
         return $this->update();
     }
 
-    public function delete(): bool {
+    public function delete(): bool
+    {
         $primaryKey = $this->model->getPrimaryKey();
 
         if (! $primaryKey) {
@@ -47,7 +54,8 @@ class Row {
         return (bool) $deleted;
     }
 
-    public function getColumn(string $column) {
+    public function getColumn(string $column)
+    {
         if (! array_key_exists($column, $this->data)) {
             return null;
         }
@@ -55,7 +63,8 @@ class Row {
         return $this->data[$column];
     }
 
-    public function setColumn(string $column, $value): self {
+    public function setColumn(string $column, $value): self
+    {
         if (! array_key_exists($column, $this->data)) {
             throw new ModelException('Row::setAttribute() failed: Unknown column: ' . $column);
         }

@@ -2,10 +2,15 @@
 
 namespace p810\MySQL;
 
+use PDO;
 use p810\MySQL\Model\Row;
 use p810\MySQL\Builder\Select;
 
-abstract class Model {
+use function array_keys;
+use function array_values;
+
+abstract class Model
+{
     /**
      * The table represented by this model.
      * @var string
@@ -25,7 +30,8 @@ abstract class Model {
      */
     protected $primaryKey;
 
-    function __construct(Connection $connection) {
+    function __construct(Connection $connection)
+    {
         $this->database = $connection->getResource();
 
         if (! Query::isConnected()) {
@@ -41,14 +47,15 @@ abstract class Model {
         }
     }
 
-    protected function queryForPrimaryKey(): ?string {
+    protected function queryForPrimaryKey(): ?string
+    {
         $query = $this->database->query("SHOW KEYS FROM {$this->table} WHERE Key_name = 'primary'");
 
         if ($query->execute() === false) {
             return null;
         }
 
-        $results = $query->fetchAll(\PDO::FETCH_ASSOC);
+        $results = $query->fetchAll(PDO::FETCH_ASSOC);
 
         if (empty($results)) {
             return null;
@@ -59,15 +66,18 @@ abstract class Model {
         return $data['Column_name'];
     }
 
-    final public function getTable(): string {
+    final public function getTable(): string
+    {
         return $this->table;
     }
 
-    final public function getPrimaryKey(): ?string {
+    final public function getPrimaryKey(): ?string
+    {
         return $this->primaryKey;
     }
 
-    public function where(...$clauses): ?array {
+    public function where(...$clauses): ?array
+    {
         $data = Query::select()
             ->from( $this->getTable() )
             ->where(...$clauses)
@@ -85,7 +95,8 @@ abstract class Model {
         return $rows;
     }
 
-    public function create(array $data): ?array {
+    public function create(array $data): ?array
+    {
         $primaryKey = $this->getPrimaryKey();
 
         $id = Query::insert( $this->getTable() )
@@ -100,7 +111,8 @@ abstract class Model {
         return $this->where($primaryKey, $id);
     }
 
-    public function delete(...$clauses): bool {
+    public function delete(...$clauses): bool
+    {
         $deleted = Query::delete( $this->getTable() )
             ->where(...$clauses)
             ->execute();
@@ -108,7 +120,8 @@ abstract class Model {
         return (bool) $deleted;
     }
 
-    public function count(): ?int {
+    public function count(): ?int
+    {
         $query = Query::select('COUNT(*)')
             ->from( $this->getTable() )
             ->execute();

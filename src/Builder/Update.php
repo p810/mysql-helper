@@ -2,12 +2,16 @@
 
 namespace p810\MySQL\Builder;
 
-class Update extends Builder {
+use PDOStatement;
+
+class Update extends Builder
+{
     use \p810\MySQL\Query\From;
     use \p810\MySQL\Query\Where;
     use \p810\MySQL\Query\Values;
 
-    public function build(): string {
+    public function build(): string
+    {
         $query = sprintf('UPDATE %s SET %s', $this->getTable(), $this->getValues());
 
         $where = $this->getWhere();
@@ -18,7 +22,8 @@ class Update extends Builder {
         return $query;
     }
 
-    protected function handleResults(\PDOStatement $statement) {
+    protected function handleResults(PDOStatement $statement)
+    {
         return $statement->rowCount();
     }
 }

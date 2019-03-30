@@ -2,11 +2,14 @@
 
 namespace p810\MySQL\Builder;
 
+use PDOStatement;
+
 class Delete extends Builder {
     use \p810\MySQL\Query\Where;
     use \p810\MySQL\Query\From;
 
-    public function build(): string {
+    public function build(): string
+    {
         $query = 'DELETE FROM ' . $this->getTable();
 
         $where = $this->getWhere();
@@ -17,7 +20,8 @@ class Delete extends Builder {
         return $query;
     }
 
-    protected function handleResults(\PDOStatement $statement) {
+    protected function handleResults(PDOStatement $statement)
+    {
         return $statement->rowCount();
     }
 }

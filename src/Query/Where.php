@@ -2,9 +2,20 @@
 
 namespace p810\MySQL\Query;
 
+use InvalidArgumentException;
 use p810\MySQL\Exception\QueryBuildException;
 
-trait Where {
+use function key;
+use function end;
+use function next;
+use function reset;
+use function count;
+use function is_array;
+use function array_push;
+use function array_key_exists;
+
+trait Where
+{
     /**
      * Prepares a WHERE clause to be appended to the query string.
      * 
@@ -15,12 +26,15 @@ trait Where {
      * - where('column', '>=', 'value')
      * - where( ['column' => 'value', 'column2' => ['!=', 'value2', 'OR']] )
      * - where('column', '=', 'value', 'AND')
+     * 
+     * @throws \InvalidArgumentException if only one value was passed and it isn't an array 
      */
-    public function where(...$arguments): self {
+    public function where(...$arguments): self
+    {
         switch (count($arguments)) {
             case 1:
                 if (! is_array($arguments[0])) {
-                    throw new \UnexpectedValueException;
+                    throw new InvalidArgumentException;
                 }
                 
                 foreach ($arguments[0] as $column => $data) {
@@ -51,16 +65,21 @@ trait Where {
         ]);
     }
 
-    public function and(...$arguments): self {
+    public function and(...$arguments): self
+    {
         return $this->where(...$arguments);
     }
 
-    public function or(...$arguments): self {
+    /**
+     * @throws \InvalidArgumentException if only one value is passed and it isn't an array
+     */
+    public function or(...$arguments): self
+    {
         switch (count($arguments)) {
             case 1:
                 if (! is_array($arguments[0])) {
                     /** @todo: improve this exception (?) */
-                    throw new \UnexpectedValueException;
+                    throw new InvalidArgumentException;
                 }
 
                 foreach ($arguments[0] as $column => $data) {
@@ -88,7 +107,8 @@ trait Where {
         return $this->where(...$arguments);
     }
 
-    protected function setWhere(array $data): self {
+    protected function setWhere(array $data): self
+    {
         $this->bind($data['value']);
 
         $data['value'] = '?';
@@ -102,7 +122,8 @@ trait Where {
         return $this;
     }
 
-    public function getWhere(): ?string {
+    public function getWhere(): ?string
+    {
         if (
             ! array_key_exists('where', $this->fragments) ||
             empty($this->fragments['where'])
@@ -148,7 +169,8 @@ trait Where {
      * the first condition would look ahead to the second one to
      * get the OR operator.
      */
-    private function getNextOperator(string $column): ?string {
+    private function getNextOperator(string $column): ?string
+    {
         reset($this->fragments['where']);
 
         while (key($this->fragments['where']) !== $column) {
