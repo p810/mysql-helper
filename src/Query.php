@@ -3,6 +3,7 @@
 namespace p810\MySQL;
 
 use PDO;
+use PDOException;
 use PDOStatement;
 use p810\MySQL\Builder\Select;
 use p810\MySQL\Builder\Update;
@@ -11,7 +12,10 @@ use p810\MySQL\Builder\Insert;
 use p810\MySQL\Builder\Builder;
 use p810\MySQL\Exception\TransactionCouldNotBeginException;
 
-class Query {
+use function is_string;
+
+class Query
+{
     /**
      * The query string represented by this class.
      * @var string
@@ -34,7 +38,8 @@ class Query {
      * @throws \PDOException from PDO::beginTransaction() if the attempt to start a transaction fails
      * @throws \p810\MySQL\Exception\TransactionCouldNotBeginException if PDO::beginTransaction() returns false
      */
-    public function transact(): self {
+    public function transact(): self
+    {
         if (! static::$database->inTransaction()) {
             static::$connection->beginTransaction();
         }
@@ -45,14 +50,16 @@ class Query {
      * @throws \PDOException from PDO::beginTransaction() if the attempt to start a transaction fails
      * @throws \p810\MySQL\Exception\TransactionCouldNotBeginException if PDO::beginTransaction() returns false
      */
-    public function beginTransaction(): self {
+    public function beginTransaction(): self
+    {
         return $this->transact();
     }
 
     /**
      * @throws \PDOException if there isn't an active transaction
      */
-    public function commit(): self {
+    public function commit(): self
+    {
         static::$connection->commit();
         
         return $this;
@@ -61,36 +68,43 @@ class Query {
     /**
      * @throws \PDOException if there isn't an active transaction
      */
-    public function rollback(): self {
+    public function rollback(): self
+    {
         static::$connection->rollback();
 
         return $this;
     }
 
-    public function getQueryString(): ?string {
+    public function getQueryString(): ?string
+    {
         return $this->query;
     }
 
-    public function setQueryString(string $query): self {
+    public function setQueryString(string $query): self
+    {
         $this->query = $query;
 
         return $this;
     }
 
-    public function getCursor(): PDO {
+    public function getCursor(): PDO
+    {
         return static::$database;
     }
 
-    public static function setConnection(Connection $connection) {
+    public static function setConnection(Connection $connection)
+    {
         static::$database   = $connection->getResource();
         static::$connection = $connection;
     }
 
-    public static function isConnected(): bool {
+    public static function isConnected(): bool
+    {
         return static::$database !== null;
     }
 
-    public function execute(array $bindings = []): PDOStatement {
+    public function execute(array $bindings = []): PDOStatement
+    {
         if (! is_string($this->query)) {
             throw new Exception\QueryNotBuiltException;
         }
@@ -105,7 +119,7 @@ class Query {
             if (! $statement || ! $results) {
                 throw new Exception\QueryExecutionException;
             }
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             // do nothing -- we'll check for the return val of $statement
             // this is just to prevent a PDOException from stopping execution
         }
@@ -113,7 +127,8 @@ class Query {
         return $statement;
     }
 
-    public static function select($columns = '*'): Select {
+    public static function select($columns = '*'): Select
+    {
         $builder = new Select(new Query);
 
         $builder->setColumns($columns);
@@ -121,13 +136,15 @@ class Query {
         return $builder;
     }
 
-    public static function delete(): Delete {
+    public static function delete(): Delete
+    {
         $builder = new Delete(new Query);
 
         return $builder;
     }
 
-    public static function update(string $table): Update {
+    public static function update(string $table): Update
+    {
         $builder = new Update(new Query);
 
         $builder->setTable($table);
@@ -135,7 +152,8 @@ class Query {
         return $builder;
     }
 
-    public static function insert(string $table): Insert {
+    public static function insert(string $table): Insert
+    {
         $builder = new Insert(new Query);
 
         $builder->setTable($table);

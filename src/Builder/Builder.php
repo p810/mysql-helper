@@ -2,10 +2,12 @@
 
 namespace p810\MySQL\Builder;
 
-use \p810\MySQL\Query;
-use \p810\MySQL\ResultSet;
+use PDOStatement;
+use p810\MySQL\Query;
+use p810\MySQL\ResultSet;
 
-abstract class Builder {
+abstract class Builder
+{
     /**
      * An associative array mapping parts of a
      * query string to their values.
@@ -15,7 +17,7 @@ abstract class Builder {
 
     /**
      * The Query class used to instantiate the Builder.
-     * @var p810\MySQL\Query
+     * @var \p810\MySQL\Query
      */
     protected $query;
 
@@ -25,11 +27,13 @@ abstract class Builder {
      */
     protected $bindings = [];
 
-    function __construct(Query $query) {
+    function __construct(Query $query)
+    {
         $this->query = $query;
     }
 
-    final public function execute() {
+    final public function execute()
+    {
         if (! is_string($this->query->getQueryString())) {
             $this->query->setQueryString( $this->build() );
         }
@@ -43,13 +47,15 @@ abstract class Builder {
         return $this->handleResults($statement);
     }
 
-    protected function bind($value): self {
+    protected function bind($value): self
+    {
         $this->bindings[] = $value;
 
         return $this;
     }
 
-    public function getBindings(): array {
+    public function getBindings(): array
+    {
         return $this->bindings;
     }
 
@@ -61,5 +67,5 @@ abstract class Builder {
      * @todo Come up with a way to invoke additional callbacks
      * @return mixed
      */
-    abstract protected function handleResults(\PDOStatement $statement);
+    abstract protected function handleResults(PDOStatement $statement);
 }

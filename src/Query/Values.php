@@ -2,12 +2,22 @@
 
 namespace p810\MySQL\Query;
 
-trait Values {
-    public function setValues(...$arguments): self {
+use InvalidArgumentException;
+
+use function key;
+use function end;
+
+trait Values
+{
+    /**
+     * @throws \InvalidArgumentException 
+     */
+    public function setValues(...$arguments): self
+    {
         switch (count($arguments)) {
             case 1:
                 if (! is_array($arguments)) {
-                    throw new \UnexpectedValueException('Update::set() requires either a list of column => value pairs, or two arguments');
+                    throw new InvalidArgumentException('Update::set() requires either a list of column => value pairs, or two arguments');
                 }
 
                 $arguments = $arguments[0];
@@ -36,15 +46,18 @@ trait Values {
         return $this;
     }
 
-    public function set(...$arguments): self {
+    public function set(...$arguments): self
+    {
         return $this->setValues(...$arguments);
     }
 
-    public function values(...$arguments): self {
+    public function values(...$arguments): self
+    {
         return $this->setValues(...$arguments);
     }
 
-    public function getValues(): string {        
+    public function getValues(): string
+    {        
         $string = '';
         foreach ($this->fragments['values'] as $column => $questionMark) {
             $string .= "$column = ?";

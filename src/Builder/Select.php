@@ -2,14 +2,20 @@
 
 namespace p810\MySQL\Builder;
 
+use PDO;
+use PDOStatement;
 use p810\MySQL\Row;
 use p810\MySQL\ResultSet;
 
-class Select extends Builder {
+use function sprintf;
+
+class Select extends Builder
+{
     use \p810\MySQL\Query\Where;
     use \p810\MySQL\Query\From;
 
-    public function build(): string {
+    public function build(): string
+    {
         $query = sprintf('SELECT %s FROM %s', $this->getColumns(), $this->getTable());
 
         $alias = $this->getAlias();
@@ -25,7 +31,8 @@ class Select extends Builder {
         return $query;
     }
 
-    protected function handleResults(\PDOStatement $statement): array {
-        return $statement->fetchAll(\PDO::FETCH_ASSOC);
+    protected function handleResults(PDOStatement $statement): array
+    {
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 }

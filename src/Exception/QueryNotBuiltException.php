@@ -1,4 +1,9 @@
 <?php
 
 namespace p810\MySQL\Exception;
-class QueryNotBuiltException extends \Exception {}
+
+use Exception;
+
+class QueryNotBuiltException extends Exception
+{
+}
