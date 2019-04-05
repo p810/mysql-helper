@@ -2,185 +2,176 @@
 
 namespace p810\MySQL\Query;
 
+use p810\MySQL\Query;
 use InvalidArgumentException;
-use p810\MySQL\Exception\QueryBuildException;
 
-use function key;
-use function end;
-use function next;
-use function reset;
 use function count;
+use function sprintf;
 use function is_array;
-use function array_push;
-use function array_key_exists;
+use function array_map;
 
 trait Where
 {
     /**
-     * Prepares a WHERE clause to be appended to the query string.
-     * 
-     * This is a flexible method that may be called a number of ways.
-     * Some examples:
-     * 
-     * - where('column', 'value')
-     * - where('column', '>=', 'value')
-     * - where( ['column' => 'value', 'column2' => ['!=', 'value2', 'OR']] )
-     * - where('column', '=', 'value', 'AND')
-     * 
-     * @throws \InvalidArgumentException if only one value was passed and it isn't an array 
+     * @var \p810\MySQL\Query\Clause[]
      */
-    public function where(...$arguments): self
-    {
-        switch (count($arguments)) {
-            case 1:
-                if (! is_array($arguments[0])) {
-                    throw new InvalidArgumentException;
-                }
-                
-                foreach ($arguments[0] as $column => $data) {
-                    if (is_array($data)) {
-                        $this->where($column, ...$data);
-                    } else {
-                        $this->where($column, $data);
-                    }
-                }
-
-                return $this;
-            break;
-            
-            case 2:
-                $arguments = [$arguments[0], '=', $arguments[1], 'AND'];    
-            break;
-            
-            case 3:
-                array_push($arguments, 'AND');   
-            break;
-        }
-
-        return $this->setWhere([
-            'column'     => $arguments[0],
-            'value'      => $arguments[2],
-            'operator'   => $arguments[3],
-            'comparison' => $arguments[1]
-        ]);
-    }
-
-    public function and(...$arguments): self
-    {
-        return $this->where(...$arguments);
-    }
+    protected $clauses;
 
     /**
-     * @throws \InvalidArgumentException if only one value is passed and it isn't an array
+     * @var string|null
      */
-    public function or(...$arguments): self
+    protected $nextLogicalOperator;
+
+    /**
+     * @param mixed $value
+     */
+    public function where(string $column, $value, string $operator = '=', string $logical = 'AND'): self
     {
-        switch (count($arguments)) {
-            case 1:
-                if (! is_array($arguments[0])) {
-                    /** @todo: improve this exception (?) */
-                    throw new InvalidArgumentException;
-                }
-
-                foreach ($arguments[0] as $column => $data) {
-                    $this->or($column, ...$data);
-                }
-
-                return $this;
-            break;
-            
-            case 2:
-                $arguments = [$arguments[0], '=', $arguments[1], 'OR'];
-            break;
-            
-            case 3:
-                array_push($arguments, 'OR');
-            break;
-            
-            case 4:
-                if ($arguments[3] !== 'OR') {
-                    $arguments[3] = 'OR';
-                }
-            break;
+        // if this property is set then the user called and(),
+        // or(), or between(), to indicate that the following
+        // method call on their query should be joined with that
+        // logical operator
+        if ($this->nextLogicalOperator) {
+            $logical = $this->nextLogicalOperator;
+            $this->nextLogicalOperator = null;
         }
 
-        return $this->where(...$arguments);
-    }
-
-    protected function setWhere(array $data): self
-    {
-        $this->bind($data['value']);
-
-        $data['value'] = '?';
-        
-        $this->fragments['where'][ $data['column'] ] = [
-            'comparison' => $data['comparison'],
-            'value'      => '?',
-            'operator'   => $data['operator']
-        ];
+        $this->clauses[] = new Clause($column, $this->bind($value), $operator, $logical);
 
         return $this;
     }
 
-    public function getWhere(): ?string
+    /**
+     * @todo: This function belongs in the Query class that will import
+     * this trait. It's here for testing purposes.
+     * 
+     * Binds a value for a prepared expression.
+     * 
+     * @param string|array $value
+     * @return string|array
+     */
+    public function bind($value)
     {
-        if (
-            ! array_key_exists('where', $this->fragments) ||
-            empty($this->fragments['where'])
-        ) {
-            return null;
+        if (is_array($value)) {
+            return array_map(function ($value) {
+                return $this->bind($value);
+            }, $value);
         }
 
-        $where = 'WHERE ';
-        foreach ($this->fragments['where'] as $column => $data) {
-            list (
-                'value'      => $value,
-                'comparison' => $comparison,
-                'operator'   => $operator
-            ) = $data;
+        $this->bindings[] = $value;
 
-            $where .= "$column $comparison $value";
+        return '?';
+    }
 
-            if (count($this->fragments['where']) > 1) {
-                end($this->fragments['where']);
+    public function and(): self
+    {
+        $this->nextLogicalOperator = 'AND';
 
-                if (key($this->fragments['where']) !== $column) {
-                    $operator = $this->getNextOperator($column);
+        return $this;
+    }
 
-                    if (! $operator) {
-                        throw new QueryBuildException('Could not join conditions due to a missing operator');
-                    }
+    public function or(): self
+    {
+        $this->nextLogicalOperator = 'OR';
 
-                    $where .= " $operator ";
-                }
-            }
-        }
+        return $this;
+    }
 
-        return $where;
+    public function between(): self
+    {
+        $this->nextLogicalOperator = 'BETWEEN';
+
+        return $this;
     }
 
     /**
-     * To accurately concatenate conditions in a WHERE clause
-     * the operators between conditions should be found by
-     * looking ahead from the current position in an iteration.
-     * 
-     * For example, for this clause:
-     *      `WHERE foo = 'bar' OR bar = 'foo'`
-     * the first condition would look ahead to the second one to
-     * get the OR operator.
+     * @param mixed $value
      */
-    private function getNextOperator(string $column): ?string
+    public function whereOr(string $column, $value, string $operator = '='): self
     {
-        reset($this->fragments['where']);
+        return $this->where($column, $value, $operator, 'OR');
+    }
 
-        while (key($this->fragments['where']) !== $column) {
-            next($this->fragments['where']);
+    /**
+     * @param mixed $value
+     */
+    public function whereNotEquals(string $column, $value, string $logical = 'AND'): self
+    {
+        return $this->where($column, $value, '!=', $logical);
+    }
+
+    /**
+     * @param mixed $value
+     */
+    public function whereLess(string $column, $value, string $logical = 'AND'): self
+    {
+        return $this->where($column, $value, '<', $logical);
+    }
+
+    /**
+     * @param mixed $value
+     */
+    public function whereLessOrEqual(string $column, $value, string $logical = 'AND'): self
+    {
+        return $this->where($column, $value, '<=', $logical);
+    }
+
+    /**
+     * @param mixed $value
+     */
+    public function whereGreater(string $column, $value, string $logical = 'AND'): self
+    {
+        return $this->where($column, $value, '>', $logical);
+    }
+
+    /**
+     * @param mixed $value
+     */
+    public function whereGreaterOrEqual(string $column, $value, string $logical = 'AND'): self
+    {
+        return $this->where($column, $value, '>=', $logical);
+    }
+
+    /**
+     * @param mixed $value
+     */
+    public function whereLike(string $column, $value, string $logical = 'AND'): self
+    {
+        return $this->where($column, $value, 'LIKE', $logical);
+    }
+
+    /**
+     * @param \p810\MySQL\Query|array $value
+     * @throws \InvalidArgumentException
+     */
+    public function whereIn(string $columnOrExpression, $value, string $logical = 'AND'): self
+    {
+        return $this->where($columnOrExpression, $value, 'IN', $logical);
+    }
+
+    /**
+     * @param \p810\MySQL\Query|array $value
+     * @throws \InvalidArgumentException
+     */
+    public function whereNotIn(string $columnOrExpression, $value, string $logical = 'AND'): self
+    {
+        return $this->where($columnOrExpression, $value, 'NOT IN', $logical);
+    }
+
+    public function compileWhere(): string
+    {
+        $clauses = '';
+        $count   = count($this->clauses);
+        $lastKey = $count - 1;
+
+        for ($i = 0; $i < $count; $i++) {
+            $clauses .= ($this->clauses[$i])->compile();
+
+            if ($i < $lastKey) {
+                $clauses .= sprintf(' %s ', ($this->clauses[$i + 1])->logicalOperator);
+            }
         }
-        
-        next($this->fragments['where']);
 
-        $key = key($this->fragments['where']);
-
-        return $this->fragments['where'][$key]['operator'];
+        return "WHERE $clauses";
     }
 }
