@@ -2,18 +2,22 @@
 
 namespace p810\MySQL\Builder;
 
-use function sprintf;
-
 class Select extends Builder implements BuilderInterface
 {
+    use Grammar\Where;
+
     /**
      * @inheritdoc
      */
     public function build(): string
     {
-        return sprintf('SELECT %s FROM %s',
-            $this->getData('columns'),
-            $this->getData('table')
-        );
+        $query = 'SELECT ' . $this->getData('columns') . ' FROM ' . $this->getData('table');
+
+        if ($this->clauses) {
+            $this->setWhere();
+            $query .= ' ' . $this->getData('where');
+        }
+
+        return $query;
     }
 }
