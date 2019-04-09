@@ -132,7 +132,7 @@ trait Where
         return $this->where($columnOrExpression, $value, 'NOT IN', $logical);
     }
 
-    protected function setWhere(): void
+    protected function getWhere(): string
     {
         $clauses = '';
         $count   = count($this->clauses);
@@ -146,7 +146,7 @@ trait Where
             }
         }
 
-        $this->data['where'] = "WHERE $clauses";
+        return "WHERE $clauses";
     }
 
     protected function hasWhereClauses(): bool

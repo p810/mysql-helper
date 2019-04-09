@@ -15,13 +15,11 @@ class Select extends Builder implements BuilderInterface
         $query = 'SELECT ' . $this->getData('columns') . ' FROM ' . $this->getData('table');
 
         if ($this->hasWhereClauses()) {
-            $this->setWhere();
-            $query .= ' ' . $this->getData('where');
+            $query .= ' ' . $this->getWhere();
         }
 
         if ($this->hasOrderByClauses()) {
-            $this->setOrderBy();
-            $query .= ' ' . $this->getData('orderBy');
+            $query .= ' ' . $this->getOrderBy();
         }
 
         return $query;
