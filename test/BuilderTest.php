@@ -40,4 +40,19 @@ class BuilderTest extends TestCase
 
         $this->assertEquals('SELECT * FROM test_table WHERE a = ? OR c != ? OR e >= ? AND f IN (?, ?, ?) AND j LIKE ?', $query->build());
     }
+
+    public function test_select_builder_with_order_clause()
+    {
+        $query = $this->connection->select();
+
+        $query->columns('*');
+        $query->from('test_table');
+        $query->orderBy('foo', 'ASC');
+
+        $this->assertEquals('SELECT * FROM test_table ORDER BY foo ASC', $query->build());
+
+        $query->orderBy('bar');
+
+        $this->assertEquals('SELECT * FROM test_table ORDER BY foo ASC, bar DESC', $query->build());
+    }
 }
