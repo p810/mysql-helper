@@ -151,6 +151,6 @@ trait Where
 
     protected function hasWhereClauses(): bool
     {
-        return count($this->where) >= 1;
+        return count($this->clauses) >= 1;
     }
 }
