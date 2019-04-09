@@ -3,11 +3,8 @@
 namespace p810\MySQL\Test;
 
 use PDO;
-use PDOException;
 use p810\MySQL\Connection;
 use PHPUnit\Framework\TestCase;
-use p810\MySQL\Exception\ConnectionException;
-use p810\MySQL\Exception\TransactionCouldNotBeginException;
 
 class ConnectionTest extends TestCase
 {
