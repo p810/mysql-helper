@@ -4,3 +4,4 @@ docker/
 html/
 public/
 .db.env
+.vscode/
