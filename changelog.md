@@ -1,3 +1,6 @@
+### 2.1.2
+- Adds the MIT license to the repository
+
 ### 2.1.1
 - Code clean up!
     * Import functions that belong to the global namespace
