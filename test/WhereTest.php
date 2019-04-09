@@ -11,7 +11,7 @@ class WhereTest extends TestCase
     public function getMockQuery()
     {
         return new class {
-            use \p810\MySQL\Query\Where;
+            use \p810\MySQL\Builder\Grammar\Where;
 
             public function build(): string
             {

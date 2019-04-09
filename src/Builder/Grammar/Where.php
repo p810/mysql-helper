@@ -1,6 +1,6 @@
 <?php
 
-namespace p810\MySQL\Query;
+namespace p810\MySQL\Builder\Grammar;
 
 use p810\MySQL\Query;
 use InvalidArgumentException;
@@ -13,7 +13,7 @@ use function array_map;
 trait Where
 {
     /**
-     * @var \p810\MySQL\Query\Clause[]
+     * @var \p810\MySQL\Builder\Grammar\Clause[]
      */
     protected $clauses;
 
