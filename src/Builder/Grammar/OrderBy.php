@@ -21,7 +21,7 @@ trait OrderBy
 
     protected function getOrderBy(): string
     {
-        return implode(', ', $this->order);
+        return 'ORDER BY ' . implode(', ', $this->order);
     }
 
     protected function hasOrderByClauses(): bool
