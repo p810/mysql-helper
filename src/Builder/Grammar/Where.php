@@ -27,10 +27,6 @@ trait Where
      */
     public function where(string $column, $value, string $operator = '=', string $logical = 'AND'): self
     {
-        // if this property is set then the user called and(),
-        // or(), or between(), to indicate that the following
-        // method call on their query should be joined with that
-        // logical operator
         if ($this->nextLogicalOperator) {
             $logical = $this->nextLogicalOperator;
             $this->nextLogicalOperator = null;
