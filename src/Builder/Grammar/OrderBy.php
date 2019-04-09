@@ -2,6 +2,9 @@
 
 namespace p810\MySQL\Builder\Grammar;
 
+use function count;
+use function implode;
+
 trait OrderBy
 {
     /**
