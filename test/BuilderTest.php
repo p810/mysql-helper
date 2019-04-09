@@ -8,7 +8,7 @@ use p810\MySQL\Builder\Select;
 use p810\MySQL\Builder\Builder;
 use PHPUnit\Framework\TestCase;
 
-class QueryTest extends TestCase
+class BuilderTest extends TestCase
 {
     use Credentials;
     use Mock\Connection;
