@@ -148,4 +148,9 @@ trait Where
 
         $this->data['where'] = "WHERE $clauses";
     }
+
+    protected function hasWhereClauses(): bool
+    {
+        return count($this->where) >= 1;
+    }
 }
