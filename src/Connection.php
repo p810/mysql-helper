@@ -4,61 +4,97 @@ namespace p810\MySQL;
 
 use PDO;
 use PDOException;
-use p810\MySQL\Exception\ConnectionException;
-use p810\MySQL\Exception\TransactionCouldNotBeginException;
 
-use function sprintf;
-
-class Connection
+class Connection implements ConnectionInterface
 {
     /**
-     * Database object returned by PDO.
      * @var \PDO
      */
     protected $database;
 
     /**
-     * Whether to autocommit queries.
      * @var bool
      */
-    public $autocommit;
+    protected $autocommit;
 
+    /**
+     * @param string $user       The user to connect to MySQL with
+     * @param string $password   The password of the MySQL user
+     * @param string $database   The database to connect to
+     * @param string $host       The hostname of the MySQL server
+     * @param bool   $exceptions Specifies whether \PDO should raise an exception when it encounters an error
+     * @param array  $dsnParams  Optional parameters to pass to the DSN used when instantiating \PDO
+     * @param array  $options    Optional arguments to include in the construction of the \PDO instance
+     * @throws \PDOException if the database connection failed
+     */
     function __construct(
-        string $username,
+        string $user,
         string $password,
         string $database,
         string $host = '127.0.0.1',
-        ?array $options = null)
+        bool $exceptions = true,
+        array $dsnParams = [],
+        array $options = [])
     {
-        $arguments = [sprintf('mysql:host=%s;dbname=%s', $host, $database), $username, $password];
+        $arguments = [$this->getDsn($host, $database, $dsnParams), $user, $password];
 
-        if ($options) {
+        if (! empty($options)) {
             $arguments[] = $options;
         }
-        
-        try {
-            $this->database = new PDO(...$arguments);
-        } catch (PDOException $e) {
-            throw new ConnectionException($e->getMessage(), $e->getCode(), $e);
+
+        $this->database = new PDO(...$arguments);
+
+        if ($exceptions) {
+            $this->shouldThrowExceptions();
         }
     }
 
-    public function getResource(): PDO
+    public function getPdo(): PDO
     {
         return $this->database;
     }
 
-    public function autocommit(bool $shouldAutoCommit = true): self
+    private function getDsn(string $host, string $database, array $arguments = []): string
     {
-        $this->autocommit = $shouldAutoCommit;
-        $this->database->setAttribute(PDO::ATTR_AUTOCOMMIT, $shouldAutoCommit);
+        $dsn = "mysql:host=$host;dbname=$database";
+
+        if ($arguments) {
+            foreach ($arguments as $argument => $value) {
+                $dsn .= ";$argument=$value";
+            }
+        }
+
+        return $dsn;
+    }
+
+    public function setAttribute(int $attribute, $value): self
+    {
+        $this->database->setAttribute($attribute, $value);
         
         return $this;
     }
 
+    public function shouldThrowExceptions(bool $shouldThrowExceptions = true): self
+    {
+        $errLevel = $shouldThrowExceptions ? PDO::ERRMODE_EXCEPTION : PDO::ERRMODE_SILENT;
+
+        $this->database->setAttribute(PDO::ATTR_ERRMODE, $errLevel);
+        
+        return $this;
+    }
+
+    public function shouldAutoCommit(bool $shouldAutoCommit = true): self
+    {
+        $this->autocommit = $shouldAutoCommit;
+        
+        $this->database->setAttribute(PDO::ATTR_AUTOCOMMIT, $shouldAutoCommit);
+
+        return $this;
+    }
+
     /**
-     * @throws \PDOException from PDO::beginTransaction() if the attempt to start a transaction fails
-     * @throws \p810\MySQL\Exception\TransactionCouldNotBeginException if PDO::beginTransaction() returns false
+     * @throws \PDOException from \PDO::beginTransaction() if the attempt to start a transaction fails
+     * @throws \p810\MySQL\Exception\TransactionCouldNotBeginException if \PDO::beginTransaction() returns false
      */
     public function transact(): bool
     {
@@ -72,8 +108,8 @@ class Connection
     }
 
     /**
-     * @throws \PDOException from PDO::beginTransaction() if the attempt to start a transaction fails
-     * @throws \p810\MySQL\Exception\TransactionCouldNotBeginException if PDO::beginTransaction() returns false
+     * @throws \PDOException from \PDO::beginTransaction() if the attempt to start a transaction fails
+     * @throws \p810\MySQL\Exception\TransactionCouldNotBeginException if \PDO::beginTransaction() returns false
      */
     public function beginTransaction(): bool
     {
@@ -99,5 +135,25 @@ class Connection
     public function rollback(): bool
     {
         return $this->database->rollBack();
+    }
+
+    public function select(): Query
+    {
+        return new Query($this, new Builder\Select);
+    }
+
+    public function insert(): Query
+    {
+        return new Query($this, new Builder\Insert);
+    }
+
+    public function update(): Query
+    {
+        return new Query($this, new Builder\Update);
+    }
+
+    public function delete(): Query
+    {
+        return new Query($this, new Builder\Delete);
     }
 }

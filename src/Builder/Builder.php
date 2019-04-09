@@ -2,70 +2,78 @@
 
 namespace p810\MySQL\Builder;
 
-use PDOStatement;
-use p810\MySQL\Query;
-use p810\MySQL\ResultSet;
+use OutOfBoundsException;
+
+use function implode;
+use function is_array;
+use function array_map;
+use function array_key_exists;
 
 abstract class Builder
 {
     /**
-     * An associative array mapping parts of a
-     * query string to their values.
-     * @var string[]
+     * @var array
      */
-    protected $fragments;
+    public $bindings;
 
     /**
-     * The Query class used to instantiate the Builder.
-     * @var \p810\MySQL\Query
+     * @var array
      */
-    protected $query;
+    protected $data = [];
 
     /**
-     * Bindings for prepared statements.
-     * @var mixed[]
+     * @param string|int|array $value
+     * @return string|string[]
      */
-    protected $bindings = [];
-
-    function __construct(Query $query)
+    public function bind($value)
     {
-        $this->query = $query;
-    }
-
-    final public function execute()
-    {
-        if (! is_string($this->query->getQueryString())) {
-            $this->query->setQueryString( $this->build() );
+        if (is_array($value)) {
+            return array_map(function ($value) {
+                return $this->bind($value);
+            }, $value);
         }
 
-        $statement = $this->query->execute($this->bindings);
-
-        if (! $statement) {
-            return null;
-        }
-
-        return $this->handleResults($statement);
-    }
-
-    protected function bind($value): self
-    {
         $this->bindings[] = $value;
+        
+        return '?';
+    }
 
+    /**
+     * @return mixed
+     * @throws \OutOfBoundsException if the given key is not set in Builder::$data
+     */
+    public function getData(string $key)
+    {
+        if (! array_key_exists($key, $this->data)) {
+            throw new OutOfBoundsException;
+        }
+        
+        return $this->data[$key];
+    }
+
+    protected function setTable(string $table): void
+    {
+        $this->data['table'] = $table;
+    }
+
+    public function from(string $table): self
+    {
+        $this->setTable($table);
         return $this;
     }
 
-    public function getBindings(): array
+    protected function setColumns($columns): void
     {
-        return $this->bindings;
+        if (is_array($columns)) {
+            $columns = implode(', ', $columns);
+        }
+        
+        $this->data['columns'] = $columns;
     }
 
-    abstract public function build(): string;
-
-    /**
-     * After a query is successfully executed, this method will be called.
-     * 
-     * @todo Come up with a way to invoke additional callbacks
-     * @return mixed
-     */
-    abstract protected function handleResults(PDOStatement $statement);
+    public function columns($columns): self
+    {
+        $this->setColumns($columns);
+        return $this;
+    }
 }

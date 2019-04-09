@@ -2,165 +2,63 @@
 
 namespace p810\MySQL;
 
-use PDO;
-use PDOException;
 use PDOStatement;
-use p810\MySQL\Builder\Select;
-use p810\MySQL\Builder\Update;
-use p810\MySQL\Builder\Delete;
-use p810\MySQL\Builder\Insert;
-use p810\MySQL\Builder\Builder;
-use p810\MySQL\Exception\TransactionCouldNotBeginException;
+use BadMethodCallException;
+use p810\MySQL\Builder\BuilderInterface;
+use p810\MySQL\Exception\QueryExecutionException;
 
-use function is_string;
+use function method_exists;
 
 class Query
 {
     /**
-     * The query string represented by this class.
-     * @var string
+     * @var \PDOStatement|null
      */
-    protected $query;
+    public $statement;
 
     /**
-     * A PDO resource from the Connection object.
-     * @var \PDO
+     * @var \p810\MySQL\Builder\BuilderInterface
      */
-    protected static $database;
+    protected $builder;
 
     /**
-     * An instance of \p810\MySQL\Connection.
-     * @var \p810\MySQL\Connection
+     * @var \p810\MySQL\ConnectionInterface
      */
-    protected static $connection;
+    protected $database;
 
-    /**
-     * @throws \PDOException from PDO::beginTransaction() if the attempt to start a transaction fails
-     * @throws \p810\MySQL\Exception\TransactionCouldNotBeginException if PDO::beginTransaction() returns false
-     */
-    public function transact(): self
+    function __construct(ConnectionInterface $database, BuilderInterface $builder)
     {
-        if (! static::$database->inTransaction()) {
-            static::$connection->beginTransaction();
-        }
-        return $this;
+        $this->database = $database;
+        $this->builder = $builder;
     }
 
     /**
-     * @throws \PDOException from PDO::beginTransaction() if the attempt to start a transaction fails
-     * @throws \p810\MySQL\Exception\TransactionCouldNotBeginException if PDO::beginTransaction() returns false
+     * @throws \BadMethodCallException if the method is not defined in Query or the injected Builder object
      */
-    public function beginTransaction(): self
+    function __call(string $method, array $arguments)
     {
-        return $this->transact();
-    }
-
-    /**
-     * @throws \PDOException if there isn't an active transaction
-     */
-    public function commit(): self
-    {
-        static::$connection->commit();
-        
-        return $this;
-    }
-
-    /**
-     * @throws \PDOException if there isn't an active transaction
-     */
-    public function rollback(): self
-    {
-        static::$connection->rollback();
-
-        return $this;
-    }
-
-    public function getQueryString(): ?string
-    {
-        return $this->query;
-    }
-
-    public function setQueryString(string $query): self
-    {
-        $this->query = $query;
-
-        return $this;
-    }
-
-    public function getCursor(): PDO
-    {
-        return static::$database;
-    }
-
-    public static function setConnection(Connection $connection)
-    {
-        static::$database   = $connection->getResource();
-        static::$connection = $connection;
-    }
-
-    public static function isConnected(): bool
-    {
-        return static::$database !== null;
-    }
-
-    public function execute(array $bindings = []): PDOStatement
-    {
-        if (! is_string($this->query)) {
-            throw new Exception\QueryNotBuiltException;
+        if (method_exists($this, $method)) {
+            return $this->$method(...$arguments);
         }
 
-        try {
-            $statement = static::$database->prepare($this->query);
-
-            if ($statement instanceof PDOStatement) {
-                $results = $statement->execute($bindings);
-            }
-
-            if (! $statement || ! $results) {
-                throw new Exception\QueryExecutionException;
-            }
-        } catch (PDOException $e) {
-            // do nothing -- we'll check for the return val of $statement
-            // this is just to prevent a PDOException from stopping execution
+        if (method_exists($this->builder, $method)) {
+            return $this->builder->$method(...$arguments);
         }
 
-        return $statement;
+        throw new BadMethodCallException;
     }
 
-    public static function select($columns = '*'): Select
+    public function execute(): bool
     {
-        $builder = new Select(new Query);
+        $this->statement = $this->database->prepare( $this->builder->build() );
 
-        $builder->setColumns($columns);
-        
-        return $builder;
+        // in case the user has turned off ERRMODE_EXCEPTION, we don't want to
+        // try to call execute() on a boolean, and the user should know that
+        // their query failed
+        if (! $this->statement instanceof PDOStatement) {
+            throw new QueryExecutionException;
+        }
+
+        return $this->statement->execute($this->builder->bindings);
     }
-
-    public static function delete(): Delete
-    {
-        $builder = new Delete(new Query);
-
-        return $builder;
-    }
-
-    public static function update(string $table): Update
-    {
-        $builder = new Update(new Query);
-
-        $builder->setTable($table);
-
-        return $builder;
-    }
-
-    public static function insert(string $table): Insert
-    {
-        $builder = new Insert(new Query);
-
-        $builder->setTable($table);
-
-        return $builder;
-    }
-
-    private function __construct() {}
-    private function __clone() {}
 }
