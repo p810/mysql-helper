@@ -41,28 +41,6 @@ trait Where
         return $this;
     }
 
-    /**
-     * @todo: This function belongs in the Query class that will import
-     * this trait. It's here for testing purposes.
-     * 
-     * Binds a value for a prepared expression.
-     * 
-     * @param string|array $value
-     * @return string|array
-     */
-    public function bind($value)
-    {
-        if (is_array($value)) {
-            return array_map(function ($value) {
-                return $this->bind($value);
-            }, $value);
-        }
-
-        $this->bindings[] = $value;
-
-        return '?';
-    }
-
     public function and(): self
     {
         $this->nextLogicalOperator = 'AND';
