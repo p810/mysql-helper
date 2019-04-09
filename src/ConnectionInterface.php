@@ -9,31 +9,13 @@ use PDO;
  */
 interface ConnectionInterface
 {
-    /**
-     * @return \PDO
-     */
     public function getPdo(): PDO;
 
-    /**
-     * @param string|array $columns
-     * @return \p810\MySQL\Query
-     */
-    public function select($columns = '*'): Query;
+    public function select(): Query;
 
-    /**
-     * @param array|null $columnsToValues
-     * @return \p810\MySQL\Query
-     */
-    public function insert(?array $columnsToValues = null): Query;
+    public function insert(): Query;
 
-    /**
-     * @param string $table
-     * @return \p810\MySQL\Query
-     */
-    public function update(string $table): Query;
+    public function update(): Query;
 
-    /**
-     * @return \p810\MySQL\Query
-     */
     public function delete(): Query;
 }
