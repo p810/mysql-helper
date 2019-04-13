@@ -33,7 +33,7 @@ trait Where
             $this->nextLogicalOperator = null;
         }
 
-        $this->clauses[] = new Clause($column, $value, $operator, $logical);
+        $this->clauses[] = new Clause($column, $this->bind($value), $operator, $logical);
 
         return $this->append(Token::WHERE, $this->getWhereClause());
     }

@@ -19,6 +19,6 @@ class BuilderTest extends TestCase
               ->or()
               ->where('username', 'Anna');
         
-        $this->assertEquals("select username, password from users where username = Payton or username = Anna", $query->build());
+        $this->assertEquals("select username, password from users where username = ? or username = ?", $query->build());
     }
 }

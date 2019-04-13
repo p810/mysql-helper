@@ -6,6 +6,7 @@ use UnexpectedValueException;
 
 use function uksort;
 use function implode;
+use function array_map;
 use function array_search;
 
 abstract class Builder
@@ -20,11 +21,29 @@ abstract class Builder
      */
     protected $tokens;
 
+    /**
+     * @var string[]
+     */
+    public $userInput = [];
+
     public function build(): string
     {
         usort($this->tokens, [$this, 'compareTokens']);
 
         return implode(' ', $this->tokens);
+    }
+
+    public function bind($value): string
+    {
+        if (is_array($value)) {
+            return array_map(function ($value) {
+                return $this->bind($value);
+            }, $value);
+        }
+
+        $this->userInput[] = $value;
+
+        return '?';
     }
 
     public function append(string $token, ...$arguments): self

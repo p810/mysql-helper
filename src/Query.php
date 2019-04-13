@@ -59,6 +59,6 @@ class Query
             throw new QueryExecutionException;
         }
 
-        return $this->statement->execute($this->builder->bindings);
+        return $this->statement->execute($this->builder->userInput);
     }
 }
