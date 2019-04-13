@@ -6,6 +6,7 @@ use UnexpectedValueException;
 
 use function uksort;
 use function implode;
+use function is_array;
 use function array_map;
 use function array_search;
 
