@@ -4,6 +4,7 @@ namespace p810\MySQL\Builder;
 
 use InvalidArgumentException;
 
+use function sprintf;
 use function array_key_exists;
 
 /**
@@ -17,6 +18,11 @@ class Token
     protected $value;
 
     /**
+     * @var mixed[]
+     */
+    protected $params;
+
+    /**
      * @var string
      */
     public $type;
@@ -28,7 +34,7 @@ class Token
         'select' => 'select %s',
         'from'   => 'from %s',
         'as'     => 'as %s',
-        'where'  => 'where %s %s %s',
+        'where'  => 'where %s',
         'order'  => 'order by %s %s',
         'limit'  => 'limit %d',
         'insert' => 'insert into %s (%s)',
@@ -56,18 +62,18 @@ class Token
     /**
      * @throws \InvalidArgumentException if the $token does not have a format
      */
-    function __construct(Builder $builder, string $token, ...$arguments)
+    function __construct(string $token, ...$arguments)
     {
         if (! array_key_exists($token, self::TOKEN_FORMATS)) {
             throw new InvalidArgumentException('Attempting to create an instance of \p810\MySQL\Builder\Token with an undefined token type');
         }
         
-        $this->type  = $token;
-        $this->value = sprintf(self::TOKEN_FORMATS[$token], ...$arguments);
+        $this->type = $token;
+        $this->params = $arguments;
     }
 
     function __toString(): string
     {
-        return $this->value;
+        return sprintf(self::TOKEN_FORMATS[$this->type], ...$this->params);
     }
 }
