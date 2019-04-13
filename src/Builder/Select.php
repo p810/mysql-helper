@@ -7,7 +7,7 @@ class Select extends Builder
     use Grammar\Where;
 
     /** @inheritdoc */
-    protected $order = ['select', 'from', 'where', 'limit'];
+    protected $order = [Token::SELECT, Token::FROM, Token::WHERE, Token::LIMIT];
 
     public function from(string $table): self
     {
