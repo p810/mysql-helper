@@ -33,12 +33,12 @@ class Clause
     /**
      * @var string[]
      */
-    const COMPARISON_OPERATORS = ['=', '!=', '<', '>', '<=', '>=', 'IN', 'NOT IN', 'LIKE'];
+    const COMPARISON_OPERATORS = ['=', '!=', '<', '>', '<=', '>=', 'in', 'not in', 'like'];
 
     /**
      * @var string[]
      */
-    const LOGICAL_OPERATORS = ['AND', 'OR', 'BETWEEN'];
+    const LOGICAL_OPERATORS = ['and', 'or', 'between'];
 
     function __construct(string $column, $value, string $comparison, string $logical)
     {
