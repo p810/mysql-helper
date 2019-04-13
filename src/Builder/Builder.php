@@ -2,78 +2,43 @@
 
 namespace p810\MySQL\Builder;
 
-use OutOfBoundsException;
+use UnexpectedValueException;
 
+use function uksort;
 use function implode;
-use function is_array;
-use function array_map;
-use function array_key_exists;
+use function array_search;
 
 abstract class Builder
 {
     /**
-     * @var array
+     * @var string[]
      */
-    public $bindings;
+    protected $order;
 
     /**
-     * @var array
+     * @var \p810\MySQL\Token[]
      */
-    protected $data = [];
+    protected $tokens;
 
-    /**
-     * @param string|int|array $value
-     * @return string|string[]
-     */
-    public function bind($value)
+    public function build(): string
     {
-        if (is_array($value)) {
-            return array_map(function ($value) {
-                return $this->bind($value);
-            }, $value);
-        }
+        usort($this->tokens, [$this, 'compareTokens']);
 
-        $this->bindings[] = $value;
-        
-        return '?';
+        return implode(' ', $this->tokens);
     }
 
-    /**
-     * @return mixed
-     * @throws \OutOfBoundsException if the given key is not set in Builder::$data
-     */
-    public function getData(string $key)
+    public function append(string $token, ...$arguments): self
     {
-        if (! array_key_exists($key, $this->data)) {
-            throw new OutOfBoundsException;
-        }
-        
-        return $this->data[$key];
-    }
+        $this->tokens[] = new Token($this, $token, ...$arguments);
 
-    protected function setTable(string $table): void
-    {
-        $this->data['table'] = $table;
-    }
-
-    public function from(string $table): self
-    {
-        $this->setTable($table);
         return $this;
     }
 
-    protected function setColumns($columns): void
+    protected function compareTokens(Token $current, Token $previous): int
     {
-        if (is_array($columns)) {
-            $columns = implode(', ', $columns);
-        }
-        
-        $this->data['columns'] = $columns;
-    }
+        $current  = array_search($current->type, $this->order);
+        $previous = array_search($previous->type, $this->order);
 
-    public function columns($columns): self
-    {
-        $this->setColumns($columns);
-        return $this;
+        return $current <=> $previous;
     }
 }
