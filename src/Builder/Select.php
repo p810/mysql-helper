@@ -2,26 +2,29 @@
 
 namespace p810\MySQL\Builder;
 
-class Select extends Builder implements BuilderInterface
+class Select extends Builder
 {
     use Grammar\Where;
-    use Grammar\OrderBy;
 
-    /**
-     * @inheritdoc
-     */
-    public function build(): string
+    /** @inheritdoc */
+    protected $order = ['select', 'from', 'where', 'limit'];
+
+    public function from(string $table): self
     {
-        $query = 'SELECT ' . $this->getData('columns') . ' FROM ' . $this->getData('table');
+        return $this->append(Token::FROM, $table);
+    }
 
-        if ($this->hasWhereClauses()) {
-            $query .= ' ' . $this->getWhere();
+    public function select($columns): self
+    {
+        if (is_array($columns)) {
+            $columns = implode(', ', $columns);
         }
 
-        if ($this->hasOrderByClauses()) {
-            $query .= ' ' . $this->getOrderBy();
-        }
+        return $this->append(Token::SELECT, $columns);
+    }
 
-        return $query;
+    public function limit(int $limit): self
+    {
+        return $this->append(Token::LIMIT, $limit);
     }
 }
