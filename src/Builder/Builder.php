@@ -29,7 +29,7 @@ abstract class Builder
 
     public function append(string $token, ...$arguments): self
     {
-        $this->tokens[] = new Token($this, $token, ...$arguments);
+        $this->tokens[$token] = new Token($token, ...$arguments);
 
         return $this;
     }
