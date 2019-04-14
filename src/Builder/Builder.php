@@ -93,8 +93,12 @@ abstract class Builder
         return "from $this->table";
     }
 
-    protected function compileLimit(): string
+    protected function compileLimit(): ?string
     {
-        return $this->limit ? "limit $this->limit" : null;
+        if (! $this->limit) {
+            return null;
+        }
+
+        return "limit $this->limit";
     }
 }
