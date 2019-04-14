@@ -9,15 +9,14 @@ use PHPUnit\Framework\TestCase;
 
 class BuilderTest extends TestCase
 {
-    public function test_builder_construction_order()
+    public function test_select_builder()
     {
         $query = new Select;
 
         $query->from('users')
               ->select(['username', 'password'])
               ->where('username', 'Payton')
-              ->or()
-              ->where('username', 'Anna');
+              ->whereOr('username', 'Anna');
         
         $this->assertEquals("select username, password from users where username = ? or username = ?", $query->build());
     }
