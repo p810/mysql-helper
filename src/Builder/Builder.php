@@ -18,21 +18,6 @@ abstract class Builder
     protected $components;
 
     /**
-     * @var string
-     */
-    protected $table;
-
-    /**
-     * @var string|array
-     */
-    protected $columns;
-
-    /**
-     * @var int
-     */
-    protected $limit;
-
-    /**
      * @param array|string|int $value
      */
     public function bind($value): string
@@ -81,24 +66,5 @@ abstract class Builder
         });
 
         return $columns;
-    }
-
-    protected function compileSelect(): string
-    {
-        return "select $this->columns";
-    }
-
-    protected function compileFrom(): string
-    {
-        return "from $this->table";
-    }
-
-    protected function compileLimit(): ?string
-    {
-        if (! $this->limit) {
-            return null;
-        }
-
-        return "limit $this->limit";
     }
 }
