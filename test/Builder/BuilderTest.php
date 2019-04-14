@@ -16,9 +16,11 @@ class BuilderTest extends TestCase
         $query->from('users')
               ->select(['username', 'password'])
               ->where('username', 'Payton')
-              ->orWhere('username', 'Anna');
+              ->orWhere('username', 'Anna')
+              ->orderBy('username')
+              ->limit(2);
         
-        $this->assertEquals("select username, password from users where username = ? or username = ?", $query->build());
+        $this->assertEquals("select username, password from users where username = ? or username = ? order by username desc limit 2", $query->build());
     }
 
     public function test_select_builder_with_join()
