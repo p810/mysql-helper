@@ -97,8 +97,12 @@ trait Where
         return $this->where($columnOrExpression, $value, 'not in', $logical);
     }
 
-    protected function compileWhere(): string
+    protected function compileWhere(): ?string
     {
-        return 'where ' . $this->compileExpressions($this->wheres);
+        if (! $this->wheres) {
+            return null;
+        }
+
+        return 'where ' . Expression::listToString($this->wheres);
     }
 }
