@@ -2,38 +2,39 @@
 
 namespace p810\MySQL\Builder;
 
-use UnexpectedValueException;
-
-use function uksort;
+use function ucfirst;
 use function implode;
+use function sprintf;
 use function is_array;
 use function array_map;
-use function array_search;
+use function array_walk;
+use function array_reduce;
 
 abstract class Builder
 {
     /**
      * @var string[]
      */
-    protected $order;
+    protected $components;
 
     /**
-     * @var \p810\MySQL\Token[]
+     * @var string
      */
-    protected $tokens;
+    protected $table;
 
     /**
-     * @var string[]
+     * @var string|array
      */
-    public $userInput = [];
+    protected $columns;
 
-    public function build(): string
-    {
-        usort($this->tokens, [$this, 'compareTokens']);
+    /**
+     * @var int
+     */
+    protected $limit;
 
-        return implode(' ', $this->tokens);
-    }
-
+    /**
+     * @param array|string|int $value
+     */
     public function bind($value): string
     {
         if (is_array($value)) {
@@ -42,23 +43,78 @@ abstract class Builder
             }, $value);
         }
 
-        $this->userInput[] = $value;
+        $this->input[] = $value;
 
         return '?';
     }
 
-    public function append(string $token, ...$arguments): self
+    public function build(): string
     {
-        $this->tokens[$token] = new Token($token, ...$arguments);
+        $parts = array_reduce($this->components, function ($value, $component) {
+            $method = 'compile' . ucfirst($component);
+            $result = $this->$method();
 
-        return $this;
+            if ($result) {
+                $value[] = $result;
+            }
+
+            return $value;
+        }, []);
+
+        return implode(' ', $parts);
     }
 
-    protected function compareTokens(Token $current, Token $previous): int
+    protected function parentheses(array $list): string
     {
-        $current  = array_search($current->type, $this->order);
-        $previous = array_search($previous->type, $this->order);
+        return sprintf('(%s)', $this->toCommaList($list));
+    }
 
-        return $current <=> $previous;
+    protected function toCommaList(array $list): string
+    {
+        return implode(', ', $list);
+    }
+
+    protected function prefixedColumnList(array $columns): array
+    {
+        array_walk($columns, function (&$column, $table) {
+            $column = "$table.$column";
+        });
+
+        return $columns;
+    }
+
+    /**
+     * @param \p810\MySQL\Builder\Grammar\Expression[] $expressions
+     */
+    protected function compileExpressions(array $expressions): string
+    {
+        $compiled = '';
+        $lastIndex = count($expressions) - 1;
+
+        foreach ($expressions as $expression) {
+            $compiled .= $expression->compile();
+
+            if (key($expressions) < $lastIndex) {
+                $next = next($expressions);
+                $compiled .= " $next->logicalOperator ";
+            }
+        }
+
+        return $compiled;
+    }
+
+    protected function compileSelect(): string
+    {
+        return "select $this->columns";
+    }
+
+    protected function compileFrom(): string
+    {
+        return "from $this->table";
+    }
+
+    protected function compileLimit(): string
+    {
+        return $this->limit ? "limit $this->limit" : null;
     }
 }
