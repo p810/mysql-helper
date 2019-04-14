@@ -4,6 +4,7 @@ namespace p810\MySQL\Builder;
 
 class Select extends Builder
 {
+    use Grammar\Join;
     use Grammar\Where;
 
     /**
@@ -12,6 +13,7 @@ class Select extends Builder
     protected $components = [
         'select',
         'from',
+        'join',
         'where'
     ];
 
