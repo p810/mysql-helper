@@ -24,7 +24,45 @@ trait Join
         return $this;
     }
 
-    /** @todo: Place other methods like rightJoin() here */
+    public function leftJoin(string $table): self
+    {
+        $join = new JoinExpression('left', $table);
+
+        $this->joins[] = $join;
+        $this->currentJoin = $join;
+
+        return $this;
+    }
+
+    public function rightJoin(string $table): self
+    {
+        $join = new JoinExpression('right', $table);
+
+        $this->joins[] = $join;
+        $this->currentJoin = $join;
+
+        return $this;
+    }
+
+    public function leftOuterJoin(string $table): self
+    {
+        $join = new JoinExpression('left outer', $table);
+
+        $this->joins[] = $join;
+        $this->currentJoin = $join;
+
+        return $this;
+    }
+
+    public function rightOuterJoin(string $table): self
+    {
+        $join = new JoinExpression('right outer', $table);
+
+        $this->join[] = $join;
+        $this->currentJoin = $join;
+
+        return $this;
+    }
 
     public function using(string $column): self
     {
