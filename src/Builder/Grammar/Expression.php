@@ -8,17 +8,17 @@ use function substr;
 use function sprintf;
 use function in_array;
 
-class Clause
+class Expression
 {
     /**
      * @var string
      */
-    public $column;
+    public $left;
 
     /**
      * @var mixed
      */
-    public $value;
+    public $right;
 
     /**
      * @var string
@@ -40,7 +40,7 @@ class Clause
      */
     const LOGICAL_OPERATORS = ['and', 'or', 'between'];
 
-    function __construct(string $column, $value, string $comparison, string $logical)
+    function __construct(string $left, $right, string $comparison, string $logical)
     {
         if (! in_array($comparison, self::COMPARISON_OPERATORS) ||
             ! in_array($logical, self::LOGICAL_OPERATORS))
@@ -48,8 +48,8 @@ class Clause
             throw new InvalidArgumentException('Clause was instantiated with an invalid operator');
         }
 
-        $this->value = $value;
-        $this->column = $column;
+        $this->left = $left;
+        $this->right = $right;
         $this->logicalOperator = $logical;
         $this->comparisonOperator = $comparison;
     }
@@ -57,21 +57,21 @@ class Clause
     public function compile(bool $withLogicalOperator = false): string
     {
         return sprintf('%s %s %s%s',
-            $this->column,
+            $this->left,
             $this->comparisonOperator,
-            $this->getValue(),
+            $this->getRighthandArgument(),
             $withLogicalOperator
                 ? " $this->logicalOperator"
                 : null
         );
     }
 
-    protected function getValue(): string
+    protected function getRighthandArgument(): string
     {
-        if (is_array($this->value)) {
-            return '(' . implode(', ', $this->value) . ')';
+        if (is_array($this->right)) {
+            return '(' . implode(', ', $this->right) . ')';
         }
 
-        return $this->value;
+        return $this->right;
     }
 }
