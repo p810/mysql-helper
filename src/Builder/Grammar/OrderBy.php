@@ -8,24 +8,23 @@ use function implode;
 trait OrderBy
 {
     /**
-     * @var array
+     * @var string[]
      */
     protected $order = [];
 
-    public function orderBy(string $column, string $direction = 'DESC'): self
+    public function orderBy(string $column, string $direction = 'desc'): self
     {
         $this->order[] = "$column $direction";
 
         return $this;
     }
 
-    protected function getOrderBy(): string
+    protected function compileOrder(): ?string
     {
-        return 'ORDER BY ' . implode(', ', $this->order);
-    }
-
-    protected function hasOrderByClauses(): bool
-    {
-        return count($this->order) >= 1;
+        if (! $this->order) {
+            return null;
+        }
+        
+        return 'order by ' . implode(', ', $this->order);
     }
 }
