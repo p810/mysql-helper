@@ -26,7 +26,7 @@ trait Where
     /**
      * @param mixed $value
      */
-    public function whereOr(string $column, $value, string $operator = '='): self
+    public function orWhere(string $column, $value, string $operator = '='): self
     {
         return $this->where($column, $value, $operator, 'or');
     }
