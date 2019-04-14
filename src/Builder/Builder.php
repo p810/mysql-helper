@@ -83,26 +83,6 @@ abstract class Builder
         return $columns;
     }
 
-    /**
-     * @param \p810\MySQL\Builder\Grammar\Expression[] $expressions
-     */
-    protected function compileExpressions(array $expressions): string
-    {
-        $compiled = '';
-        $lastIndex = count($expressions) - 1;
-
-        foreach ($expressions as $expression) {
-            $compiled .= $expression->compile();
-
-            if (key($expressions) < $lastIndex) {
-                $next = next($expressions);
-                $compiled .= " $next->logicalOperator ";
-            }
-        }
-
-        return $compiled;
-    }
-
     protected function compileSelect(): string
     {
         return "select $this->columns";

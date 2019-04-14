@@ -74,4 +74,24 @@ class Expression
 
         return $this->right;
     }
+
+    /**
+     * @var \p810\MySQL\Builder\Grammar\Expression[] $expressions
+     */
+    public static function listToString(array $expressions): string
+    {
+        $compiled = '';
+        $lastIndex = count($expressions) - 1;
+    
+        foreach ($expressions as $expression) {
+            $compiled .= $expression->compile();
+    
+            if (key($expressions) < $lastIndex) {
+                $next = next($expressions);
+                $compiled .= " $next->logicalOperator ";
+            }
+        }
+    
+        return $compiled;
+    }
 }
