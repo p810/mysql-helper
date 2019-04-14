@@ -6,10 +6,13 @@ use p810\MySQL\Query;
 use InvalidArgumentException;
 use p810\MySQL\Builder\Token;
 
+use function key;
+use function next;
 use function count;
 use function sprintf;
 use function is_array;
 use function array_map;
+use function array_reduce;
 
 trait Where
 {
@@ -135,18 +138,17 @@ trait Where
 
     protected function getWhereClause(): string
     {
-        $clauses = '';
-        $count   = count($this->clauses);
-        $lastKey = $count - 1;
+        $total = count($this->clauses);
 
-        for ($i = 0; $i < $count; $i++) {
-            $clauses .= ($this->clauses[$i])->compile();
+        return array_reduce($this->clauses, function ($value, $clause) use ($total) {
+            $value .= $clause->compile();
 
-            if ($i < $lastKey) {
-                $clauses .= sprintf(' %s ', ($this->clauses[$i + 1])->logicalOperator);
+            if (key($this->clauses) < $total - 1) {
+                $next = next($this->clauses);
+                $value .= sprintf(' %s ', $next->logicalOperator);
             }
-        }
 
-        return $clauses;
+            return $value;
+        }, '');
     }
 }
