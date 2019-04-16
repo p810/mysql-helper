@@ -65,15 +65,13 @@ class Insert extends Builder
         return parentheses($this->columns);
     }
 
-    public function values(array $values): self
+    public function values(...$rows): self
     {
-        if (is_array($values[0])) {
-            return $this->addMultipleValues($values);
+        foreach ($rows as $row) {
+            $this->values[] = array_map(function ($value) {
+                return $this->bind($value);
+            }, $row);
         }
-
-        $this->values[] = array_map(function ($value) {
-            return $this->bind($value);
-        }, $values);
 
         return $this;
     }
@@ -87,14 +85,5 @@ class Insert extends Builder
         }
 
         return 'values ' . commas($lists);
-    }
-
-    protected function addMultipleValues(array $values): self
-    {
-        foreach ($values as $list) {
-            $this->values($list);
-        }
-
-        return $this;
     }
 }
