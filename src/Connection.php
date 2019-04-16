@@ -121,7 +121,7 @@ class Connection implements ConnectionInterface
      * Tells \PDO whether the database should auto-commit results by setting \PDO::ATTR_AUTOCOMMIT
      * 
      * @param bool $shouldAutoCommit Whether the database should auto-commit results
-     * @return elf
+     * @return self
      */
     public function shouldAutoCommit(bool $shouldAutoCommit = true): self
     {
