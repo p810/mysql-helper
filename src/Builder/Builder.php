@@ -20,7 +20,7 @@ abstract class Builder
     /**
      * @var array
      */
-    protected $input = [];
+    public $input = [];
 
     /**
      * @param array|string|int $value
