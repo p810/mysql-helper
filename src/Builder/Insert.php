@@ -37,6 +37,12 @@ class Insert extends Builder
      */
     protected $values;
 
+    /**
+     * Specifies the table that the data should be inserted into
+     * 
+     * @param string $table The table to insert data into
+     * @return self
+     */
     public function into(string $table): self
     {
         $this->table = $table;
@@ -44,11 +50,22 @@ class Insert extends Builder
         return $this;
     }
 
+    /**
+     * Compiles the insert into clause
+     * 
+     * @return string
+     */
     protected function compileInsert(): string
     {
         return "insert into $this->table";
     }
 
+    /**
+     * Specifies an optional list of columns that corresponds to the inserted values
+     * 
+     * @param string[] $columns A list of column names
+     * @return self
+     */
     public function columns(array $columns): self
     {
         $this->columns = $columns;
@@ -56,6 +73,11 @@ class Insert extends Builder
         return $this;
     }
 
+    /**
+     * Compiles the column list
+     * 
+     * @return null|string
+     */
     protected function compileColumns(): ?string
     {
         if (! $this->columns) {
@@ -65,6 +87,12 @@ class Insert extends Builder
         return parentheses($this->columns);
     }
 
+    /**
+     * Specifies the values to insert into the database
+     * 
+     * @param array[] $rows An array containing any number of lists of values to insert
+     * @return self
+     */
     public function values(...$rows): self
     {
         foreach ($rows as $row) {
@@ -76,6 +104,11 @@ class Insert extends Builder
         return $this;
     }
 
+    /**
+     * Compiles the values clause
+     * 
+     * @return string
+     */
     protected function compileValues(): string
     {
         $lists = [];

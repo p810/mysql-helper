@@ -41,6 +41,12 @@ class Select extends Builder
      */
     protected $columns = '*';
 
+    /**
+     * Specifies which columns to return in the result set
+     * 
+     * @param array|string $columns Either a string or an array; if an array, it can be associative to specify table prefixes
+     * @return self
+     */
     public function select($columns = '*'): self
     {
         if (is_array($columns)) {
@@ -58,11 +64,22 @@ class Select extends Builder
         return $this;
     }
 
+    /**
+     * Compiles the select clause
+     * 
+     * @return string
+     */
     protected function compileSelect(): string
     {
         return "select $this->columns";
     }
 
+    /**
+     * Specifies which table to pull data from
+     * 
+     * @param string $table The table to get data from
+     * @return self
+     */
     public function from(string $table): self
     {
         $this->table = $table;
@@ -70,11 +87,22 @@ class Select extends Builder
         return $this;
     }
 
+    /**
+     * Compiles the from clause
+     * 
+     * @return string
+     */
     protected function compileFrom(): string
     {
         return "from $this->table";
     }
 
+    /**
+     * Specifies a limit of rows to return in the result set
+     * 
+     * @param int $limit The maximum number of rows to return
+     * @return self
+     */
     public function limit(int $limit): self
     {
         $this->limit = $limit;
@@ -82,6 +110,11 @@ class Select extends Builder
         return $this;
     }
 
+    /**
+     * Compiles the limit clause
+     * 
+     * @return null|string
+     */
     protected function compileLimit(): ?string
     {
         if (! $this->limit) {

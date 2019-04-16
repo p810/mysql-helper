@@ -28,6 +28,12 @@ class Update extends Builder
      */
     public $table;
 
+    /**
+     * Specifies the table to update data in
+     * 
+     * @param string $table The table to update
+     * @return self
+     */
     public function update(string $table): self
     {
         $this->table = $table;
@@ -35,16 +41,36 @@ class Update extends Builder
         return $this;
     }
 
+    /**
+     * An alias for \p810\MySQL\Builder\Update::update()
+     * 
+     * @param string $table The table to update
+     * @return self
+     */
     public function table(string $table): self
     {
         return $this->update($table);
     }
 
+    /**
+     * Compiles the update from clause
+     * 
+     * @return string
+     */
     protected function compileUpdate(): string
     {
         return "update $this->table";
     }
 
+    /**
+     * Specifies which columns to update and what their values should be
+     * 
+     * This method may take either two arguments, a column and a value, or an associative
+     * array mapping columns to values
+     * 
+     * @param array $arguments The columns and values to update
+     * @return self
+     */
     public function set(...$arguments): self
     {
         if (is_array($arguments[0])) {
@@ -60,6 +86,11 @@ class Update extends Builder
         return $this;
     }
 
+    /**
+     * Compiles the set clause
+     * 
+     * @return string
+     */
     protected function compileSet(): string
     {
         $strings = [];
