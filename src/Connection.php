@@ -50,6 +50,9 @@ class Connection implements ConnectionInterface
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getPdo(): PDO
     {
         return $this->database;
@@ -64,6 +67,14 @@ class Connection implements ConnectionInterface
         return $this->database->prepare($query);
     }
 
+    /**
+     * Returns a DSN to be passed into \PDO::__construct()
+     * 
+     * @param string $host      The hostname MySQL lives on
+     * @param string $database  The database to use
+     * @param array  $arguments An optional array of arguments
+     * @return string
+     */
     private function getDsn(string $host, string $database, array $arguments = []): string
     {
         $dsn = "mysql:host=$host;dbname=$database";
@@ -77,6 +88,13 @@ class Connection implements ConnectionInterface
         return $dsn;
     }
 
+    /**
+     * Proxies a call to \PDO::setAttribute()
+     * 
+     * @param int   $attribute The attribute constant to set
+     * @param mixed $value     The value to set the attribute to
+     * @return self
+     */
     public function setAttribute(int $attribute, $value): self
     {
         $this->database->setAttribute($attribute, $value);
@@ -84,6 +102,12 @@ class Connection implements ConnectionInterface
         return $this;
     }
 
+    /**
+     * Tells \PDO to either throw exceptions or silently ignore warnings by setting \PDO::ATTR_ERRMODE
+     * 
+     * @param bool $shouldThrowExceptions Whether \PDO should throw exceptions on failure
+     * @return self
+     */
     public function shouldThrowExceptions(bool $shouldThrowExceptions = true): self
     {
         $errLevel = $shouldThrowExceptions ? PDO::ERRMODE_EXCEPTION : PDO::ERRMODE_SILENT;
@@ -93,6 +117,12 @@ class Connection implements ConnectionInterface
         return $this;
     }
 
+    /**
+     * Tells \PDO whether the database should auto-commit results by setting \PDO::ATTR_AUTOCOMMIT
+     * 
+     * @param bool $shouldAutoCommit Whether the database should auto-commit results
+     * @return elf
+     */
     public function shouldAutoCommit(bool $shouldAutoCommit = true): self
     {
         $this->autocommit = $shouldAutoCommit;
@@ -103,8 +133,11 @@ class Connection implements ConnectionInterface
     }
 
     /**
+     * Begins a transaction with the database 
+     * 
      * @throws \PDOException from \PDO::beginTransaction() if the attempt to start a transaction fails
      * @throws \p810\MySQL\Exception\TransactionCouldNotBeginException if \PDO::beginTransaction() returns false
+     * @return bool
      */
     public function transact(): bool
     {
@@ -118,21 +151,32 @@ class Connection implements ConnectionInterface
     }
 
     /**
+     * An alias for \p810\MySQL\Connection::transact()
+     * 
      * @throws \PDOException from \PDO::beginTransaction() if the attempt to start a transaction fails
      * @throws \p810\MySQL\Exception\TransactionCouldNotBeginException if \PDO::beginTransaction() returns false
+     * @return bool
      */
     public function beginTransaction(): bool
     {
         return $this->transact();
     }
 
+    /**
+     * Returns a boolean indicating whether MySQL is currently in a transaction
+     * 
+     * @return bool
+     */
     public function inTransaction(): bool
     {
         return $this->database->inTransaction();
     }
 
     /**
+     * Commits the results of the queries executed in the current transaction
+     * 
      * @throws \PDOException if there isn't an active transaction
+     * @return bool
      */
     public function commit(): bool
     {
@@ -140,18 +184,27 @@ class Connection implements ConnectionInterface
     }
 
     /**
+     * Reverts the results of the queries executed in the current transaction
+     * 
      * @throws \PDOException if there isn't an active transaction
+     * @return bool
      */
     public function rollback(): bool
     {
         return $this->database->rollBack();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function select(): Query
     {
         return new Query($this, new Builder\Select);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function insert(?array $columnsToValues = null): Query
     {
         $query = new Query($this, new Builder\Insert);
@@ -167,11 +220,17 @@ class Connection implements ConnectionInterface
         return $query;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function update(): Query
     {
         return new Query($this, new Builder\Update);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function delete(): Query
     {
         return new Query($this, new Builder\Delete);
