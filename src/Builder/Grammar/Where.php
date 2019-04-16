@@ -24,9 +24,9 @@ trait Where
 
     /**
      * @param mixed $value
-     * @return string
+     * @return string|array
      */
-    protected function prepareValue($value): string
+    protected function prepareValue($value)
     {
         if ($value instanceof Query) {
             return '(' . $value->build() . ')';

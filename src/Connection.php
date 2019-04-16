@@ -42,6 +42,7 @@ class Connection implements ConnectionInterface
             $arguments[] = $options;
         }
 
+        /** @psalm-suppress PossiblyInvalidArgument */
         $this->database = new PDO(...$arguments);
 
         if ($exceptions) {
@@ -100,7 +101,7 @@ class Connection implements ConnectionInterface
     {
         if (! $this->database->inTransaction()) {
             if (! $this->database->beginTransaction()) {
-                throw new TransactionCouldNotBeginException();
+                throw new Exception\TransactionCouldNotBeginException();
             }
             return true;
         }
@@ -147,8 +148,11 @@ class Connection implements ConnectionInterface
         $query = new Query($this, new Builder\Insert);
 
         if ($columnsToValues) {
-            $query->columns( array_keys($columns) );
-            $query->values( array_values($values) );
+            $columns = array_keys($columnsToValues);
+            $values  = array_values($columnsToValues);
+
+            $query->columns($columns);
+            $query->values($values);
         }
 
         return $query;

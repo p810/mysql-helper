@@ -36,7 +36,7 @@ class Select extends Builder
     protected $table;
 
     /**
-     * @var string|array
+     * @var string
      */
     protected $columns = '*';
 

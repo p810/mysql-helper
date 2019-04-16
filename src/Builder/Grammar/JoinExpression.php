@@ -22,12 +22,12 @@ class JoinExpression
     public $method;
 
     /**
-     * @var string|null
+     * @var string
      */
     public $column;
 
     /**
-     * @var \p810\MySQL\Builder\Grammar\Expression[]|null
+     * @var \p810\MySQL\Builder\Grammar\Expression[]
      */
     public $predicates;
 

@@ -14,54 +14,39 @@ trait Join
      */
     protected $currentJoin;
 
-    public function innerJoin(string $table): self
+    protected function join(string $type, string $table): self
     {
-        $join = new JoinExpression('inner', $table);
+        $join = new JoinExpression($type, $table);
 
         $this->joins[] = $join;
         $this->currentJoin = $join;
 
         return $this;
+    }
+
+    public function innerJoin(string $table): self
+    {
+        return $this->join('inner', $table);
     }
 
     public function leftJoin(string $table): self
     {
-        $join = new JoinExpression('left', $table);
-
-        $this->joins[] = $join;
-        $this->currentJoin = $join;
-
-        return $this;
+        return $this->join('left', $table);
     }
 
     public function rightJoin(string $table): self
     {
-        $join = new JoinExpression('right', $table);
-
-        $this->joins[] = $join;
-        $this->currentJoin = $join;
-
-        return $this;
+        return $this->join('right', $table);
     }
 
     public function leftOuterJoin(string $table): self
     {
-        $join = new JoinExpression('left outer', $table);
-
-        $this->joins[] = $join;
-        $this->currentJoin = $join;
-
-        return $this;
+        return $this->join('left outer', $table);
     }
 
     public function rightOuterJoin(string $table): self
     {
-        $join = new JoinExpression('right outer', $table);
-
-        $this->join[] = $join;
-        $this->currentJoin = $join;
-
-        return $this;
+        return $this->join('right outer', $table);
     }
 
     public function using(string $column): self

@@ -4,7 +4,7 @@ namespace p810\MySQL;
 
 use PDOStatement;
 use BadMethodCallException;
-use p810\MySQL\Builder\BuilderInterface;
+use p810\MySQL\Builder\Builder;
 use p810\MySQL\Exception\QueryExecutionException;
 
 use function method_exists;
@@ -17,7 +17,7 @@ class Query
     public $statement;
 
     /**
-     * @var \p810\MySQL\Builder\BuilderInterface
+     * @var \p810\MySQL\Builder\Builder
      */
     protected $builder;
 
@@ -26,7 +26,7 @@ class Query
      */
     protected $database;
 
-    function __construct(ConnectionInterface $database, BuilderInterface $builder)
+    function __construct(ConnectionInterface $database, Builder $builder)
     {
         $this->database = $database;
         $this->builder = $builder;
@@ -59,6 +59,6 @@ class Query
             throw new QueryExecutionException;
         }
 
-        return $this->statement->execute($this->builder->userInput);
+        return $this->statement->execute($this->builder->input);
     }
 }

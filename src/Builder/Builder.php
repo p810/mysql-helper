@@ -18,9 +18,15 @@ abstract class Builder
     protected $components;
 
     /**
-     * @param array|string|int $value
+     * @var array
      */
-    public function bind($value): string
+    protected $input = [];
+
+    /**
+     * @param array|string|int $value
+     * @return string|array
+     */
+    public function bind($value)
     {
         if (is_array($value)) {
             return array_map(function ($value) {

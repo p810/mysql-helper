@@ -62,7 +62,7 @@ class Expression
             $this->getRighthandArgument(),
             $withLogicalOperator
                 ? " $this->logicalOperator"
-                : null
+                : ''
         );
     }
 

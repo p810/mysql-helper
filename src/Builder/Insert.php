@@ -20,6 +20,21 @@ class Insert extends Builder
         'values'
     ];
 
+    /**
+     * @var string
+     */
+    protected $table;
+
+    /**
+     * @var array
+     */
+    protected $columns;
+
+    /**
+     * @var array
+     */
+    protected $values;
+
     public function into(string $table): self
     {
         $this->table = $table;
