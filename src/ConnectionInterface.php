@@ -11,6 +11,12 @@ interface ConnectionInterface
 {
     public function getPdo(): PDO;
 
+    /**
+     * @throws \PDOException
+     * @return false|\PDOStatement
+     */
+    public function prepare(string $query);
+
     public function select(): Query;
 
     public function insert(?array $columnsToValues = null): Query;

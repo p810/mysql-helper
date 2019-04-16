@@ -55,6 +55,15 @@ class Connection implements ConnectionInterface
         return $this->database;
     }
 
+    /**
+     * @throws \PDOException
+     * @return false|\PDOStatement
+     */
+    public function prepare(string $query)
+    {
+        return $this->database->prepare($query);
+    }
+
     private function getDsn(string $host, string $database, array $arguments = []): string
     {
         $dsn = "mysql:host=$host;dbname=$database";

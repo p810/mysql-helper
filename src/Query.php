@@ -12,7 +12,7 @@ use function method_exists;
 class Query
 {
     /**
-     * @var \PDOStatement|null
+     * @var false|\PDOStatement
      */
     public $statement;
 
