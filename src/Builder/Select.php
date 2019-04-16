@@ -72,10 +72,6 @@ class Select extends Builder
 
     protected function compileFrom(): string
     {
-        if (! $this->table) {
-            throw new MissingArgumentException('Attempted to run a select query without a table');
-        }
-
         return "from $this->table";
     }
 

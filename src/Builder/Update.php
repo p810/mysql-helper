@@ -2,8 +2,6 @@
 
 namespace p810\MySQL\Builder;
 
-use p810\MySQL\Exception\MissingArgumentException;
-
 use function is_array;
 use function p810\MySQL\commas;
 
@@ -44,10 +42,6 @@ class Update extends Builder
 
     protected function compileUpdate(): string
     {
-        if (! $this->table) {
-            throw new MissingArgumentException('Attempted to run an update query without a table');
-        }
-
         return "update $this->table";
     }
 
