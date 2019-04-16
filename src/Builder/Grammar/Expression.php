@@ -40,6 +40,9 @@ class Expression
      */
     const LOGICAL_OPERATORS = ['and', 'or', 'between'];
 
+    /**
+     * @param mixed $right
+     */
     function __construct(string $left, $right, string $comparison, string $logical)
     {
         if (! in_array($comparison, self::COMPARISON_OPERATORS) ||
