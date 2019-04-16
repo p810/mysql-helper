@@ -5,44 +5,79 @@ namespace p810\MySQL\Builder;
 use PDOStatement;
 
 use function implode;
-use function sprintf;
+use function is_array;
+use function array_map;
+use function array_reduce;
 
 class Insert extends Builder
 {
-    use \p810\MySQL\Query\From;
+    /**
+     * @inheritdoc
+     */
+    protected $components = [
+        'insert',
+        'columns',
+        'values'
+    ];
 
-    public function build(): string
+    public function into(string $table): self
     {
-        return sprintf(
-            'INSERT INTO %s (%s) VALUES (%s)',
-            $this->getTable(), $this->getColumns(), $this->getValues()
-        );
-    }
-
-    public function values(array $values): self
-    {
-        return $this->setValues($values);
-    }
-
-    public function setValues(array $values): self
-    {
-        foreach ($values as $index => $value) {
-            $this->bind($value);
-            $values[$index] = '?';
-        }
-        
-        $this->fragments['values'] = $values;
+        $this->table = $table;
 
         return $this;
     }
 
-    public function getValues(): string
+    protected function compileInsert(): string
     {
-        return implode(', ', $this->fragments['values']);
+        return "insert into $this->table";
     }
 
-    protected function handleResults(PDOStatement $statement)
+    public function columns(array $columns): self
     {
-        return $this->query->getCursor()->lastInsertId();
+        $this->columns = $columns;
+
+        return $this;
+    }
+
+    protected function compileColumns(): ?string
+    {
+        if (! $this->columns) {
+            return null;
+        }
+
+        return '(' . implode(', ', $this->columns) . ')';
+    }
+
+    public function values(array $values): self
+    {
+        if (is_array($values[0])) {
+            return $this->addMultipleValues($values);
+        }
+
+        $this->values[] = array_map(function ($value) {
+            return $this->bind($value);
+        }, $values);
+
+        return $this;
+    }
+
+    protected function compileValues(): string
+    {
+        $lists = [];
+
+        foreach ($this->values as $list) {
+            $lists[] = '(' . implode(', ', $list) . ')';
+        }
+
+        return 'values ' . implode(', ', $lists);
+    }
+
+    protected function addMultipleValues(array $values): self
+    {
+        foreach ($values as $list) {
+            $this->values($list);
+        }
+
+        return $this;
     }
 }

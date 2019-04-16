@@ -2,8 +2,8 @@
 
 namespace p810\MySQL\Test;
 
-use p810\MySQL\Builder\Token;
 use p810\MySQL\Builder\Select;
+use p810\MySQL\Builder\Insert;
 use p810\MySQL\Builder\Builder;
 use PHPUnit\Framework\TestCase;
 
@@ -52,5 +52,29 @@ class BuilderTest extends TestCase
               ->on('userdata.foo_id', 'permissions.foo_id');
         
         $this->assertEquals('select username from users inner join userdata on users.user_id = userdata.user_id inner join permissions on users.user_id = permissions.user_id and userdata.foo_id = permissions.foo_id', $query->build());
+    }
+
+    public function test_insert_builder_single_row()
+    {
+        $query = new Insert;
+
+        $query->into('users')
+              ->values(['Payton', 'password']);
+        
+        $this->assertEquals('insert into users values (?, ?)', $query->build());
+    }
+
+    public function test_insert_builder_with_multiple_rows()
+    {
+        $query = new Insert;
+
+        $query->into('users')
+              ->columns(['username', 'password'])
+              ->values([
+                  ['Payton', 'password'],
+                  ['Anna', 'abc123']
+              ]);
+        
+        $this->assertEquals('insert into users (username, password) values (?, ?), (?, ?)', $query->build());
     }
 }
