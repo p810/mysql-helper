@@ -9,6 +9,7 @@ use function is_array;
 use function array_map;
 use function array_walk;
 use function array_reduce;
+use function p810\MySQL\spaces;
 
 abstract class Builder
 {
@@ -52,20 +53,10 @@ abstract class Builder
             return $value;
         }, []);
 
-        return implode(' ', $parts);
+        return spaces($parts);
     }
 
-    protected function parentheses(array $list): string
-    {
-        return sprintf('(%s)', $this->toCommaList($list));
-    }
-
-    protected function toCommaList(array $list): string
-    {
-        return implode(', ', $list);
-    }
-
-    protected function prefixedColumnList(array $columns): array
+    protected function prefixColumns(array $columns): array
     {
         array_walk($columns, function (&$column, $table) {
             $column = "$table.$column";

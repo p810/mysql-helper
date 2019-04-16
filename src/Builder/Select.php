@@ -6,6 +6,7 @@ use p810\MySQL\Exception\MissingArgumentException;
 
 use function is_array;
 use function is_string;
+use function p810\MySQL\commas;
 
 class Select extends Builder
 {
@@ -46,10 +47,10 @@ class Select extends Builder
             $isAssoc = is_string(key($columns));
 
             if ($isAssoc) {
-                $columns = $this->prefixedColumnList($columns);
+                $columns = $this->prefixColumns($columns);
             }
 
-            $columns = $this->toCommaList($columns);
+            $columns = commas($columns);
         }
 
         $this->columns = $columns;

@@ -8,6 +8,8 @@ use function implode;
 use function is_array;
 use function array_map;
 use function array_reduce;
+use function p810\MySQL\commas;
+use function p810\MySQL\parentheses;
 
 class Insert extends Builder
 {
@@ -60,7 +62,7 @@ class Insert extends Builder
             return null;
         }
 
-        return '(' . implode(', ', $this->columns) . ')';
+        return parentheses($this->columns);
     }
 
     public function values(array $values): self
@@ -81,10 +83,10 @@ class Insert extends Builder
         $lists = [];
 
         foreach ($this->values as $list) {
-            $lists[] = '(' . implode(', ', $list) . ')';
+            $lists[] = parentheses($list);
         }
 
-        return 'values ' . implode(', ', $lists);
+        return 'values ' . commas($lists);
     }
 
     protected function addMultipleValues(array $values): self

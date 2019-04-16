@@ -7,6 +7,7 @@ use InvalidArgumentException;
 use function substr;
 use function sprintf;
 use function in_array;
+use function p810\MySQL\parentheses;
 
 class Expression
 {
@@ -72,7 +73,7 @@ class Expression
     protected function getRighthandArgument(): string
     {
         if (is_array($this->right)) {
-            return '(' . implode(', ', $this->right) . ')';
+            return parentheses($this->right);
         }
 
         return $this->right;

@@ -5,6 +5,8 @@ namespace p810\MySQL\Builder\Grammar;
 use p810\MySQL\Query;
 use InvalidArgumentException;
 
+use function p810\MySQL\parentheses;
+
 trait Where
 {
     /**
@@ -29,7 +31,7 @@ trait Where
     protected function prepareValue($value)
     {
         if ($value instanceof Query) {
-            return '(' . $value->build() . ')';
+            return parentheses($value->build());
         }
 
         return $this->bind($value);

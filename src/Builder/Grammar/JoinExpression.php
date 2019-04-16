@@ -3,6 +3,7 @@
 namespace p810\MySQL\Builder\Grammar;
 
 use function sprintf;
+use function p810\MySQL\parentheses;
 
 class JoinExpression
 {
@@ -50,7 +51,7 @@ class JoinExpression
     public function getPredicate(): string
     {
         if ($this->method == 'using') {
-            return "($this->column)";
+            return parentheses($this->column);
         }
 
         return Expression::listToString($this->predicates);

@@ -4,6 +4,7 @@ namespace p810\MySQL\Builder\Grammar;
 
 use function count;
 use function implode;
+use function p810\MySQL\commas;
 
 trait OrderBy
 {
@@ -25,6 +26,6 @@ trait OrderBy
             return null;
         }
         
-        return 'order by ' . implode(', ', $this->order);
+        return 'order by ' . commas($this->order);
     }
 }

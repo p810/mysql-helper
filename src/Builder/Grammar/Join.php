@@ -2,6 +2,8 @@
 
 namespace p810\MySQL\Builder\Grammar;
 
+use function p810\MySQL\spaces;
+
 trait Join
 {
     /**
@@ -69,6 +71,6 @@ trait Join
             return null;
         }
 
-        return implode(' ', $this->joins);
+        return spaces($this->joins);
     }
 }
