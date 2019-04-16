@@ -21,12 +21,12 @@ class Update extends Builder
     /**
      * @var array
      */
-    public $values;
+    protected $values;
 
     /**
      * @var string
      */
-    public $table;
+    protected $table;
 
     /**
      * Specifies the table to update data in

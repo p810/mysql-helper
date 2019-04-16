@@ -17,7 +17,7 @@ class Delete extends Builder
     /**
      * @var string
      */
-    public $table;
+    protected $table;
 
     /**
      * Specifies the table to remove data from
