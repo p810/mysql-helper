@@ -103,4 +103,14 @@ class BuilderTest extends TestCase
         
         $this->assertEquals('update users set username = ?, password = ? where username = ?', $query->build());
     }
+
+    public function test_delete_builder()
+    {
+        $query = new Delete;
+
+        $query->from('users')
+              ->whereNot('username', 'Carl');
+        
+        $this->assertEquals('delete from users where username != ?', $query->build());
+    }
 }
