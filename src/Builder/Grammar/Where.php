@@ -4,7 +4,6 @@ namespace p810\MySQL\Builder\Grammar;
 
 use p810\MySQL\Query;
 use InvalidArgumentException;
-use p810\MySQL\Builder\Token;
 
 trait Where
 {
@@ -18,9 +17,22 @@ trait Where
      */
     public function where(string $column, $value, string $operator = '=', string $logical = 'and'): self
     {
-        $this->wheres[] = new Expression($column, $this->bind($value), $operator, $logical);
+        $this->wheres[] = new Expression($column, $this->prepareValue($value), $operator, $logical);
 
         return $this;
+    }
+
+    /**
+     * @param mixed $value
+     * @return string
+     */
+    protected function prepareValue($value): string
+    {
+        if ($value instanceof Query) {
+            return '(' . $value->build() . ')';
+        }
+
+        return $this->bind($value);
     }
 
     /**
