@@ -142,9 +142,16 @@ class Connection implements ConnectionInterface
         return new Query($this, new Builder\Select);
     }
 
-    public function insert(): Query
+    public function insert(?array $columnsToValues = null): Query
     {
-        return new Query($this, new Builder\Insert);
+        $query = new Query($this, new Builder\Insert);
+
+        if ($columnsToValues) {
+            $query->columns( array_keys($columns) );
+            $query->values( array_values($values) );
+        }
+
+        return $query;
     }
 
     public function update(): Query

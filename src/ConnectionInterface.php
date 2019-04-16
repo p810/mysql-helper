@@ -13,7 +13,7 @@ interface ConnectionInterface
 
     public function select(): Query;
 
-    public function insert(): Query;
+    public function insert(?array $columnsToValues = null): Query;
 
     public function update(): Query;
 
