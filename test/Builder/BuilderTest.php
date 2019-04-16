@@ -4,6 +4,7 @@ namespace p810\MySQL\Test;
 
 use p810\MySQL\Builder\Select;
 use p810\MySQL\Builder\Insert;
+use p810\MySQL\Builder\Update;
 use p810\MySQL\Builder\Builder;
 use PHPUnit\Framework\TestCase;
 
@@ -70,11 +71,36 @@ class BuilderTest extends TestCase
 
         $query->into('users')
               ->columns(['username', 'password'])
-              ->values([
+              ->values(
                   ['Payton', 'password'],
                   ['Anna', 'abc123']
-              ]);
+              );
         
         $this->assertEquals('insert into users (username, password) values (?, ?), (?, ?)', $query->build());
+    }
+
+    public function test_update_builder_with_single_set()
+    {
+        $query = new Update;
+
+        $query->update('users')
+              ->set('username', 'Carl')
+              ->where('username', 'Payton');
+        
+        $this->assertEquals('update users set username = ? where username = ?', $query->build());
+    }
+
+    public function test_update_builder_with_multiple_set()
+    {
+        $query = new Update;
+
+        $query->update('users')
+              ->set([
+                  'username' => 'Carl',
+                  'password' => 'hatestherain'
+              ])
+              ->where('username', 'Payton');
+        
+        $this->assertEquals('update users set username = ?, password = ? where username = ?', $query->build());
     }
 }
