@@ -4,6 +4,9 @@ namespace p810\MySQL\Builder;
 
 use p810\MySQL\Exception\MissingArgumentException;
 
+use function is_array;
+use function is_string;
+
 class Select extends Builder
 {
     use Grammar\Join;
