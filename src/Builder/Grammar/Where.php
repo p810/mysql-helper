@@ -9,7 +9,7 @@ use function p810\MySQL\parentheses;
 trait Where
 {
     /**
-     * @var \p810\MySQL\Builder\Grammar\Expression[]
+     * @var array
      */
     protected $wheres;
 
