@@ -3,8 +3,6 @@
 namespace p810\MySQL\Builder;
 
 use function ucfirst;
-use function implode;
-use function sprintf;
 use function is_array;
 use function array_map;
 use function array_walk;
@@ -24,7 +22,9 @@ abstract class Builder
     public $input = [];
 
     /**
-     * @param array|string|int $value
+     * Binds a value for use in a prepared query
+     * 
+     * @param array|string|int $value The value to bind
      * @return string|array
      */
     public function bind($value)
@@ -40,6 +40,16 @@ abstract class Builder
         return '?';
     }
 
+    /**
+     * Compiles a query
+     * 
+     * Each builder specifies a list of $components which will be iterated
+     * to get a compiler method, e.g. compileFrom(). The result of that call
+     * (if applicable) is then appended to a list of strings that will be 
+     * joined by spaces to form the query string.
+     * 
+     * @return string
+     */
     public function build(): string
     {
         $parts = array_reduce($this->components, function ($value, $component) {
@@ -56,6 +66,13 @@ abstract class Builder
         return spaces($parts);
     }
 
+    /**
+     * Prefixes column names with their corresponding tables, e.g. for a
+     * query that joins data from foreign tables
+     * 
+     * @param array $columns An associative array of tables => columns
+     * @return string[]
+     */
     protected function prefixColumns(array $columns): array
     {
         array_walk($columns, function (&$column, $table) {
