@@ -25,6 +25,35 @@ class BuilderTest extends TestCase
         $this->assertEquals("select username, password from users where username = ? or username = ? order by username desc limit 2", $query->build());
     }
 
+    public function test_select_builder_with_nested_where()
+    {
+        $query = new Select;
+
+        $query->from('users')
+              ->select('username')
+              ->where('user_id', 1)
+              ->whereNested(function ($query) {
+                  return $query->where('user_id', 2)->orWhere('user_id', 3);
+              })
+              ->where('user_id', 4);
+        
+        $this->assertEquals('select username from users where user_id = ? and (user_id = ? or user_id = ?) and user_id = ?', $query->build());
+    }
+
+    public function test_select_builder_with_nested_where_as_first_clause()
+    {
+        $query = new Select;
+
+        $query->from('users')
+              ->select('username')
+              ->whereNested(function ($query) {
+                  return $query->where('user_id', 1)->orWhere('user_id', 2);
+              })
+              ->orWhere('user_id', 3);
+        
+        $this->assertEquals('select username from users where (user_id = ? or user_id = ?) or user_id = ?', $query->build());
+    }
+
     public function test_select_builder_with_join()
     {
         $query = new Select;
