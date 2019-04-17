@@ -54,7 +54,9 @@ class Query
         }
 
         if (method_exists($this->builder, $method)) {
-            return $this->builder->$method(...$arguments);
+            $this->builder->$method(...$arguments);
+
+            return $this;
         }
 
         throw new BadMethodCallException;
