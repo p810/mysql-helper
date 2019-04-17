@@ -5,6 +5,7 @@ namespace p810\MySQL\Test;
 use p810\MySQL\Builder\Select;
 use p810\MySQL\Builder\Insert;
 use p810\MySQL\Builder\Update;
+use p810\MySQL\Builder\Delete;
 use p810\MySQL\Builder\Builder;
 use PHPUnit\Framework\TestCase;
 

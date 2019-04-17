@@ -7,6 +7,8 @@ use InvalidArgumentException;
 use function substr;
 use function sprintf;
 use function in_array;
+use function array_walk;
+use function p810\MySQL\spaces;
 use function p810\MySQL\parentheses;
 
 class Expression
@@ -42,7 +44,11 @@ class Expression
     const LOGICAL_OPERATORS = ['and', 'or', 'between'];
 
     /**
-     * @param mixed $right
+     * @param string $left       Lefthand side of the expression
+     * @param mixed  $right      Righthand side of the expression
+     * @param string $comparison Middle of the expression
+     * @param string $logical    A logical operator used to concatenate expressions
+     * @return void
      */
     function __construct(string $left, $right, string $comparison, string $logical)
     {
@@ -58,18 +64,29 @@ class Expression
         $this->comparisonOperator = $comparison;
     }
 
+    /**
+     * Returns the expression as a string
+     * 
+     * @param bool $withLogicalOperator Whether to include the logical operator at the end
+     * @return string
+     */
     public function compile(bool $withLogicalOperator = false): string
     {
-        return sprintf('%s %s %s%s',
+        return sprintf('%s%s %s %s',
+            $withLogicalOperator
+                ? "$this->logicalOperator "
+                : '',
             $this->left,
             $this->comparisonOperator,
-            $this->getRighthandArgument(),
-            $withLogicalOperator
-                ? " $this->logicalOperator"
-                : ''
+            $this->getRighthandArgument()
         );
     }
 
+    /**
+     * Returns the righthand side of the expression
+     * 
+     * @return string
+     */
     protected function getRighthandArgument(): string
     {
         if (is_array($this->right)) {
@@ -80,22 +97,20 @@ class Expression
     }
 
     /**
-     * @var \p810\MySQL\Builder\Grammar\Expression[] $expressions
+     * Compiles a list of \p810\MySQL\Builder\Grammar\Expression instances to a string
+     * 
+     * @param \p810\MySQL\Builder\Grammar\Expression[] $expressions A list of expressions
+     * @return string
      */
     public static function listToString(array $expressions): string
     {
-        $compiled = '';
-        $lastIndex = count($expressions) - 1;
-    
-        foreach ($expressions as $expression) {
-            $compiled .= $expression->compile();
-    
-            if (key($expressions) < $lastIndex) {
-                $next = next($expressions);
-                $compiled .= " $next->logicalOperator ";
-            }
-        }
-    
-        return $compiled;
+        $clauses = [];
+        
+        array_walk($expressions, function ($value, $key) use (&$clauses) {
+            $useLogicalOperator = $key === 0 ? false : true;
+            $clauses[] = $value->compile($useLogicalOperator);
+        });
+
+        return spaces($clauses);
     }
 }
