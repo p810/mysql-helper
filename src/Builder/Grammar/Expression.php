@@ -97,9 +97,11 @@ class Expression
     }
 
     /**
-     * Compiles a list of \p810\MySQL\Builder\Grammar\Expression instances to a string
+     * Compiles a list of expressions to a string
      * 
-     * @param \p810\MySQL\Builder\Grammar\Expression[] $expressions A list of expressions
+     * The array may contain strings or instances of \p810\MySQL\Builder\Grammar\Expression
+     * 
+     * @param array $expressions A list of expressions
      * @return string
      */
     public static function listToString(array $expressions): string
@@ -108,7 +110,12 @@ class Expression
         
         array_walk($expressions, function ($value, $key) use (&$clauses) {
             $useLogicalOperator = $key === 0 ? false : true;
-            $clauses[] = $value->compile($useLogicalOperator);
+            
+            if ($value instanceof Expression) {
+                $value = $value->compile($useLogicalOperator);
+            }
+            
+            $clauses[] = $value;
         });
 
         return spaces($clauses);
