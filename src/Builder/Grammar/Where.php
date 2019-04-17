@@ -179,6 +179,62 @@ trait Where
     }
 
     /**
+     * Appends a raw where clause to the list of expressions
+     * 
+     * Extra care should be taken to make sure that a raw clause doesn't break
+     * the flow when the query is compiled
+     * 
+     * @param string $clause The clause to append
+     * @return self
+     */
+    public function whereRaw(string $clause): self
+    {
+        $this->wheres[] = $clause;
+
+        return $this;
+    }
+
+    /**
+     * Appends a nested where clause
+     * 
+     * The callback that this method receives must take an instance of
+     * p810\MySQL\Builder\Grammar\ComplexWhere as its first argument and
+     * return that object. An example of how that callback might look is:
+     * 
+     * $query->whereNested(function (Builder $q) {
+     *     return $q->where('foo', 'bar')->orWhere('bam', 'baz');
+     * });
+     * 
+     * This would generate the following:
+     * 
+     * (foo = ? or bar = ?)
+     * 
+     * @param callable $cb      A callback that should return a chain of clause calls
+     * @param string   $logical A logical operator used to concatenate the clause
+     * @return self
+     */
+    public function whereNested(callable $cb, string $logical = 'and'): self
+    {
+        $query = $cb(new ComplexWhere);
+
+        $clause = $this->wheres ? "$logical $query" : "$query";
+
+        return $this->whereRaw($clause);
+    }
+
+    /**
+     * Appends a nested clause with "or" as the logical operator
+     * 
+     * @param callable $cb      A callback that should return a chain of clause calls
+     * @param string   $logical A logical operator used to concatenate the clause
+     * @return self
+     */
+    public function orWhereNested(callable $cb): self
+    {
+        return $this->whereNested($cb, 'or');
+    }
+
+    /**
      * Compiles the where clause
      * 
      * @return null|string
