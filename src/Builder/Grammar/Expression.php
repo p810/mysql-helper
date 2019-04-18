@@ -50,7 +50,7 @@ class Expression
      * @param string $logical    A logical operator used to concatenate expressions
      * @return void
      */
-    function __construct(string $left, $right, string $comparison, string $logical)
+    function __construct(string $left, $right, string $comparison = '=', string $logical = 'and')
     {
         if (! in_array($comparison, self::COMPARISON_OPERATORS) ||
             ! in_array($logical, self::LOGICAL_OPERATORS))
@@ -62,6 +62,16 @@ class Expression
         $this->right = $right;
         $this->logicalOperator = $logical;
         $this->comparisonOperator = $comparison;
+    }
+
+    /**
+     * Returns the expression as a string
+     * 
+     * @return string
+     */
+    function __toString(): string
+    {
+        return $this->compile();
     }
 
     /**
