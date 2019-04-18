@@ -18,8 +18,11 @@ class Insert extends Builder
      */
     protected $components = [
         'insert',
+        'priority',
+        'ignore',
         'columns',
-        'values'
+        'values',
+        'onDuplicateKeyUpdate'
     ];
 
     /**
@@ -36,6 +39,21 @@ class Insert extends Builder
      * @var array
      */
     protected $values;
+
+    /**
+     * @var string
+     */
+    protected $priority;
+
+    /**
+     * @var bool
+     */
+    protected $ignore;
+
+    /**
+     * @var bool
+     */
+    protected $updateOnDuplicate;
 
     /**
      * Specifies the table that the data should be inserted into
@@ -58,6 +76,100 @@ class Insert extends Builder
     protected function compileInsert(): string
     {
         return "insert into $this->table";
+    }
+
+    /**
+     * Specifies that this query should be delayed until all other clients have finished
+     * their operations on the specified table
+     * 
+     * @return self
+     */
+    public function lowPriority(): self
+    {
+        $this->priority = 'low_priority';
+
+        return $this;
+    }
+
+    /**
+     * Overrides `--low-priority-updates` if this option is set in MySQL and disables
+     * concurrent updates
+     * 
+     * @return self
+     */
+    public function highPriority(): self
+    {
+        $this->priority = 'high_priority';
+
+        return $this;
+    }
+
+    /**
+     * Compiles the priority clause of the query
+     * 
+     * @return null|string
+     */
+    protected function compilePriority(): ?string
+    {
+        return $this->priority;
+    }
+
+    /**
+     * Appends the "ignore" modifier telling MySQL to ignore errors that occur when
+     * inserting new rows
+     * 
+     * @param bool $shouldIgnore
+     * @return self
+     */
+    public function ignore(bool $shouldIgnore = true): self
+    {
+        $this->ignore = $shouldIgnore;
+
+        return $this;
+    }
+
+    /**
+     * Compiles the ignore clause of the query
+     * 
+     * @return null|string
+     */
+    protected function compileIgnore(): ?string
+    {
+        return $this->ignore ? 'ignore' : null;
+    }
+
+    /**
+     * Specifies an "on duplicate key update" clause for the query
+     * 
+     * @param bool $shouldUpdateOnDuplicate
+     * @return self
+     */
+    public function onDuplicateKeyUpdate(bool $shouldUpdateOnDuplicate = true): self
+    {
+        $this->updateOnDuplicate = $shouldUpdateOnDuplicate;
+
+        return $this;
+    }
+
+    /**
+     * Alias for \p810\MySQL\Builder\Insert::onDuplicateKeyUpdate()
+     * 
+     * @param bool $shouldUpdateOnDuplicate
+     * @return self
+     */
+    public function updateDuplicate(bool $shouldUpdateOnDuplicate): self
+    {
+        return $this->onDuplicateKeyUpdate($shouldUpdateOnDuplicate);
+    }
+
+    /**
+     * Compiles the "on duplicate key update" clause
+     * 
+     * @return null|string
+     */
+    protected function compileOnDuplicateKeyUpdate(): ?string
+    {
+        return $this->updateOnDuplicate ? 'on duplicate key update' : null;
     }
 
     /**
@@ -107,10 +219,14 @@ class Insert extends Builder
     /**
      * Compiles the values clause
      * 
-     * @return string
+     * @return null|string
      */
-    protected function compileValues(): string
+    protected function compileValues(): ?string
     {
+        if (! $this->values) {
+            return null;
+        }
+
         $lists = [];
 
         foreach ($this->values as $list) {
