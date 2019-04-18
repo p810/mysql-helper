@@ -2,6 +2,8 @@
 
 namespace p810\MySQL\Builder;
 
+use PDOStatement;
+
 use function ucfirst;
 use function is_array;
 use function array_map;
@@ -65,6 +67,14 @@ abstract class Builder
 
         return spaces($parts);
     }
+
+    /**
+     * Processes the result of the query
+     * 
+     * @param \PDOStatement $statement
+     * @return mixed
+     */
+    abstract public function process(PDOStatement $statement);
 
     /**
      * Prefixes column names with their corresponding tables, e.g. for a

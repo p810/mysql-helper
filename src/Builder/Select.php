@@ -2,6 +2,8 @@
 
 namespace p810\MySQL\Builder;
 
+use PDO;
+use PDOStatement;
 use p810\MySQL\Exception\MissingArgumentException;
 
 use function is_array;
@@ -40,6 +42,14 @@ class Select extends Builder
      * @var string
      */
     protected $columns = '*';
+
+    /**
+     * @inheritdoc
+     */
+    public function process(PDOStatement $statement)
+    {
+        return $statement->fetchAll(PDO::FETCH_OBJ);
+    }
 
     /**
      * Specifies which columns to return in the result set

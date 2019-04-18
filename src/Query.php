@@ -11,11 +11,6 @@ use function method_exists;
 class Query
 {
     /**
-     * @var false|\PDOStatement
-     */
-    public $statement;
-
-    /**
      * @var \p810\MySQL\Builder\Builder
      */
     protected $builder;
@@ -63,18 +58,27 @@ class Query
     }
 
     /**
-     * Sets and executes a prepared query
+     * Executes a prepared query and returns the result
      * 
-     * @return bool
+     * @param null|callable $processor An optional callback used to process the result of the query
+     * @param bool $callbackOnBool Whether to call the user-supplied $processor when \PDOStatement::execute() returns false
+     * @return mixed
      */
-    public function execute(): bool
+    public function execute(?callable $processor = null, bool $callbackOnBool = false)
     {
-        $this->statement = $this->database->prepare( $this->builder->build() );
+        $statement = $this->database->prepare($this->builder->build());
 
-        if (! $this->statement instanceof PDOStatement) {
+        if (! $statement instanceof PDOStatement) {
             return false;
         }
 
-        return $this->statement->execute($this->builder->input);
+        $result = $statement->execute($this->builder->input);
+        $callback = $processor ?? [$this->builder, 'process'];
+
+        if ($result || ($callbackOnBool && $processor)) {
+            $result = $callback($statement);
+        }
+
+        return $result;
     }
 }

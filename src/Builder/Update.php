@@ -2,6 +2,7 @@
 
 namespace p810\MySQL\Builder;
 
+use PDOStatement;
 use p810\MySQL\Builder\Grammar\Expression;
 
 use function is_array;
@@ -29,6 +30,14 @@ class Update extends Builder
      * @var string
      */
     protected $table;
+
+    /**
+     * @inheritdoc
+     */
+    public function process(PDOStatement $statement)
+    {
+        return $statement->rowCount();
+    }
 
     /**
      * Specifies the table to update data in

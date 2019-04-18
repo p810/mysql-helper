@@ -2,6 +2,7 @@
 
 namespace p810\MySQL\Builder;
 
+use PDO;
 use PDOStatement;
 
 use function array_map;
@@ -52,6 +53,14 @@ class Insert extends Builder
      * @var bool
      */
     protected $updateOnDuplicate;
+
+    /**
+     * @inheritdoc
+     */
+    public function process(PDOStatement $statement)
+    {
+        return $statement->rowCount();
+    }
 
     /**
      * Specifies the table that the data should be inserted into

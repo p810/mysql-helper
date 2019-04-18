@@ -2,6 +2,8 @@
 
 namespace p810\MySQL\Builder;
 
+use PDOStatement;
+
 class Delete extends Builder
 {
     use Grammar\Where;
@@ -18,6 +20,14 @@ class Delete extends Builder
      * @var string
      */
     protected $table;
+
+    /**
+     * @inheritdoc
+     */
+    public function process(PDOStatement $statement)
+    {
+        return $statement->rowCount();
+    }
 
     /**
      * Specifies the table to remove data from

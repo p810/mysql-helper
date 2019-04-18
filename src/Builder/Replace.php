@@ -2,6 +2,7 @@
 
 namespace p810\MySQL\Builder;
 
+use PDOStatement;
 use InvalidArgumentException;
 use p810\MySQL\Builder\Grammar\Expression;
 
@@ -20,6 +21,14 @@ class Replace extends Insert
         'columns',
         'values'
     ];
+
+    /**
+     * @inheritdoc
+     */
+    public function process(PDOStatement $statement)
+    {
+        return $statement->rowCount();
+    }
 
     /**
      * @inheritdoc
