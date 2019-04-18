@@ -2,6 +2,8 @@
 
 namespace p810\MySQL\Builder;
 
+use p810\MySQL\Builder\Grammar\Expression;
+
 use function is_array;
 use function p810\MySQL\commas;
 
@@ -80,25 +82,23 @@ class Update extends Builder
         } else {
             [$column, $value] = $arguments;
             
-            $this->values[$column] = $this->bind($value);
+            $this->values[] = new Expression($column, $this->bind($value));
         }
 
         return $this;
     }
 
     /**
-     * Compiles the set clause
+     * Compiles an assignment list for the "set (...)" clause
      * 
-     * @return string
+     * @return null|string
      */
-    protected function compileSet(): string
+    protected function compileSet(): ?string
     {
-        $strings = [];
-
-        foreach ($this->values as $column => $value) {
-            $strings[] = $column . ' = ' . $value;
+        if (! $this->values) {
+            return null;
         }
 
-        return 'set ' . commas($strings);
+        return 'set ' . commas($this->values);
     }
 }
