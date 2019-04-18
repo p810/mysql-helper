@@ -6,6 +6,7 @@ use p810\MySQL\Builder\Select;
 use p810\MySQL\Builder\Insert;
 use p810\MySQL\Builder\Update;
 use p810\MySQL\Builder\Delete;
+use p810\MySQL\Builder\Replace;
 use p810\MySQL\Builder\Builder;
 use PHPUnit\Framework\TestCase;
 
@@ -142,5 +143,16 @@ class BuilderTest extends TestCase
               ->whereNot('username', 'Carl');
         
         $this->assertEquals('delete from users where username != ?', $query->build());
+    }
+
+    public function test_replace_builder()
+    {
+        $query = new Replace;
+
+        $query->into('users')
+              ->set('username', 'Carl')
+              ->set('password', 'abc123');
+        
+        $this->assertEquals('replace into users set username = ?, password = ?', $query->build());
     }
 }
