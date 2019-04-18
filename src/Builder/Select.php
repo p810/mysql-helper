@@ -4,7 +4,6 @@ namespace p810\MySQL\Builder;
 
 use PDO;
 use PDOStatement;
-use p810\MySQL\Exception\MissingArgumentException;
 
 use function is_array;
 use function is_string;
