@@ -4,10 +4,7 @@ namespace p810\MySQL\Builder;
 
 use PDOStatement;
 
-use function implode;
-use function is_array;
 use function array_map;
-use function array_reduce;
 use function p810\MySQL\commas;
 use function p810\MySQL\parentheses;
 
@@ -20,6 +17,7 @@ class Insert extends Builder
         'insert',
         'priority',
         'ignore',
+        'into',
         'columns',
         'values',
         'onDuplicateKeyUpdate'
@@ -69,13 +67,27 @@ class Insert extends Builder
     }
 
     /**
-     * Compiles the insert into clause
+     * Compiles the into clause of the query
+     * 
+     * @return null|string
+     */
+    protected function compileInto(): ?string
+    {
+        return $this->table ? "into $this->table" : null;
+    }
+
+    /**
+     * Begins the query with the insert command
+     * 
+     * Previously this function included the "into" clause as well, but
+     * to support the priority and ignore modifiers, that had to be separated
+     * into its own component
      * 
      * @return string
      */
     protected function compileInsert(): string
     {
-        return "insert into $this->table";
+        return 'insert';
     }
 
     /**
