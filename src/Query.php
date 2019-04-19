@@ -101,7 +101,7 @@ class Query
      */
     protected function getDefaultProcessor(): callable
     {
-        return $this->processor[$this->builder->type] ?? $this->processor['*'] ?? [$this->builder, 'process'];
+        return $this->processor[$this->getQueryType()] ?? $this->processor['*'] ?? [$this->builder, 'process'];
     }
 
     /**
@@ -109,12 +109,14 @@ class Query
      * If no type is provided it will be registered to handle each type
      * 
      * @param callable $processor A callback used to process the result of a \PDOStatement
-     * @param bool     $handleAll An optional boolean specifying whether this callback should handle all query types
+     * @param string   $type      The type of query that this callback should handle
      * @return self
      */
-    public function setDefaultProcessor(callable $processor, bool $handleAll = false): self
+    public function setDefaultProcessor(callable $processor, string $type = '*'): self
     {
-        $type = $handleAll ? '*' : $this->getQueryType();
+        if ($type !== '*') {
+            $type = strtolower($type);
+        }
 
         $this->processor[$type] = $processor;
 
