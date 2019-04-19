@@ -11,11 +11,6 @@ class Delete extends Builder
     /**
      * @inheritdoc
      */
-    public $type = 'delete';
-
-    /**
-     * @inheritdoc
-     */
     protected $components = [
         'from',
         'where'

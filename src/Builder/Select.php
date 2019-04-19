@@ -18,11 +18,6 @@ class Select extends Builder
     /**
      * @inheritdoc
      */
-    public $type = 'select';
-
-    /**
-     * @inheritdoc
-     */
     protected $components = [
         'select',
         'from',

@@ -15,11 +15,6 @@ class Update extends Builder
     /**
      * @inheritdoc
      */
-    public $type = 'update';
-
-    /**
-     * @inheritdoc
-     */
     protected $components = [
         'update',
         'set',
