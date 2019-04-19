@@ -3,6 +3,7 @@
 namespace p810\MySQL;
 
 use PDOStatement;
+use ReflectionClass;
 use BadMethodCallException;
 use p810\MySQL\Builder\Builder;
 
@@ -108,17 +109,27 @@ class Query
      * If no type is provided it will be registered to handle each type
      * 
      * @param callable $processor A callback used to process the result of a \PDOStatement
-     * @param string   $type      The type of query that this callback should handle
+     * @param bool     $handleAll An optional boolean specifying whether this callback should handle all query types
      * @return self
      */
-    public function setDefaultProcessor(callable $processor, string $type = '*'): self
+    public function setDefaultProcessor(callable $processor, bool $handleAll = false): self
     {
-        if ($type !== '*') {
-            $type = strtolower($type);
-        }
+        $type = $handleAll ? '*' : $this->getQueryType();
 
         $this->processor[$type] = $processor;
 
         return $this;
+    }
+
+    /**
+     * Returns the type of query based on the class's short name
+     * 
+     * @return string
+     */
+    protected function getQueryType(): string
+    {
+        $reflection = new ReflectionClass($this->builder);
+
+        return strtolower($reflection->getShortName());
     }
 }
