@@ -117,7 +117,7 @@ class Query
             $type = strtolower($type);
         }
 
-        $this->processor[$type] = $callback;
+        $this->processor[$type] = $processor;
 
         return $this;
     }
