@@ -6,6 +6,7 @@ use PDOStatement;
 use BadMethodCallException;
 use p810\MySQL\Builder\Builder;
 
+use function strtolower;
 use function method_exists;
 
 class Query
@@ -19,6 +20,11 @@ class Query
      * @var \p810\MySQL\ConnectionInterface
      */
     protected $database;
+
+    /**
+     * @var array<string,callable>
+     */
+    protected $processor = [];
 
     /**
      * Specifies the Connection and Builder that the query should use
@@ -60,8 +66,8 @@ class Query
     /**
      * Executes a prepared query and returns the result
      * 
-     * @param null|callable $processor An optional callback used to process the result of the query
-     * @param bool $callbackOnBool Whether to call the user-supplied $processor when \PDOStatement::execute() returns false
+     * @param null|callable $processor      An optional callback used to process the result of the query
+     * @param bool          $callbackOnBool Whether to call the user-supplied $processor when \PDOStatement::execute() returns false
      * @return mixed
      */
     public function execute(?callable $processor = null, bool $callbackOnBool = false)
@@ -73,12 +79,46 @@ class Query
         }
 
         $result = $statement->execute($this->builder->input);
-        $callback = $processor ?? [$this->builder, 'process'];
+        $callback = $processor ?? $this->getDefaultProcessor();
 
         if ($result || ($callbackOnBool && $processor)) {
             $result = $callback($statement);
         }
 
         return $result;
+    }
+
+    /**
+     * Returns the proper callback to handle a \PDOStatement
+     * 
+     * The order of precedence in which a processor is chosen is:
+     *  1. A callback registered explicitly for the type of query
+     *  2. A callback registered to handle every type of query
+     *  3. The Builder object's `process()` method
+     * 
+     * @return callable
+     */
+    protected function getDefaultProcessor(): callable
+    {
+        return $this->processor[$this->builder->type] ?? $this->processor['*'] ?? [$this->builder, 'process'];
+    }
+
+    /**
+     * Overrides the default processor for the given query type
+     * If no type is provided it will be registered to handle each type
+     * 
+     * @param callable $processor A callback used to process the result of a \PDOStatement
+     * @param string   $type      The type of query that this callback should handle
+     * @return self
+     */
+    public function setDefaultProcessor(callable $processor, string $type = '*'): self
+    {
+        if ($type !== '*') {
+            $type = strtolower($type);
+        }
+
+        $this->processor[$type] = $callback;
+
+        return $this;
     }
 }
