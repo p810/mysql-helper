@@ -14,6 +14,11 @@ class Insert extends Builder
     /**
      * @inheritdoc
      */
+    public $type = 'insert';
+
+    /**
+     * @inheritdoc
+     */
     protected $components = [
         'insert',
         'priority',

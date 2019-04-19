@@ -14,6 +14,11 @@ class Replace extends Insert
     /**
      * @inheritdoc
      */
+    public $type = 'replace';
+
+    /**
+     * @inheritdoc
+     */
     protected $components = [
         'replace',
         'priority',

@@ -14,6 +14,11 @@ use function p810\MySQL\spaces;
 abstract class Builder
 {
     /**
+     * @var string
+     */
+    public $type;
+
+    /**
      * @var string[]
      */
     protected $components;
