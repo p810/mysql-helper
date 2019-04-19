@@ -97,6 +97,8 @@ class Query
      *  2. A callback registered to handle every type of query
      *  3. The Builder object's `process()` method
      * 
+     * If a callback is provided to the `execute()` call, it will supersede all of the above
+     * 
      * @return callable
      */
     protected function getDefaultProcessor(): callable
