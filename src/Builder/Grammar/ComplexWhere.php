@@ -25,6 +25,7 @@ class ComplexWhere extends Builder
 
     /**
      * @inheritdoc
+     * @return void
      */
     public function process(PDOStatement $statement) {}
 }
