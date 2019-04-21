@@ -36,9 +36,10 @@ interface ConnectionInterface
     /**
      * Returns an instance of \p810\MySQL\Query with a Select builder
      * 
+     * @param string|array $columns
      * @return \p810\MySQL\Query
      */
-    public function select(): Query;
+    public function select($columns = '*'): Query;
 
     /**
      * Returns an instance of \p810\MySQL\Query with an Insert builder
