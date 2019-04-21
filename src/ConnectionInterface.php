@@ -36,10 +36,13 @@ interface ConnectionInterface
     /**
      * Returns an instance of \p810\MySQL\Query with a Select builder
      * 
-     * @param string|array $columns
+     * @param string|array|null $columns Which columns to include in the query's results.
+     *                                   Accepts either a numeric or associative array; in
+     *                                   the latter case, the keys are used as tables and
+     *                                   prefix each column.
      * @return \p810\MySQL\Query
      */
-    public function select($columns = '*'): Query;
+    public function select($columns = null): Query;
 
     /**
      * Returns an instance of \p810\MySQL\Query with an Insert builder

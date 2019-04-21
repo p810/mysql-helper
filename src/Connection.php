@@ -210,11 +210,11 @@ class Connection implements ConnectionInterface
     /**
      * @inheritdoc
      */
-    public function select($columns = '*'): Query
+    public function select($columns = null): Query
     {
         $query = new Query($this, new Builder\Select);
 
-        return $query->columns($columns);
+        return $query->columns($columns ?? '*');
     }
 
     /**
