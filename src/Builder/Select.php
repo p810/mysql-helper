@@ -40,7 +40,7 @@ class Select extends Builder
     /**
      * @var string
      */
-    protected $columns = '*';
+    protected $columns;
 
     /**
      * @inheritdoc
@@ -76,11 +76,11 @@ class Select extends Builder
     /**
      * Compiles the select clause
      * 
-     * @return string
+     * @return null|string
      */
-    protected function compileSelect(): string
+    protected function compileSelect(): ?string
     {
-        return "select $this->columns";
+        return $this->columns ? "select $this->columns" : null;
     }
 
     /**
@@ -99,11 +99,11 @@ class Select extends Builder
     /**
      * Compiles the from clause
      * 
-     * @return string
+     * @return null|string
      */
-    protected function compileFrom(): string
+    protected function compileFrom(): ?string
     {
-        return "from $this->table";
+        return $this->table ? "from $this->table" : null;
     }
 
     /**
