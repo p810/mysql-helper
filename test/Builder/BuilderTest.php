@@ -55,37 +55,6 @@ class BuilderTest extends TestCase
         $this->assertEquals('select username from users where (user_id = ? or user_id = ?) or user_id = ?', $query->build());
     }
 
-    public function test_select_builder_with_join()
-    {
-        $query = new Select;
-
-        $query->select([
-            'users' => 'username',
-            'bans' => 'is_banned'
-        ]);
-
-        $query->from('users')
-              ->innerJoin('bans')
-              ->using('user_id');
-        
-        $this->assertEquals('select users.username, bans.is_banned from users inner join bans using (user_id)', $query->build());
-    }
-
-    public function test_select_builder_with_multiple_joins()
-    {
-        $query = new Select;
-
-        $query->select('username')
-              ->from('users')
-              ->innerJoin('userdata')
-              ->on('users.user_id', 'userdata.user_id')
-              ->innerJoin('permissions')
-              ->on('users.user_id', 'permissions.user_id')
-              ->on('userdata.foo_id', 'permissions.foo_id');
-        
-        $this->assertEquals('select username from users inner join userdata on users.user_id = userdata.user_id inner join permissions on users.user_id = permissions.user_id and userdata.foo_id = permissions.foo_id', $query->build());
-    }
-
     public function test_insert_builder_single_row()
     {
         $query = new Insert;
