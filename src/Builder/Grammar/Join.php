@@ -34,10 +34,9 @@ trait Join
         $join = new JoinExpression($type, $table);
 
         if ($this->callsBeforeFirstJoin) {
-            // if the $predicateQueue has items, that means that a
-            // user called Join::on() / Join::using() before this was
-            // called, so we need to unpack all of that data into the
-            // new JoinExpression
+            // if the $callsBeforeFirstJoin has items, that means that either Join::on()
+            // or Join::using() was called before this method was, so we need to unpack
+            // all of that data into the current JoinExpression
             foreach ($this->callsBeforeFirstJoin as $method => $calls) {
                 array_walk($calls, function ($arguments, $key) use ($join, $method) {
                     $join->$method(...$arguments);
