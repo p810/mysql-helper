@@ -2,8 +2,6 @@
 
 namespace p810\MySQL\Builder\Grammar;
 
-use InvalidArgumentException;
-
 use function substr;
 use function sprintf;
 use function in_array;
@@ -34,16 +32,6 @@ class Expression
     public $comparisonOperator;
 
     /**
-     * @var string[]
-     */
-    const COMPARISON_OPERATORS = ['=', '!=', '<', '>', '<=', '>=', 'in', 'not in', 'like'];
-
-    /**
-     * @var string[]
-     */
-    const LOGICAL_OPERATORS = ['and', 'or', 'between'];
-
-    /**
      * @param string $left       Lefthand side of the expression
      * @param mixed  $right      Righthand side of the expression
      * @param string $comparison Middle of the expression
@@ -52,12 +40,6 @@ class Expression
      */
     function __construct(string $left, $right, string $comparison = '=', string $logical = 'and')
     {
-        if (! in_array($comparison, self::COMPARISON_OPERATORS) ||
-            ! in_array($logical, self::LOGICAL_OPERATORS))
-        {
-            throw new InvalidArgumentException('Clause was instantiated with an invalid operator');
-        }
-
         $this->left = $left;
         $this->right = $right;
         $this->logicalOperator = $logical;
