@@ -66,10 +66,14 @@ class Update extends Builder
     /**
      * Compiles the update from clause
      * 
-     * @return string
+     * @return null|string
      */
-    protected function compileUpdate(): string
+    protected function compileUpdate(): ?string
     {
+        if (! $this->table) {
+            return null;
+        }
+
         return "update $this->table";
     }
 

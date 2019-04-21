@@ -80,7 +80,11 @@ class Select extends Builder
      */
     protected function compileSelect(): ?string
     {
-        return $this->columns ? "select $this->columns" : null;
+        if (! $this->columns) {
+            return null;
+        }
+
+        return "select $this->columns";
     }
 
     /**
@@ -103,7 +107,11 @@ class Select extends Builder
      */
     protected function compileFrom(): ?string
     {
-        return $this->table ? "from $this->table" : null;
+        if (! $this->table) {
+            return null;
+        }
+
+        return "from $this->table";
     }
 
     /**

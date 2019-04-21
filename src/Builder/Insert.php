@@ -82,7 +82,11 @@ class Insert extends Builder
      */
     protected function compileInto(): ?string
     {
-        return $this->table ? "into $this->table" : null;
+        if (! $this->table) {
+            return null;
+        }
+
+        return "into $this->table";
     }
 
     /**
@@ -92,10 +96,14 @@ class Insert extends Builder
      * to support the priority and ignore modifiers, that had to be separated
      * into its own component
      * 
-     * @return string
+     * @return null|string
      */
-    protected function compileInsert(): string
+    protected function compileInsert(): ?string
     {
+        if (! $this->table) {
+            return null;
+        }
+
         return 'insert';
     }
 
@@ -156,7 +164,11 @@ class Insert extends Builder
      */
     protected function compileIgnore(): ?string
     {
-        return $this->ignore ? 'ignore' : null;
+        if (! $this->ignore) {
+            return null;
+        }
+
+        return 'ignore';
     }
 
     /**
@@ -190,7 +202,11 @@ class Insert extends Builder
      */
     protected function compileOnDuplicateKeyUpdate(): ?string
     {
-        return $this->updateOnDuplicate ? 'on duplicate key update' : null;
+        if (! $this->updateOnDuplicate) {
+            return null;
+        }
+
+        return 'on duplicate key update';
     }
 
     /**

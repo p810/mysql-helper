@@ -56,10 +56,14 @@ class Delete extends Builder
     /**
      * Compiles the delete from clause
      * 
-     * @return string
+     * @return null|string
      */
-    protected function compileFrom(): string
+    protected function compileFrom(): ?string
     {
+        if (! $this->table) {
+            return null;
+        }
+
         return "delete from $this->table";
     }
 }
