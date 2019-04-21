@@ -4,7 +4,7 @@ namespace p810\MySQL\Test\Mapper;
 
 use PHPUnit\Framework\TestCase;
 
-class MapperTest extends TestCase
+class MockMapperTest extends TestCase
 {
     /**
      * @var \p810\MySQL\Test\Mapper\MockMapper
