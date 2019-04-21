@@ -35,6 +35,8 @@ class MockMapper implements MapperInterface
     }
 
     /**
+     * An example of a custom mapper method that searches for data by a value
+     * 
      * @param string $message
      * @return null|\p810\MySQL\Test\Mapper\MockEntity
      */
