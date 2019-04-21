@@ -20,8 +20,10 @@ interface MapperInterface
     public function from(array $data): ?object;
 
     /**
-     * Returns a new \p810\MySQL\Mapper\EntityInterface if the given ID has a corresponding
-     * entry in the data source used by the adapter
+     * Returns a new instance of the entity this mapper represents, if the adapter has data where
+     * the entity's unique identifier is equal to the given $id
+     * 
+     * Some entities may not need this functionality and may ignore it
      * 
      * @param int $id
      * @return null|object
