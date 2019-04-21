@@ -41,7 +41,7 @@ trait Join
             // called, so we need to unpack all of that data into the
             // new JoinExpression
             foreach ($this->predicateQueue as $method => $calls) {
-                array_walk($calls, function ($value, $key) use ($join, $method) {
+                array_walk($calls, function ($arguments, $key) use ($join, $method) {
                     $join->$method(...$arguments);
                 });
             }
@@ -144,6 +144,18 @@ trait Join
         }
 
         return $this;
+    }
+
+    /**
+     * Appends an "on" clause to the current join with "or" as the logical operator
+     * 
+     * @param string $left  The lefthand column
+     * @param string $right The righthand column
+     * @return self
+     */
+    public function orOn(string $left, string $right): self
+    {
+        return $this->on($left, $right, 'or');
     }
 
     /**
