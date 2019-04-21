@@ -52,14 +52,16 @@ interface ConnectionInterface
     /**
      * Returns an instance of \p810\MySQL\Query with an Update builder
      * 
+     * @param null|string $table The table that the query affects
      * @return \p810\MySQL\Query
      */
-    public function update(): Query;
+    public function update(?string $table = null): Query;
 
     /**
      * Returns an instance of \p810\MySQL\Query with a Delete builder
      * 
+     * @param null|string $table The table that the query affects
      * @return \p810\MySQL\Query
      */
-    public function delete(): Query;
+    public function delete(?string $table = null): Query;
 }

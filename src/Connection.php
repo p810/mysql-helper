@@ -214,9 +214,7 @@ class Connection implements ConnectionInterface
     {
         $query = new Query($this, new Builder\Select);
 
-        $query->select($columns);
-
-        return $query;
+        return $query->columns($columns);
     }
 
     /**
@@ -240,16 +238,28 @@ class Connection implements ConnectionInterface
     /**
      * @inheritdoc
      */
-    public function update(): Query
+    public function update(?string $table = null): Query
     {
-        return new Query($this, new Builder\Update);
+        $query = new Query($this, new Builder\Update);
+
+        if ($table) {
+            $query->table($table);
+        }
+
+        return $query;
     }
 
     /**
      * @inheritdoc
      */
-    public function delete(): Query
+    public function delete(?string $table = null): Query
     {
-        return new Query($this, new Builder\Delete);
+        $query = new Query($this, new Builder\Delete);
+
+        if ($table) {
+            $query->from($table);
+        }
+
+        return $query;
     }
 }
