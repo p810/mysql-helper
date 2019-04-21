@@ -53,7 +53,9 @@ class Select extends Builder
     /**
      * Specifies which columns to return in the result set
      * 
-     * @param array|string $columns Either a string or an array; if an array, it can be associative to specify table prefixes
+     * @param array|string $columns Either a string or array; if an array, it can
+     *                              be numerically indexed for a list of columns,
+     *                              or associative to specify table prefixes
      * @return self
      */
     public function select($columns = '*'): self
@@ -71,6 +73,19 @@ class Select extends Builder
         $this->columns = $columns;
 
         return $this;
+    }
+
+    /**
+     * An alias for \p810\MySQL\Builder\Select::select()
+     * 
+     * @param array|string $columns Either a string or array; if an array, it can
+     *                              be numerically indexed for a list of columns,
+     *                              or associative to specify table prefixes
+     * @return self
+     */
+    public function columns($columns = '*'): self
+    {
+        return $this->select($columns);
     }
 
     /**
