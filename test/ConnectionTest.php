@@ -27,6 +27,5 @@ class ConnectionTest extends TestCase
     public function test_connection_begins_transaction() {
         $this->assertTrue($this->connection->transact());
         $this->assertTrue($this->connection->inTransaction());
-        $this->assertFalse($this->connection->beginTransaction());
     }
 }
