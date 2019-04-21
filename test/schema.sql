@@ -6,3 +6,5 @@ CREATE TABLE IF NOT EXISTS `test_table` (
     `message` varchar(140) NOT NULL,
     PRIMARY KEY (`test_id`)
 );
+
+INSERT INTO `test_table` (`test_id`, `message`) VALUES (1, 'I am the first row'), (2, 'I am the second row');
