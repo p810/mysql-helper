@@ -4,6 +4,7 @@ namespace p810\MySQL\Builder\Grammar;
 
 use p810\MySQL\Exception\MissingArgumentException;
 
+use function array_walk;
 use function p810\MySQL\spaces;
 
 trait Join
@@ -19,6 +20,11 @@ trait Join
     protected $currentJoin;
 
     /**
+     * @var array
+     */
+    protected $predicateQueue = [];
+
+    /**
      * Appends a join to the query
      * 
      * @param string $type  The type of join (e.g. inner, left)
@@ -28,6 +34,20 @@ trait Join
     protected function join(string $type, string $table): self
     {
         $join = new JoinExpression($type, $table);
+
+        if ($this->predicateQueue) {
+            // if the $predicateQueue has items, that means that a
+            // user called Join::on() / Join::using() before this was
+            // called, so we need to unpack all of that data into the
+            // new JoinExpression
+            foreach ($this->predicateQueue as $method => $calls) {
+                array_walk($calls, function ($value, $key) use ($join, $method) {
+                    $join->$method(...$arguments);
+                });
+            }
+
+            $this->predicateQueue = [];
+        }
 
         $this->joins[] = $join;
         $this->currentJoin = $join;
@@ -95,15 +115,14 @@ trait Join
      * 
      * @param string $column The column that both tables have in common
      * @return self
-     * @throws \p810\MySQL\Exception\MissingArgumentException if this method is called before a join is set
      */
     public function using(string $column): self
     {
-        if (! $this->currentJoin instanceof JoinExpression) {
-            throw new MissingArgumentException('\p810\MySQL\Builder\Grammar\Join::using() cannot be called before a JoinExpression is set');
+        if (! $this->currentJoin instanceof JoinExpression) {        
+            $this->predicateQueue['using'][] = [$column];
+        } else {
+            $this->currentJoin->using($column);
         }
-        
-        $this->currentJoin->using($column);
 
         return $this;
     }
@@ -115,15 +134,14 @@ trait Join
      * @param string $right   The righthand column
      * @param string $logical A logical operator used to concatenate the clauses
      * @return self
-     * @throws \p810\MySQL\Exception\MissingArgumentException if this method is called before a join is set
      */
     public function on(string $left, string $right, string $logical = 'and'): self
     {
         if (! $this->currentJoin instanceof JoinExpression) {
-            throw new MissingArgumentException('\p810\MySQL\Builder\Grammar\Join::on() cannot be called before a JoinExpression is set');
+            $this->predicateQueue['on'][] = [$left, $right, $logical];
+        } else {
+            $this->currentJoin->on($left, $right, $logical);
         }
-
-        $this->currentJoin->on($left, $right, $logical);
 
         return $this;
     }
