@@ -20,7 +20,7 @@ trait Join
     /**
      * @var array
      */
-    protected $predicateQueue = [];
+    protected $callsBeforeFirstJoin = [];
 
     /**
      * Appends a join to the query
@@ -33,18 +33,18 @@ trait Join
     {
         $join = new JoinExpression($type, $table);
 
-        if ($this->predicateQueue) {
+        if ($this->callsBeforeFirstJoin) {
             // if the $predicateQueue has items, that means that a
             // user called Join::on() / Join::using() before this was
             // called, so we need to unpack all of that data into the
             // new JoinExpression
-            foreach ($this->predicateQueue as $method => $calls) {
+            foreach ($this->callsBeforeFirstJoin as $method => $calls) {
                 array_walk($calls, function ($arguments, $key) use ($join, $method) {
                     $join->$method(...$arguments);
                 });
             }
 
-            $this->predicateQueue = [];
+            $this->callsBeforeFirstJoin = [];
         }
 
         $this->joins[] = $join;
@@ -117,7 +117,7 @@ trait Join
     public function using(string $column): self
     {
         if (! $this->currentJoin instanceof JoinExpression) {        
-            $this->predicateQueue['using'][] = [$column];
+            $this->callsBeforeFirstJoin['using'][] = [$column];
         } else {
             $this->currentJoin->using($column);
         }
@@ -136,7 +136,7 @@ trait Join
     public function on(string $left, string $right, string $logical = 'and'): self
     {
         if (! $this->currentJoin instanceof JoinExpression) {
-            $this->predicateQueue['on'][] = [$left, $right, $logical];
+            $this->callsBeforeFirstJoin['on'][] = [$left, $right, $logical];
         } else {
             $this->currentJoin->on($left, $right, $logical);
         }
