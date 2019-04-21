@@ -2,8 +2,6 @@
 
 namespace p810\MySQL\Builder\Grammar;
 
-use p810\MySQL\Exception\MissingArgumentException;
-
 use function array_walk;
 use function p810\MySQL\spaces;
 
