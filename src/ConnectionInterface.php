@@ -25,6 +25,15 @@ interface ConnectionInterface
     public function prepare(string $query);
 
     /**
+     * Executes the given query and returns a \PDOStatement
+     * 
+     * @param string $query
+     * @param array  $input
+     * @return bool|\PDOStatement
+     */
+    public function raw(string $query, array $input = []);
+
+    /**
      * Returns an instance of \p810\MySQL\Query with a Select builder
      * 
      * @return \p810\MySQL\Query

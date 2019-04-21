@@ -68,6 +68,20 @@ class Connection implements ConnectionInterface
     }
 
     /**
+     * @inheritdoc
+     */
+    public function raw(string $query, array $input = [])
+    {
+        $statement = $this->prepare($query);
+
+        if ($statement) {
+            $statement->execute($input);
+        }
+
+        return $statement;
+    }
+
+    /**
      * Returns a DSN to be passed into \PDO::__construct()
      * 
      * @param string $host      The hostname MySQL lives on
