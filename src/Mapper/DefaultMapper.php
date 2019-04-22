@@ -30,6 +30,11 @@ abstract class DefaultMapper implements MapperInterface
     protected $entity;
 
     /**
+     * @var \p810\MySQL\Mapper\AdapterInterface
+     */
+    protected $adapter;
+
+    /**
      * {@inheritdoc}
      */
     function __construct(AdapterInterface $adapter)
