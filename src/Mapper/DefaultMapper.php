@@ -40,14 +40,21 @@ abstract class DefaultMapper implements MapperInterface
     }
 
     /**
-     * Dynamically instantiates an object of \p810\MySQL\Mapper\EntityInterface with the given data
-     * 
-     * @param array $state An associative array mapping properties to values for the new entity
-     * @return \p810\MySQL\Mapper\EntityInterface
+     * {@inheritdoc}
      */
-    protected function getEntityFrom(array $state): EntityInterface
+    public function create(EntityInterface $entity): bool
     {
-        return ($this->entity)::from($state);
+        $created = $this->adapter->create($this->table, $entity->toArray())->execute();
+
+        return $created === 1;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function query(string $query, array $input = [])
+    {
+        return $this->adapter->query($query, $input);
     }
 
     /**
@@ -67,7 +74,11 @@ abstract class DefaultMapper implements MapperInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Updates the row with the given ID with the given entity for data
+     * 
+     * @param int $id The ID of the record to update
+     * @param \p810\MySQL\Mapper\EntityInterface $entity The entity from which data should be pulled
+     * @return bool
      */
     public function updateById(int $id, EntityInterface $entity): bool
     {
@@ -84,7 +95,10 @@ abstract class DefaultMapper implements MapperInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Deletes the row with the given ID
+     * 
+     * @param int $id The ID of the record to delete
+     * @return bool
      */
     public function deleteById(int $id): bool
     {
@@ -98,12 +112,13 @@ abstract class DefaultMapper implements MapperInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Dynamically instantiates an object of \p810\MySQL\Mapper\EntityInterface with the given data
+     * 
+     * @param array $state An associative array mapping properties to values for the new entity
+     * @return \p810\MySQL\Mapper\EntityInterface
      */
-    public function create(EntityInterface $entity): bool
+    protected function getEntityFrom(array $state): EntityInterface
     {
-        $created = $this->adapter->create($this->table, $entity->toArray())->execute();
-
-        return $created === 1;
+        return ($this->entity)::from($state);
     }
 }

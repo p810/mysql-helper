@@ -12,6 +12,15 @@ interface MapperInterface
     function __construct(AdapterInterface $adapter);
 
     /**
+     * Runs a raw query and returns the result from PDO
+     * 
+     * @param string $query
+     * @param array  $input
+     * @return bool|\PDOStatement
+     */
+    public function query(string $query, array $input = []);
+
+    /**
      * Returns a new instance of the entity this mapper represents, if the adapter has data where
      * the entity's unique identifier is equal to the given $id
      * 
@@ -21,27 +30,6 @@ interface MapperInterface
      * @return null|\p810\MySQL\Mapper\EntityInterface
      */
     public function findById(int $id): ?EntityInterface;
-
-    /**
-     * Updates the row with the given ID with the given entity for data
-     * 
-     * Some mappers may not need this functionality and may ignore it
-     * 
-     * @param int $id The ID of the record to update
-     * @param \p810\MySQL\Mapper\EntityInterface $entity The entity from which data should be pulled
-     * @return bool
-     */
-    public function updateById(int $id, EntityInterface $entity): bool;
-
-    /**
-     * Deletes the row with the given ID
-     * 
-     * Some mappers may not need this functionality and may ignore it
-     * 
-     * @param int $id The ID of the record to delete
-     * @return bool
-     */
-    public function deleteById(int $id): bool;
 
     /**
      * Inserts a new row with data from the given entity
