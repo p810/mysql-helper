@@ -54,8 +54,7 @@ class DefaultAdapterTest extends TestCase
 
     public function test_row_is_deleted_by_adapter()
     {
-        $query = $this->adapter->delete('test_table');
-        $query->where('message', 'Hello world!');
+        $query = $this->adapter->delete('test_table')->where('message', 'Hello world!');
 
         $this->assertEquals(1, $query->execute());
     }
