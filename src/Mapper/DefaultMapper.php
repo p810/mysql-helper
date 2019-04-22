@@ -4,6 +4,8 @@ namespace p810\MySQL\Mapper;
 
 use LogicException;
 
+use function array_map;
+
 abstract class DefaultMapper implements MapperInterface
 {
     /**
@@ -55,6 +57,28 @@ abstract class DefaultMapper implements MapperInterface
     public function query(string $query, array $input = [])
     {
         return $this->adapter->query($query, $input);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get(?callable $cb = null, $columns = '*'): ?array
+    {
+        $query = $this->adapter->get($this->table)->columns($columns);
+
+        if ($cb) {
+            $query = $cb($query);
+        }
+
+        $result = $query->execute();
+
+        if ($result) {
+            return array_map(function ($row) {
+                return $this->getEntityFrom($row);
+            }, $result);
+        }
+
+        return null;
     }
 
     /**

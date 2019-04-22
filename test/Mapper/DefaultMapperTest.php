@@ -83,4 +83,17 @@ class DefaultMapperTest extends TestCase
 
         $this->assertTrue($deleted);
     }
+
+    public function test_mapper_gets_two_entities()
+    {
+        $entities = $this->mapper->get(function ($q) {
+            return $q->orderBy('test_id', 'desc')->limit(2);
+        });
+
+        $this->assertEquals(2, count($entities));
+        
+        foreach ($entities as $entity) {
+            $this->assertInstanceOf(MockEntity::class, $entity);
+        }
+    }
 }

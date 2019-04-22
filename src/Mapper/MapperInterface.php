@@ -2,6 +2,8 @@
 
 namespace p810\MySQL\Mapper;
 
+use p810\MySQL\Query;
+
 interface MapperInterface
 {
     /**
@@ -38,4 +40,19 @@ interface MapperInterface
      * @return bool
      */
     public function create(EntityInterface $entity): bool;
+
+    /**
+     * Executes the given callback, providing it with a query builder object that should be modified
+     * to get the desired data and returned
+     * 
+     * The returned query builder will be executed and, if successful, an array containing each row in
+     * the result set as a \p810\MySQL\Mapper\EntityInterface object will be returned
+     * 
+     * The callback may be omitted to get the specified columns of all rows in the table
+     * 
+     * @param null|callable $cb      A callback used to modify the query
+     * @param array|string  $columns An array or string specifying which columns to fetch
+     * @return \p810\MySQL\Mapper\EntityInterface[]|null
+     */
+    public function get(?callable $cb = null, $columns = '*'): ?array;
 }
