@@ -58,4 +58,16 @@ class DefaultAdapter implements AdapterInterface
     {
         return $this->database->delete($source);
     }
+
+    /**
+     * Passes a raw query to the connection and returns a boolean or \PDOStatement
+     * 
+     * @param string $query The query to execute
+     * @param array  $input A list of user input to pass into the prepared statement
+     * @return bool|\PDOStatement
+     */
+    public function query(string $query, array $input = [])
+    {
+        return $this->database->raw($query, $input);
+    }
 }
