@@ -12,34 +12,26 @@ interface MapperInterface
     function __construct(AdapterInterface $adapter);
 
     /**
-     * Returns a new instance of the entity this mapper represents from the given data
-     * 
-     * @param array $state The data to build the entity from, e.g. a row from MySQL
-     * @return null|object
-     */
-    public function from(array $data): ?object;
-
-    /**
      * Returns a new instance of the entity this mapper represents, if the adapter has data where
      * the entity's unique identifier is equal to the given $id
      * 
      * Some mappers may not need this functionality and may ignore it
      * 
      * @param int $id
-     * @return null|object
+     * @return null|\p810\MySQL\Mapper\EntityInterface
      */
-    public function findById(int $id): ?object;
+    public function findById(int $id): ?EntityInterface;
 
     /**
      * Updates the row with the given ID with the given entity for data
      * 
      * Some mappers may not need this functionality and may ignore it
      * 
-     * @param int    $id     The ID of the record to update
-     * @param object $entity The entity from which data should be pulled
+     * @param int $id The ID of the record to update
+     * @param \p810\MySQL\Mapper\EntityInterface $entity The entity from which data should be pulled
      * @return bool
      */
-    public function updateById(int $id, object $entity): bool;
+    public function updateById(int $id, EntityInterface $entity): bool;
 
     /**
      * Deletes the row with the given ID
@@ -54,8 +46,8 @@ interface MapperInterface
     /**
      * Inserts a new row with data from the given entity
      * 
-     * @param object $entity The entity from which data should be pulled
+     * @param \p810\MySQL\Mapper\EntityInterface $entity The entity from which data should be pulled
      * @return bool
      */
-    public function create(object $entity): bool;
+    public function create(EntityInterface $entity): bool;
 }
