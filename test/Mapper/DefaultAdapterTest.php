@@ -31,7 +31,7 @@ class DefaultAdapterTest extends TestCase
     {
         $data = $this->adapter->get('test_table')->where('test_id', 1)->execute();
 
-        $this->assertNotNull($data);
+        $this->assertNotEmpty($data);
     }
 
     public function test_row_is_created_by_adapter()
