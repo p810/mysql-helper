@@ -12,7 +12,7 @@ use function property_exists;
 class Row implements EntityInterface
 {
     /**
-     * @var \p810\MySQL\Mapper\MapperInterface
+     * @var \p810\MySQL\Mapper\DefaultMapper
      */
     protected $mapper;
 
@@ -24,10 +24,10 @@ class Row implements EntityInterface
     /**
      * Injects dependencies necessary for this Row to be built
      * 
-     * @param \p810\MySQL\Mapper\MapperInterface $mapper
+     * @param \p810\MySQL\Mapper\DefaultMapper   $mapper
      * @param \p810\MySQL\Mapper\EntityInterface $entity
      */
-    function __construct(MapperInterface $mapper, EntityInterface $entity)
+    function __construct(DefaultMapper $mapper, EntityInterface $entity)
     {
         $this->mapper = $mapper;
         $this->entity = $entity;
