@@ -67,4 +67,12 @@ interface ConnectionInterface
      * @return \p810\MySQL\Query
      */
     public function delete(?string $table = null): Query;
+
+    /**
+     * Returns an instance of \p810\MySQL\Query with a Replace builder
+     * 
+     * @param array|null $columnsToValues A column => value array to pass to the builder
+     * @return \p810\MySQL\Query
+     */
+    public function replace(?array $columnsToValues = null): Query;
 }

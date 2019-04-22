@@ -262,4 +262,22 @@ class Connection implements ConnectionInterface
 
         return $query;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function replace(?array $columnsToValues = null): Query
+    {
+        $query = new Query($this, new Builder\Replace);
+
+        if ($columnsToValues) {
+            $columns = array_keys($columnsToValues);
+            $values  = array_values($columnsToValues);
+
+            $query->columns($columns);
+            $query->values($values);
+        }
+
+        return $query;
+    }
 }
