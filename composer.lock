@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "7b96de580f512f2a3ee972408a48d141",
+    "content-hash": "01d5e67ee20870b6a07315595a4d7d1f",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -456,20 +456,20 @@
         },
         {
             "name": "myclabs/deep-copy",
-            "version": "1.9.0",
+            "version": "1.9.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/myclabs/DeepCopy.git",
-                "reference": "78af75148f9fdd34ea727c8b529a9b4a8f7b740c"
+                "reference": "e6828efaba2c9b79f4499dae1d66ef8bfa7b2b72"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/78af75148f9fdd34ea727c8b529a9b4a8f7b740c",
-                "reference": "78af75148f9fdd34ea727c8b529a9b4a8f7b740c",
+                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/e6828efaba2c9b79f4499dae1d66ef8bfa7b2b72",
+                "reference": "e6828efaba2c9b79f4499dae1d66ef8bfa7b2b72",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.2"
+                "php": "^7.1"
             },
             "replace": {
                 "myclabs/deep-copy": "self.version"
@@ -477,8 +477,6 @@
             "require-dev": {
                 "doctrine/collections": "^1.0",
                 "doctrine/common": "^2.6",
-                "phpstan/phpstan": "^0.9.2",
-                "phpstan/phpstan-phpunit": "^0.9.4",
                 "phpunit/phpunit": "^7.1"
             },
             "type": "library",
@@ -502,7 +500,7 @@
                 "object",
                 "object graph"
             ],
-            "time": "2018-10-30T00:14:44+00:00"
+            "time": "2019-04-07T13:18:21+00:00"
         },
         {
             "name": "netresearch/jsonmapper",
@@ -2076,7 +2074,7 @@
         },
         {
             "name": "symfony/console",
-            "version": "v4.2.6",
+            "version": "v4.2.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
@@ -2373,16 +2371,16 @@
         },
         {
             "name": "vimeo/psalm",
-            "version": "3.2.7",
+            "version": "3.2.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vimeo/psalm.git",
-                "reference": "6e010d9db95275725e5ad6409c387eb173091f72"
+                "reference": "29b70442b11e3e66113935a2ee22e165a70c74a4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vimeo/psalm/zipball/6e010d9db95275725e5ad6409c387eb173091f72",
-                "reference": "6e010d9db95275725e5ad6409c387eb173091f72",
+                "url": "https://api.github.com/repos/vimeo/psalm/zipball/29b70442b11e3e66113935a2ee22e165a70c74a4",
+                "reference": "29b70442b11e3e66113935a2ee22e165a70c74a4",
                 "shasum": ""
             },
             "require": {
@@ -2449,7 +2447,7 @@
                 "inspection",
                 "php"
             ],
-            "time": "2019-04-12T15:32:35+00:00"
+            "time": "2019-04-20T21:54:17+00:00"
         },
         {
             "name": "webmozart/assert",
@@ -2602,7 +2600,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": "^7.1",
+        "php": "^7.2",
         "ext-pdo": "*"
     },
     "platform-dev": []
