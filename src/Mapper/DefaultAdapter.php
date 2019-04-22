@@ -24,14 +24,38 @@ class DefaultAdapter implements AdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function get(?string $source = null): object
+    public function get(string $source): object
     {
-        $query = $this->database->select();
+        return $this->database->select()->from($source);
+    }
 
-        if ($source) {
-            $query->from($source);
+    /**
+     * {@inheritdoc}
+     */
+    public function create(string $source, array $data): object
+    {
+        return $this->database->insert($data)->into($source);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function save(string $source, ?array $data = null): object
+    {
+        $query = $this->database->update($source);
+
+        if ($data) {
+            $query->set($data);
         }
 
         return $query;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function delete(string $source): object
+    {
+        return $this->database->delete($source);
     }
 }
