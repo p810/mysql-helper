@@ -8,6 +8,9 @@ use p810\MySQL\Test\Credentials;
 use p810\MySQL\ConnectionInterface;
 use p810\MySQL\Mapper\DefaultAdapter;
 
+use function sprintf;
+use function microtime;
+
 class DefaultAdapterTest extends TestCase
 {
     use Credentials;
