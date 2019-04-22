@@ -33,4 +33,30 @@ class DefaultAdapterTest extends TestCase
 
         $this->assertNotNull($data);
     }
+
+    public function test_row_is_created_by_adapter()
+    {
+        $query = $this->adapter->create('test_table', [
+            'message' => 'Hello world!'
+        ]);
+
+        $this->assertEquals(1, $query->execute());
+    }
+
+    public function test_row_is_updated_by_adapter()
+    {
+        $query = $this->adapter->save('test_table');
+        $query->set('message', sprintf('Hello world! I am being updated at: %s', microtime(true)));
+        $query->where('test_id', 2);
+
+        $this->assertEquals(1, $query->execute());
+    }
+
+    public function test_row_is_deleted_by_adapter()
+    {
+        $query = $this->adapter->delete('test_table');
+        $query->where('message', 'Hello world!');
+
+        $this->assertEquals(1, $query->execute());
+    }
 }
