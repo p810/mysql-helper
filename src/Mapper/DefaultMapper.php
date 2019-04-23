@@ -87,7 +87,11 @@ abstract class DefaultMapper implements MapperInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Returns a new instance of the entity this mapper represents, if the adapter has data where
+     * the entity's unique identifier is equal to the given $id
+     * 
+     * @param int $id
+     * @return null|\p810\MySQL\Mapper\EntityInterface
      */
     public function findById(int $id): ?EntityInterface
     {
