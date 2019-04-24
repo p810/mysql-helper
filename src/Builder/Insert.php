@@ -60,7 +60,7 @@ class Insert extends Builder
      */
     public function process(PDOStatement $statement)
     {
-        return $statement->rowCount();
+        return $this->getRowCount($statement);
     }
 
     /**

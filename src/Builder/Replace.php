@@ -27,7 +27,7 @@ class Replace extends Insert
      */
     public function process(PDOStatement $statement)
     {
-        return $statement->rowCount();
+        return $this->getRowCount($statement);
     }
 
     /**

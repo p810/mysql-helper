@@ -47,7 +47,7 @@ class Select extends Builder
      */
     public function process(PDOStatement $statement)
     {
-        return $statement->fetchAll(PDO::FETCH_ASSOC);
+        return $this->getResultSet($statement);
     }
 
     /**
