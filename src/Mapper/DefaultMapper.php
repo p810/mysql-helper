@@ -124,7 +124,11 @@ class DefaultMapper implements MapperInterface
     }
 
     /**
+     * Updates an entity's row by a certain ID
      * 
+     * @param int $id The ID of the row being updated
+     * @param \p810\MySQL\Mapper\EntityInterface The entity from which to source data for the update
+     * @return bool
      */
     public function updateById(int $id, EntityInterface $entity): bool
     {
@@ -150,7 +154,10 @@ class DefaultMapper implements MapperInterface
     }
 
     /**
+     * Deletes an entity's row by a certain ID
      * 
+     * @param int $id The ID of the row being deleted
+     * @return bool
      */
     public function deleteById(int $id): bool
     {
