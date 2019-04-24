@@ -29,7 +29,7 @@ interface ConnectionInterface
      * 
      * @param callable $processor The callback to use when the query is executed
      * @param string   $type      An optional query type for which this processor should be used
-     * @return self
+     * @return void
      */
     public function setDefaultProcessor(callable $processor, string $type = '*'): void;
 
