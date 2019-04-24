@@ -19,6 +19,11 @@ class Connection implements ConnectionInterface
     protected $autocommit;
 
     /**
+     * @var callable[]
+     */
+    public $processors = [];
+
+    /**
      * @param string $user       The user to connect to MySQL with
      * @param string $password   The password of the MySQL user
      * @param string $database   The database to connect to
@@ -66,6 +71,18 @@ class Connection implements ConnectionInterface
     public function prepare(string $query)
     {
         return $this->database->prepare($query);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultProcessor(callable $processor, string $type = '*'): void
+    {
+        if ($type !== '*') {
+            $type = strtolower($type);
+        }
+
+        $this->processors[$type] = $processor;
     }
 
     /**

@@ -80,7 +80,7 @@ class Query
         }
 
         $result = $statement->execute($this->builder->input);
-        $callback = $processor ?? $this->getDefaultProcessor();
+        $callback = $processor ?? $this->getProcessor();
 
         if ($result || ($callbackOnBool && $processor)) {
             $result = $callback($statement);
@@ -101,28 +101,11 @@ class Query
      * 
      * @return callable
      */
-    protected function getDefaultProcessor(): callable
+    public function getProcessor(): callable
     {
-        return $this->processor[$this->getQueryType()] ?? $this->processor['*'] ?? [$this->builder, 'process'];
-    }
-
-    /**
-     * Overrides the default processor for the given query type
-     * If no type is provided it will be registered to handle each type
-     * 
-     * @param callable $processor A callback used to process the result of a \PDOStatement
-     * @param string   $type      The type of query that this callback should handle
-     * @return self
-     */
-    public function setDefaultProcessor(callable $processor, string $type = '*'): self
-    {
-        if ($type !== '*') {
-            $type = strtolower($type);
-        }
-
-        $this->processor[$type] = $processor;
-
-        return $this;
+        return $this->database->processors[$this->getQueryType()]
+            ?? $this->database->processors['*']
+            ?? [$this->builder, 'process'];
     }
 
     /**

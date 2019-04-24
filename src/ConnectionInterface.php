@@ -25,6 +25,15 @@ interface ConnectionInterface
     public function prepare(string $query);
 
     /**
+     * Specifies a default query processor for all queries, or the given query type
+     * 
+     * @param callable $processor The callback to use when the query is executed
+     * @param string   $type      An optional query type for which this processor should be used
+     * @return self
+     */
+    public function setDefaultProcessor(callable $processor, string $type = '*'): void;
+
+    /**
      * Executes the given query and returns a \PDOStatement
      * 
      * @param string $query
