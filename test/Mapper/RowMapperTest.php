@@ -26,11 +26,9 @@ class RowMapperTest extends TestCase
         return new Connection($this->user, $this->password, $this->database, $this->host);
     }
 
-    public function setUp()
+    public function setUp(): void
     {
-        $adapter = new DefaultAdapter($this->getConnection());
-
-        $this->mapper = new MockRowMapper($adapter);
+        $this->mapper = new MockRowMapper($this->getConnection());
     }
 
     public function test_mapper_returns_row()
@@ -67,9 +65,6 @@ class RowMapperTest extends TestCase
         $this->assertEquals($message, $row->message);
     }
 
-    /**
-     * @todo Again, there has got to be a better solution than this manual query
-     */
     public function test_mapper_creates_row()
     {
         $entity = new MockEntity('Hello world! I am being created during a test case');
@@ -78,15 +73,7 @@ class RowMapperTest extends TestCase
 
         $this->assertTrue($created);
 
-        $query = $this->mapper->query("select LAST_INSERT_ID()");
-
-        if ($query) {
-            $id = $query->fetchColumn();
-
-            return $id;
-        }
-
-        throw new Exception;
+        return $this->mapper->lastInsertId();
     }
 
     /**

@@ -2,74 +2,68 @@
 
 namespace p810\MySQL\Mapper;
 
+use PDO;
+use PDOStatement;
 use LogicException;
+use p810\MySQL\Query;
+use p810\MySQL\ConnectionInterface;
 
 use function array_map;
 
-abstract class DefaultMapper implements MapperInterface
+class DefaultMapper implements MapperInterface
 {
     /**
-     * A key (column) that can be used to uniquely identify an entity in MySQL
-     * 
-     * @var string
-     */
-    public $key;
-
-    /**
-     * The name of the table where rows of this entity are stored
-     * 
      * @var string
      */
     public $table;
 
     /**
-     * The class name of the entity this mapper represents
-     * 
+     * @var string
+     */
+    public $key;
+
+    /**
      * @var string
      */
     protected $entity;
 
     /**
-     * @var \p810\MySQL\Mapper\AdapterInterface
+     * @var \p810\MySQL\ConnectionInterface
      */
     protected $adapter;
 
     /**
      * {@inheritdoc}
      */
-    function __construct(AdapterInterface $adapter)
+    function __construct(ConnectionInterface $connection)
     {
-        $this->adapter = $adapter;
+        $this->adapter = $connection;
 
         if (! $this->table || ! $this->entity) {
-            throw new LogicException('A child of \p810\MySQL\Mapper\DefaultMapper must specify the table and entity it represents');
+            throw new LogicException('Children of \p810\MySQL\Mapper\DefaultMapper must define their $table and $entity to use certain functionality');
         }
     }
 
     /**
      * {@inheritdoc}
      */
-    public function create(EntityInterface $entity): bool
+    public function create(EntityInterface $entity, ?callable $cb = null): bool
     {
-        $created = $this->adapter->create($this->table, $entity->toArray())->execute();
+        $query = $this->adapter->insert($entity->toArray())->into($this->table);
 
-        return $created === 1;
+        if ($cb) {
+            $query = $cb($query, $entity);
+        }
+
+        return $query->execute() != false;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function query(string $query, array $input = [])
+    public function read(?callable $cb = null): ?array
     {
-        return $this->adapter->query($query, $input);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function get(?callable $cb = null, $columns = '*'): ?array
-    {
-        $query = $this->adapter->get($this->table)->columns($columns);
+        $query = $this->adapter->select('*')->from($this->table);
 
         if ($cb) {
             $query = $cb($query);
@@ -87,71 +81,139 @@ abstract class DefaultMapper implements MapperInterface
     }
 
     /**
-     * Returns a new instance of the entity this mapper represents, if the adapter has data where
-     * the entity's unique identifier is equal to the given $id
+     * Queries for a row with the given ID and returns an entity if successful
      * 
      * @param int $id
      * @return null|\p810\MySQL\Mapper\EntityInterface
+     * @throws \LogicException if the mapper's $key property is not defined
      */
     public function findById(int $id): ?EntityInterface
     {
-        if ($this->key) {
-            $result = $this->adapter->get($this->table)->where($this->key, $id)->execute();
+        $this->requireKeyToBeSetFor('findById');
 
-            if ($result) {
-                return $this->getEntityFrom($result[0]);
-            }
+        return $this->first(function (Query $q) use ($id) {
+            return $q->where($this->key, $id);
+        });
+    }
+
+    /**
+     * Retrieves the first result from a call to \p810\MySQL\Mapper\DefaultMapper::read()
+     * 
+     * @param null|callable $cb An optional callback used to modify the query
+     * @return null|\p810\MySQL\Mapper\EntityInterface
+     */
+    public function first(?callable $cb = null): ?EntityInterface
+    {
+        $results = $this->read($cb);
+
+        return $results[0] ?? null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function update(EntityInterface $entity, ?callable $cb = null): bool
+    {
+        $query = $this->adapter->update($this->table)->set($entity->toArray());
+
+        if ($cb) {
+            $query = $cb($query, $entity);
+        }
+
+        return $query->execute() != false;
+    }
+
+    /**
+     * 
+     */
+    public function updateById(int $id, EntityInterface $entity): bool
+    {
+        $this->requireKeyToBeSetFor('updateById');
+
+        return $this->update($entity, function (Query $q, EntityInterface $entity) use ($id) {
+            return $q->where($this->key, $id);
+        });
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function delete(EntityInterface $entity, ?callable $cb = null): bool
+    {
+        $query = $this->adapter->delete($this->table);
+
+        if ($cb) {
+            $query = $cb($query, $entity);
+        }
+
+        return $query->execute() != false;
+    }
+
+    /**
+     * 
+     */
+    public function deleteById(int $id): bool
+    {
+        $this->requireKeyToBeSetFor('deleteById');
+
+        $query = $this->adapter->delete($this->table)->where($this->key, $id);
+
+        return $query->execute() != false;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function query(string $query, array $input = [])
+    {
+        return $this->adapter->raw($query, $input);
+    }
+
+    /**
+     * Fetches the ID of the last inserted row, if applicable
+     * 
+     * @todo Investigate whether it's possible to use LAST_INSERT_ID() over this query
+     *       (currently it's returning 0 each time due to some limitation with the driver)
+     * 
+     * @return null|int
+     */
+    public function lastInsertId(): ?int
+    {
+        $this->requireKeyToBeSetFor('lastInsertId');
+
+        $result = $this->query("select $this->key from $this->table order by $this->key desc limit 1");
+
+        if ($result instanceof PDOStatement) {
+            $result = $result->fetch(PDO::FETCH_ASSOC);
+
+            return (int) $result[$this->key];
         }
 
         return null;
     }
 
     /**
-     * Updates the row with the given ID with the given entity for data
+     * Returns a new instance of the entity represented by the mapper
      * 
-     * @param int $id The ID of the record to update
-     * @param \p810\MySQL\Mapper\EntityInterface $entity The entity from which data should be pulled
-     * @return bool
-     */
-    public function updateById(int $id, EntityInterface $entity): bool
-    {
-        if ($this->key) {
-            $query = $this->adapter->save($this->table, $entity->toArray());
-            $query->where($this->key, $id);
-            
-            $rowCount = $query->execute();
-
-            return $rowCount !== false && $rowCount >= 1;
-        }
-
-        return false;
-    }
-
-    /**
-     * Deletes the row with the given ID
-     * 
-     * @param int $id The ID of the record to delete
-     * @return bool
-     */
-    public function deleteById(int $id): bool
-    {
-        if ($this->key) {
-            $rowCount = $this->adapter->delete($this->table)->where($this->key, $id);
-
-            return $rowCount !== false && $rowCount >= 1;
-        }
-
-        return false;
-    }
-
-    /**
-     * Dynamically instantiates an object of \p810\MySQL\Mapper\EntityInterface with the given data
-     * 
-     * @param array $state An associative array mapping properties to values for the new entity
-     * @return \p810\MySQL\Mapper\EntityInterface
+     * @param array $state The data used to construct the entity
+     * @return \p810\MySQL\Mapper\EntityInterface 
      */
     protected function getEntityFrom(array $state): EntityInterface
     {
         return ($this->entity)::from($state);
+    }
+
+    /**
+     * Raises a \LogicException for the given $method if the property $key is not set on the mapper
+     * 
+     * @param string $method The method that requires the $key property be set
+     * @return void
+     * @throws \LogicException if the mapper has not specified a value for its $key
+     */
+    protected function requireKeyToBeSetFor(string $method = null): void
+    {
+        if (! $this->key) {
+            throw new LogicException("\p810\MySQL\Mapper\DefaultMapper::$method() failed: A key is required and must be specified in Mapper::\$key");
+        }
     }
 }

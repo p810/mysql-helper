@@ -3,6 +3,8 @@
 namespace p810\MySQL\Test\Mapper;
 
 use PDO;
+use PDOStatement;
+use p810\MySQL\Query;
 use p810\MySQL\Connection;
 use PHPUnit\Framework\TestCase;
 use p810\MySQL\Test\Credentials;
@@ -22,21 +24,32 @@ class DefaultMapperTest extends TestCase
      */
     protected $mapper;
 
-    /**
-     * @var \p810\MySQL\Mapper\AdapterInterface
-     */
-    protected $adapter;
-
-    public function setUp()
+    public function setUp(): void
     {
-        $this->adapter = new DefaultAdapter($this->getConnection());
-
-        $this->mapper = new MockMapper($this->adapter);
+        $this->mapper = new MockMapper($this->getConnection());
     }
 
     protected function getConnection(): ConnectionInterface
     {
         return new Connection($this->user, $this->password, $this->database, $this->host);
+    }
+
+    public function test_mapper_reads_data_without_criteria()
+    {
+        $entityList = $this->mapper->read();
+
+        $this->assertIsArray($entityList);
+        $this->assertContainsOnlyInstancesOf(MockEntity::class, $entityList);
+    }
+
+    public function test_mapper_reads_data_with_criteria()
+    {
+        $entityList = $this->mapper->read(function (Query $q) {
+            return $q->limit(1);
+        });
+
+        $this->assertIsArray($entityList);
+        $this->assertCount(1, $entityList);
     }
 
     public function test_mapper_finds_row_by_id(): EntityInterface
@@ -60,40 +73,31 @@ class DefaultMapperTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function test_mapper_creates_row_from_entity(): EntityInterface
+    public function test_mapper_creates_row_from_entity()
     {
         $entity = new MockEntity('Hello everyone');
 
         $created = $this->mapper->create($entity);
 
         $this->assertTrue($created);
+    }
 
-        return $entity;
+    public function test_mapper_gets_last_inserted_id(): int
+    {
+        $id = $this->mapper->lastInsertId();
+
+        $this->assertIsInt($id);
+
+        return $id;
     }
 
     /**
-     * @todo I feel like there should be a cleaner solution to this?
+     * @depends test_mapper_gets_last_inserted_id
      */
-    public function test_mapper_deletes_by_id()
+    public function test_mapper_deletes_by_id(int $id)
     {
-        $query = $this->adapter->query("select test_id from test_table order by test_id desc limit 1");
-        $result = $query->fetch(PDO::FETCH_ASSOC);
-
-        $deleted = $this->mapper->deleteById($result['test_id']);
+        $deleted = $this->mapper->deleteById($id);
 
         $this->assertTrue($deleted);
-    }
-
-    public function test_mapper_gets_two_entities()
-    {
-        $entities = $this->mapper->get(function ($q) {
-            return $q->orderBy('test_id', 'desc')->limit(2);
-        });
-
-        $this->assertEquals(2, count($entities));
-        
-        foreach ($entities as $entity) {
-            $this->assertInstanceOf(MockEntity::class, $entity);
-        }
     }
 }
