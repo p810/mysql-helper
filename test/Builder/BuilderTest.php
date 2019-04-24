@@ -79,6 +79,18 @@ class BuilderTest extends TestCase
         $this->assertEquals('insert into users (username, password) values (?, ?), (?, ?)', $query->build());
     }
 
+    public function test_insert_builder_with_on_duplicate_key_update()
+    {
+        $query = new Insert;
+
+        $query->into('users')
+              ->columns(['username'])
+              ->values(['Payton'])
+              ->onDuplicateKeyUpdate('user_id', 1);
+        
+        $this->assertEquals('insert into users (username) values (?) on duplicate key update user_id = ?', $query->build());
+    }
+
     public function test_update_builder_with_single_set()
     {
         $query = new Update;

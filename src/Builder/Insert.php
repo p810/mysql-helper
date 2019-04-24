@@ -4,6 +4,7 @@ namespace p810\MySQL\Builder;
 
 use PDO;
 use PDOStatement;
+use p810\MySQL\Builder\Grammar\Expression;
 
 use function array_map;
 use function p810\MySQL\commas;
@@ -50,7 +51,7 @@ class Insert extends Builder
     protected $ignore;
 
     /**
-     * @var bool
+     * @var \p810\MySQL\Builder\Grammar\Expression[]
      */
     protected $updateOnDuplicate;
 
@@ -177,9 +178,9 @@ class Insert extends Builder
      * @param bool $shouldUpdateOnDuplicate
      * @return self
      */
-    public function onDuplicateKeyUpdate(bool $shouldUpdateOnDuplicate = true): self
+    public function onDuplicateKeyUpdate(string $column, $value): self
     {
-        $this->updateOnDuplicate = $shouldUpdateOnDuplicate;
+        $this->updateOnDuplicate[] = new Expression($column, $this->bind($value));
 
         return $this;
     }
@@ -190,9 +191,9 @@ class Insert extends Builder
      * @param bool $shouldUpdateOnDuplicate
      * @return self
      */
-    public function updateDuplicate(bool $shouldUpdateOnDuplicate): self
+    public function updateDuplicate(string $column, $value): self
     {
-        return $this->onDuplicateKeyUpdate($shouldUpdateOnDuplicate);
+        return $this->onDuplicateKeyUpdate($column, $value);
     }
 
     /**
@@ -206,7 +207,7 @@ class Insert extends Builder
             return null;
         }
 
-        return 'on duplicate key update';
+        return 'on duplicate key update ' . commas($this->updateOnDuplicate);
     }
 
     /**
