@@ -14,6 +14,11 @@ trait Where
     protected $wheres;
 
     /**
+     * @var string
+     */
+    protected $nextLogicalOperator;
+
+    /**
      * Appends an expression to the where clause
      * 
      * @param string $column   Lefthand side of the expression (column)
@@ -24,7 +29,37 @@ trait Where
      */
     public function where(string $column, $value, string $operator = '=', string $logical = 'and'): self
     {
+        if ($this->nextLogicalOperator) {
+            $logical = $this->nextLogicalOperator;
+            
+            $this->nextLogicalOperator = null;
+        }
+        
         $this->wheres[] = new Expression($column, $this->prepareValue($value), $operator, $logical);
+
+        return $this;
+    }
+
+    /**
+     * Sets the next logical operator to be "or," overriding the value passed with the function
+     * 
+     * @return self
+     */
+    public function or(): self
+    {
+        $this->nextLogicalOperator = 'or';
+
+        return $this;
+    }
+
+    /**
+     * Sets the next logical operator to be "and," overriding the value passed with the function
+     * 
+     * @return self
+     */
+    public function and(): self
+    {
+        $this->nextLogicalOperator = 'and';
 
         return $this;
     }
@@ -88,6 +123,31 @@ trait Where
     }
 
     /**
+     * An alias for \p810\MySQL\Builder\Grammar\Where::whereNotEquals(), but specifies
+     * "or" as the logical operator
+     * 
+     * @param string $column Lefthand side of the expression (column)
+     * @param mixed  $value  Righthand side of the expression (value)
+     * @return self
+     */
+    public function orWhereNotEquals(string $column, $value): self
+    {
+        return $this->whereNotEquals($column, $value, 'or');
+    }
+
+    /**
+     * An alias for \p810\MySQL\Builder\Grammar\Where::orWhereNotEquals()
+     * 
+     * @param string $column Lefthand side of the expression (column)
+     * @param mixed  $value  Righthand side of the expression (value)
+     * @return self
+     */
+    public function orWhereNot(string $column, $value): self
+    {
+        return $this->orWhereNotEquals($column, $value);
+    }
+
+    /**
      * Appends an expression with "<" as the comparison operator
      * 
      * @param string $column  Lefthand side of the expression (column)
@@ -98,6 +158,19 @@ trait Where
     public function whereLess(string $column, $value, string $logical = 'and'): self
     {
         return $this->where($column, $value, '<', $logical);
+    }
+
+    /**
+     * An alias for \p810\MySQL\Builder\Grammar\Where::whereLess(), but specifies
+     * "or" as the logical operator
+     * 
+     * @param string $column Lefthand side of the expression (column)
+     * @param mixed  $value  Righthand side of the expression (value)
+     * @return self
+     */
+    public function orWhereLess(string $column, $value): self
+    {
+        return $this->whereLess($column, $value, 'or');
     }
 
     /**
@@ -114,6 +187,19 @@ trait Where
     }
 
     /**
+     * An alias for \p810\MySQL\Builder\Grammar\Where::whereLessOrEqual(), but specifies
+     * "or" as the logical operator
+     * 
+     * @param string $column Lefthand side of the expression (column)
+     * @param mixed  $value  Righthand side of the expression (value)
+     * @return self
+     */
+    public function orWhereLessOrEqual(string $column, $value): self
+    {
+        return $this->whereLessOrEqual($column, $value, 'or');
+    }
+
+    /**
      * Appends an expression with ">" as the comparison operator
      * 
      * @param string $column  Lefthand side of the expression (column)
@@ -124,6 +210,19 @@ trait Where
     public function whereGreater(string $column, $value, string $logical = 'and'): self
     {
         return $this->where($column, $value, '>', $logical);
+    }
+
+    /**
+     * An alias for \p810\MySQL\Builder\Grammar\Where::whereGreater(), but specifies
+     * "or" as the logical operator
+     * 
+     * @param string $column Lefthand side of the expression (column)
+     * @param mixed  $value  Righthand side of the expression (value)
+     * @return self
+     */
+    public function orWhereGreater(string $column, $value): self
+    {
+        return $this->whereGreater($column, $value, 'or');
     }
 
     /**
@@ -140,6 +239,19 @@ trait Where
     }
 
     /**
+     * An alias for \p810\MySQL\Builder\Grammar\Where::whereGreaterOrEqual() that specifies
+     * "or" as the logical operator
+     * 
+     * @param string $column Lefthand side of the expression (column)
+     * @param mixed  $value  Righthand side of the expression (value)
+     * @return self
+     */
+    public function orWhereGreaterOrEqual(string $column, $value): self
+    {
+        return $this->whereGreaterOrEqual($column, $value, 'or');
+    }
+
+    /**
      * Appends an expression with "like" as the comparison operator
      * 
      * @param string $column  Lefthand side of the expression (column)
@@ -150,6 +262,19 @@ trait Where
     public function whereLike(string $column, $value, string $logical = 'and'): self
     {
         return $this->where($column, $value, 'like', $logical);
+    }
+
+    /**
+     * An alias for \p810\MySQL\Builder\Grammar\Where::whereLike() that specifies
+     * "or" as the logical operator
+     * 
+     * @param string $column Lefthand side of the expression (column)
+     * @param mixed  $value  Righthand side of the expression (value)
+     * @return self
+     */
+    public function orWhereLike(string $column, $value): self
+    {
+        return $this->whereLike($column, $value, 'or');
     }
 
     /**
@@ -166,6 +291,19 @@ trait Where
     }
 
     /**
+     * An alias for \p810\MySQL\Builder\Grammar\Where::whereIn() that specifies
+     * "or" as the logical operator
+     * 
+     * @param string $columnOrExpression     Lefthand side of the expression (column or an expression)
+     * @param \p810\MySQL\Query|array $value Righthand side of the expression (a list of scalar values or subquery)
+     * @return self
+     */
+    public function orWhereIn(string $columnOrExpression, $value): self
+    {
+        return $this->whereIn($columnOrExpression, $value, 'or');
+    }
+
+    /**
      * Appends an expression with "not in" as the comparison operator
      * 
      * @param string $columnOrExpression     Lefthand side of the expression (column or an expression)
@@ -176,6 +314,19 @@ trait Where
     public function whereNotIn(string $columnOrExpression, $value, string $logical = 'and'): self
     {
         return $this->where($columnOrExpression, $value, 'not in', $logical);
+    }
+
+    /**
+     * An alias for \p810\MySQL\Builder\Grammar\Where::whereNotIn() that specifies
+     * "or" as the logical operator
+     * 
+     * @param string $columnOrExpression     Lefthand side of the expression (column or an expression)
+     * @param \p810\MySQL\Query|array $value Righthand side of the expression (a list of scalar values or subquery)
+     * @return self
+     */
+    public function orWhereNotIn(string $columnOrExpression, $value): self
+    {
+        return $this->whereNotIn($columnOrExpression, $value, 'or');
     }
 
     /**
