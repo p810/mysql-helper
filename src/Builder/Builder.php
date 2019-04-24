@@ -2,6 +2,7 @@
 
 namespace p810\MySQL\Builder;
 
+use PDO;
 use PDOStatement;
 
 use function ucfirst;
@@ -90,5 +91,27 @@ abstract class Builder
         });
 
         return $columns;
+    }
+
+    /**
+     * Returns the number of rows affected by a query
+     * 
+     * @param \PDOStatement $statement Result of the query
+     * @return int
+     */
+    public function getRowCount(PDOStatement $statement): int
+    {
+        return $statement->rowCount($statement);
+    }
+
+    /**
+     * Returns a result set as a list of associative arrays
+     * 
+     * @param \PDOStatement $statement Result of the query
+     * @return array
+     */
+    public function getResultSet(PDOStatement $statement): array
+    {
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 }
