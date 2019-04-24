@@ -15,7 +15,7 @@ class ConnectionTest extends TestCase
      */
     protected $connection;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->connection = new Connection($this->user, $this->password, $this->database, $this->host);
     }
