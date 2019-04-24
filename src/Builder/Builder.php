@@ -101,7 +101,7 @@ abstract class Builder
      */
     public function getRowCount(PDOStatement $statement): int
     {
-        return $statement->rowCount($statement);
+        return $statement->rowCount();
     }
 
     /**
