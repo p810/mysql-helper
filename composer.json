@@ -1,6 +1,6 @@
 {
     "name": "p810/mysql-helper",
-    "description": "A MySQL DBAL with a human friendly API.",
+    "description": "A fluent query builder and lightweight data mapper for MySQL",
     "authors": [
         {
             "name": "Payton",
