@@ -20,11 +20,13 @@ class ConnectionTest extends TestCase
         $this->connection = new Connection($this->user, $this->password, $this->database, $this->host);
     }
 
-    public function test_connection_returns_pdo() {
+    public function test_connection_returns_pdo()
+    {
         $this->assertInstanceOf(PDO::class, $this->connection->getPdo());
     }
 
-    public function test_connection_begins_transaction() {
+    public function test_connection_begins_transaction()
+    {
         $this->assertTrue($this->connection->transact());
         $this->assertTrue($this->connection->inTransaction());
     }
