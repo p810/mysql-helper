@@ -4,7 +4,6 @@ namespace p810\MySQL;
 
 use PDO;
 use PDOException;
-use p810\MySQL\Exception\TransactionCouldNotBeginException;
 
 class Connection implements ConnectionInterface
 {
@@ -168,13 +167,12 @@ class Connection implements ConnectionInterface
      * Begins a transaction with the database 
      * 
      * @throws \PDOException from \PDO::beginTransaction() if the attempt to start a transaction fails
-     * @throws \p810\MySQL\Exception\TransactionCouldNotBeginException if \PDO::beginTransaction() returns false
      * @return bool
      */
     public function transact(): bool
     {
-        if (! $this->inTransaction() && ! $this->database->beginTransaction()) {
-            throw new TransactionCouldNotBeginException;
+        if (! $this->inTransaction()) {
+            return $this->database->beginTransaction();
         }
 
         return true;
@@ -184,7 +182,6 @@ class Connection implements ConnectionInterface
      * An alias for \p810\MySQL\Connection::transact()
      * 
      * @throws \PDOException from \PDO::beginTransaction() if the attempt to start a transaction fails
-     * @throws \p810\MySQL\Exception\TransactionCouldNotBeginException if \PDO::beginTransaction() returns false
      * @return bool
      */
     public function beginTransaction(): bool
