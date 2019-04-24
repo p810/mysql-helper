@@ -26,43 +26,17 @@ class BuilderTest extends TestCase
         $this->assertEquals("select username, password from users where username = ? or username = ? order by username desc limit 2", $query->build());
     }
 
-    public function test_select_builder_with_nested_where()
-    {
-        $query = new Select;
-
-        $query->from('users')
-              ->select('username')
-              ->where('user_id', 1)
-              ->whereNested(function ($query) {
-                  return $query->where('user_id', 2)->orWhere('user_id', 3);
-              })
-              ->where('user_id', 4);
-        
-        $this->assertEquals('select username from users where user_id = ? and (user_id = ? or user_id = ?) and user_id = ?', $query->build());
-    }
-
-    public function test_select_builder_with_nested_where_as_first_clause()
-    {
-        $query = new Select;
-
-        $query->from('users')
-              ->select('username')
-              ->whereNested(function ($query) {
-                  return $query->where('user_id', 1)->orWhere('user_id', 2);
-              })
-              ->orWhere('user_id', 3);
-        
-        $this->assertEquals('select username from users where (user_id = ? or user_id = ?) or user_id = ?', $query->build());
-    }
-
     public function test_insert_builder_single_row()
     {
         $query = new Insert;
 
         $query->into('users')
-              ->values(['Payton', 'password']);
+              ->values(['Payton', 'password'])
+              ->highPriority()
+              ->ignore()
+              ->onDuplicateKeyUpdate('foo', 'bar');
         
-        $this->assertEquals('insert into users values (?, ?)', $query->build());
+        $this->assertEquals('insert high_priority ignore into users values (?, ?) on duplicate key update foo = ?', $query->build());
     }
 
     public function test_insert_builder_with_multiple_rows()
@@ -77,18 +51,6 @@ class BuilderTest extends TestCase
               );
         
         $this->assertEquals('insert into users (username, password) values (?, ?), (?, ?)', $query->build());
-    }
-
-    public function test_insert_builder_with_on_duplicate_key_update()
-    {
-        $query = new Insert;
-
-        $query->into('users')
-              ->columns(['username'])
-              ->values(['Payton'])
-              ->onDuplicateKeyUpdate('user_id', 1);
-        
-        $this->assertEquals('insert into users (username) values (?) on duplicate key update user_id = ?', $query->build());
     }
 
     public function test_update_builder_with_single_set()
