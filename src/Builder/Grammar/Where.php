@@ -31,8 +31,8 @@ trait Where
     {
         if ($this->nextLogicalOperator) {
             $logical = $this->nextLogicalOperator;
-            
-            $this->nextLogicalOperator = null;
+
+            unset($this->nextLogicalOperator);
         }
         
         $this->wheres[] = new Expression($column, $this->prepareValue($value), $operator, $logical);
