@@ -5,3 +5,4 @@ html/
 public/
 .db.env
 .vscode/
+.phpunit.result.cache
