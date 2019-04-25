@@ -67,11 +67,14 @@ function get_cli_arg(string $name): ?string
     $value = null;
 
     foreach ($argv as $arg) {
-        if (substr($arg, 0, strlen($name) + 3) !== "--$name=") {
+        $pattern = sprintf('/^--%s(?:=?|\s*)([A-Za-z0-9_.\/\\-]+)$/i', $name);
+        $matched = preg_match($pattern, $arg, $matches);
+
+        if ($matched === false) {
             continue;
         }
 
-        [,$value] = explode('=', $arg);
+        $value = $matches[1];
     }
 
     return $value;
