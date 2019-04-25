@@ -21,16 +21,9 @@ class QueryTest extends TestCase
      */
     protected $connection;
 
-    /**
-     * @var string
-     */
-    protected $table;
-
     public function setUp(): void
     {
         $this->connection = new Connection($this->user, $this->password, $this->database, $this->host);
-
-        $this->table = $_ENV['table'];
     }
 
     public function test_default_processor_returns_array()

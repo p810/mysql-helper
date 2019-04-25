@@ -41,6 +41,11 @@ trait Credentials
     public $port;
 
     /**
+     * @var string
+     */
+    public $table;
+
+    /**
      * @return void
      * @throws \OutOfBoundsException
      * @throws \InvalidArgumentException
@@ -48,8 +53,8 @@ trait Credentials
      * @throws \RuntimeException
      */
     function __construct() {
-        parent::__construct();
         $this->loadDatabaseCredentials();
+        parent::__construct();
     }
 
     /**
@@ -87,11 +92,12 @@ trait Credentials
             throw new RuntimeException('json_decode() failed: ' . json_last_error_msg());
         }
         
-        $this->user     = $contents->user;
-        $this->host     = $contents->host;
-        $this->port     = $contents->port ?? 3306;
+        $this->user     = $contents->user     ?? 'root';
+        $this->host     = $contents->host     ?? '127.0.0.1';
+        $this->port     = $contents->port     ?? 3306;
+        $this->table    = $contents->table    ?? 'p810_mysql_helper_test';
+        $this->password = $contents->password ?? 'root';
         $this->database = $contents->database;
-        $this->password = $contents->password;
 
         return true;
     }

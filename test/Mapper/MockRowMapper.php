@@ -2,11 +2,14 @@
 
 namespace p810\MySQL\Test\Mapper;
 
+use p810\MySQL\Test\Credentials;
 use p810\MySQL\Mapper\RowMapper;
 use p810\MySQL\ConnectionInterface;
 
 class MockRowMapper extends RowMapper
 {
+    use Credentials;
+
     /**
      * {@inheritdoc}
      */
@@ -27,8 +30,7 @@ class MockRowMapper extends RowMapper
      */
     function __construct(ConnectionInterface $adapter)
     {
-        $this->table = $_ENV['table'];
-
+        $this->loadDatabaseCredentials();
         parent::__construct($adapter);
     }
 }
