@@ -1,0 +1,17 @@
+## mysql-helper Documentation
+
+1. [Getting Started](#)
+    - [Connecting to the database](#)
+    - [Connection options](#)
+    - [Transactions](#)
+2. [Query Builder](#)
+    - [Select](#)
+    - [Insert](#)
+    - [Update](#)
+    - [Delete](#)
+    - [Replace](#)
+    - [Raw queries](#)
+3. [Data Mapper](#)
+    - [Entities](#)
+    - [Mappers](#)
+    - [Live entities](#)
