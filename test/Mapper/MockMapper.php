@@ -2,6 +2,7 @@
 
 namespace p810\MySQL\Test\Mapper;
 
+use p810\MySQL\ConnectionInterface;
 use p810\MySQL\Mapper\DefaultMapper;
 
 class MockMapper extends DefaultMapper
@@ -9,7 +10,7 @@ class MockMapper extends DefaultMapper
     /**
      * {@inheritdoc}
      */
-    public $table = 'test_table';
+    public $table;
 
     /**
      * {@inheritdoc}
@@ -20,4 +21,14 @@ class MockMapper extends DefaultMapper
      * {@inheritdoc}
      */
     public $key = 'test_id';
+
+    /**
+     * {@inheritdoc}
+     */
+    function __construct(ConnectionInterface $adapter)
+    {
+        $this->table = $_ENV['table'];
+
+        parent::__construct($adapter);
+    }
 }

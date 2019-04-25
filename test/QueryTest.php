@@ -21,21 +21,28 @@ class QueryTest extends TestCase
      */
     protected $connection;
 
+    /**
+     * @var string
+     */
+    protected $table;
+
     public function setUp(): void
     {
         $this->connection = new Connection($this->user, $this->password, $this->database, $this->host);
+
+        $this->table = $_ENV['table'];
     }
 
     public function test_default_processor_returns_array()
     {
-        $query = $this->connection->select()->from('test_table')->limit(1);
+        $query = $this->connection->select()->from($this->table)->limit(1);
 
         $this->assertIsArray($query->execute());
     }
 
     public function test_default_processor_returns_row_count()
     {
-        $query = $this->connection->insert(['message' => 'Hey there!'])->into('test_table');
+        $query = $this->connection->insert(['message' => 'Hey there!'])->into($this->table);
 
         $this->assertEquals(1, $query->execute());
     }
@@ -46,7 +53,7 @@ class QueryTest extends TestCase
             return $statement->fetch(PDO::FETCH_OBJ);
         });
 
-        $query = $this->connection->select()->from('test_table')->limit(1);
+        $query = $this->connection->select()->from($this->table)->limit(1);
 
         $this->assertInstanceOf(stdClass::class, $query->execute());
     }
@@ -57,14 +64,14 @@ class QueryTest extends TestCase
             return 'Hello world!';
         }, 'select');
 
-        $query = $this->connection->select()->from('test_table');
+        $query = $this->connection->select()->from($this->table);
 
         $this->assertEquals('Hello world!', $query->execute());
     }
 
     public function test_user_supplied_processor_overrides_all()
     {
-        $query = $this->connection->select()->from('test_table');
+        $query = $this->connection->select()->from($this->table);
 
         $result = $query->execute(function (PDOStatement $statement) {
             return 'Hello universe!';
