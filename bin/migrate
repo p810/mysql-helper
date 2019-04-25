@@ -1,0 +1,78 @@
+#!/usr/bin/env php
+<?php
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+/**
+ * get CLI arguments
+ */
+if (! isset($argv)) {
+    exit('This script must be run in a CLI environment' . PHP_EOL);
+}
+
+$options = [
+    'file'  => __DIR__ . '/../.db.env',
+    'table' => 'p810_mysql_helper_test'
+];
+
+foreach ($options as $variable => $default) {
+    $$variable = get_cli_arg($variable) ?? $default;
+}
+
+/**
+ * get the database credentials file
+ */
+file_exists($file) or exit('Failed to locate your database configuration. Is it saved some place other than .db.env?' . PHP_EOL);
+
+$credentials = json_decode(@file_get_contents($file));
+
+/**
+ * begin running the SQL queries to import the test data
+ */
+$connection = new p810\MySQL\Connection($credentials->user, $credentials->password, $credentials->database);
+
+$createTable = "create table if not exists $table (
+    test_id int(11) not null auto_increment,
+    message varchar(140) not null,
+    primary key (test_id)
+)";
+
+$connection->raw("drop table if exists $table")->execute();
+$created = $connection->raw($createTable)->execute();
+
+if ($created) {
+    foreach (['I am the first row', 'I am the second row'] as $message) {
+        $inserted = $connection->insert(['message' => $message])->into($table)->execute();
+
+        if (! $inserted) {
+            exit('Failed to put one or more rows into the test table' . PHP_EOL);
+        }
+    }
+
+    exit('Successfully imported sample data. You can now run the test suite.' . PHP_EOL);
+}
+
+/**
+ * Iterates over $argv and attempts to match a given $name to an argument passed
+ * via the command line when this script was invoked. Returns null if no such arg
+ * could be found, or a string containing the value that the user supplied for that
+ * argument.
+ * 
+ * @param string $name The name of the argument
+ * @return null|string
+ */
+function get_cli_arg(string $name): ?string
+{
+    global $argv;
+    $value = null;
+
+    foreach ($argv as $arg) {
+        if (substr($arg, 0, strlen($name) + 3) !== "--$name=") {
+            continue;
+        }
+
+        [,$value] = explode('=', $arg);
+    }
+
+    return $value;
+}
