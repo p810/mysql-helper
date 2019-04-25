@@ -8,6 +8,5 @@
 
     <php>
         <env name="database_credentials" value=".db.env" />
-        <env name="table" value="p810_mysql_helper_test" />
     </php>
 </phpunit>
