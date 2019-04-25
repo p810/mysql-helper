@@ -7,7 +7,7 @@
     </testsuites>
 
     <php>
-        <!-- Points the test suite to the file that should load database credentials -->
         <env name="database_credentials" value=".db.env" />
+        <env name="table" value="p810_mysql_helper_test" />
     </php>
 </phpunit>
