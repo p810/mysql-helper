@@ -32,14 +32,6 @@ class Update extends Builder
     protected $table;
 
     /**
-     * @inheritdoc
-     */
-    public function process(PDOStatement $statement)
-    {
-        return $this->getRowCount($statement);
-    }
-
-    /**
      * Specifies the table to update data in
      * 
      * @param string $table The table to update

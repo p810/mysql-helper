@@ -22,14 +22,6 @@ class Delete extends Builder
     protected $table;
 
     /**
-     * @inheritdoc
-     */
-    public function process(PDOStatement $statement)
-    {
-        return $this->getRowCount($statement);
-    }
-
-    /**
      * Specifies the table to remove data from
      * 
      * @param string $table The table to remove data from

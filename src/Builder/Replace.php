@@ -24,14 +24,6 @@ class Replace extends Insert
 
     /**
      * @inheritdoc
-     */
-    public function process(PDOStatement $statement)
-    {
-        return $this->getRowCount($statement);
-    }
-
-    /**
-     * @inheritdoc
      * @throws \InvalidArgumentException
      */
     public function compilePriority(): ?string

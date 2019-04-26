@@ -43,14 +43,6 @@ class Select extends Builder
     protected $columns;
 
     /**
-     * @inheritdoc
-     */
-    public function process(PDOStatement $statement)
-    {
-        return $this->getResultSet($statement);
-    }
-
-    /**
      * Specifies which columns to return in the result set
      * 
      * @param array|string $columns Either a string or array; if an array, it can
@@ -154,5 +146,21 @@ class Select extends Builder
         }
 
         return "limit $this->limit";
+    }
+
+    /**
+     * Prefixes column names with their corresponding tables, e.g. for a
+     * query that joins data from foreign tables
+     * 
+     * @param array $columns An associative array of tables => columns
+     * @return string[]
+     */
+    protected function prefixColumns(array $columns): array
+    {
+        array_walk($columns, function (&$column, $table) {
+            $column = "$table.$column";
+        });
+
+        return $columns;
     }
 }

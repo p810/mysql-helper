@@ -22,10 +22,4 @@ class ComplexWhere extends Builder
 
         return parentheses($clauses);
     }
-
-    /**
-     * @inheritdoc
-     * @return void
-     */
-    public function process(PDOStatement $statement) {}
 }

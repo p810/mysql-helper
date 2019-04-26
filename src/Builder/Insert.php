@@ -56,14 +56,6 @@ class Insert extends Builder
     protected $updateOnDuplicate;
 
     /**
-     * @inheritdoc
-     */
-    public function process(PDOStatement $statement)
-    {
-        return $this->getRowCount($statement);
-    }
-
-    /**
      * Specifies the table that the data should be inserted into
      * 
      * @param string $table The table to insert data into
