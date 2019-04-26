@@ -20,21 +20,24 @@ You can also specify columns for your query in the same fashion by calling `p810
 To specify a table for the query, call `p810\MySQL\Builder\Select::from()`:
 
 ```php
-$connection->select()->from('table') // select * from table ...
+// select * from table ...
+$connection->select()->from('table')
 ```
 
 ### `limit()`
 To limit the number of results returned from the database, call `p810\MySQL\Builder\Select::limit()`:
 
 ```php
-$connection->select()->from('table')->limit(2) // select * from table ... limit 2
+// select * from table ... limit 2
+$connection->select()->from('table')->limit(2)
 ```
 
 ### `orderBy()`
 To order the result set returned from the database by a certain column, call `p810\MySQL\Builder\Select::orderBy()` and specify the column name and direction (ascending or descending) that the results should be ordered (defaults to `desc`):
 
 ```php
-$connection->select()->from('table')->orderBy('table_id') // select * from table order by table_id desc
+// select * from table order by table_id desc
+$connection->select()->from('table')->orderBy('table_id')
 ```
 
 > **Note:** This method may be called more than once to specify multiple `order by` clauses.
@@ -45,7 +48,8 @@ $connection->select()->from('table')->orderBy('table_id') // select * from table
 For example, adding a simple `WHERE` clause (*column* = *value*) can be done with `p810\MySQL\Builder\Grammar\Where::where()`:
 
 ```php
-$connection->select()->from('table')->where('table_id', 1) // select * from table where table_id = ? ...
+// select * from table where table_id = ? ...
+$connection->select()->from('table')->where('table_id', 1)
 ```
 
 > **Note:** These methods automatically bind the values you provide for use in a prepared statement.
@@ -60,7 +64,8 @@ $query = $connection->select()->from('table')->whereLike('table_value', 'foo')->
 You can also chain methods with `and()` and `or()`:
 
 ```php
-$connection->select()->from('table')->where('foo', 'bar')->or()->where('bar', 'foo') // select * from table where foo = ? or bar = ?
+// select * from table where foo = ? or bar = ?
+$connection->select()->from('table')->where('foo', 'bar')->or()->where('bar', 'foo')
 ```
 
 For more information on what all you can do with `p810\MySQL\Builder\Grammar\Where` see the [API docs](#).
@@ -71,9 +76,10 @@ Data may be joined from other tables by the methods provided by `p810\MySQL\Buil
 Each join type can be called by providing a table name for the clause, like:
 
 ```php
-$connection->select()->from('table')->innerJoin('other_table') // select * from table inner join other_table ...
-
-$connection->select()->from('table')->rightJoin('other_table') // select * from table right join other_table ...
+// select * from table inner join other_table ...
+$connection->select()->from('table')->innerJoin('other_table')
+// select * from table right join other_table ...
+$connection->select()->from('table')->rightJoin('other_table')
 ```
 
 You can specify that the tables should be joined by the same column with `using()`:
@@ -92,7 +98,7 @@ $connection->select()->from('table')->innerJoin('other_table')->on('table.table_
 
 > **Note:** You must manually specify the table prefix for each column in the expression.
 
-Comparable to `p810\MySQL\Builder\Grammar\Where`, `p810\MySQL\Builder\Grammar\Join::on()` has an equivalent method that specifies `or` as the logical operator, `orOn()`:
+`p810\MySQL\Builder\Grammar\Join::on()` has an equivalent method that specifies `or` as the logical operator, `orOn()`:
 
 ```php
 // select * from table inner join other_table on table.table_id = other_table.foo or table.table_id = other_table.bar
