@@ -26,40 +26,29 @@ class QueryTest extends TestCase
         $this->connection = new Connection($this->user, $this->password, $this->database, $this->host);
     }
 
-    public function test_default_processor_returns_array()
+    public function test_select_processor_returns_array()
     {
         $query = $this->connection->select()->from($this->table)->limit(1);
 
         $this->assertIsArray($query->execute());
     }
 
-    public function test_default_processor_returns_row_count()
+    public function test_wildcard_processor_returns_row_count()
     {
         $query = $this->connection->insert(['message' => 'Hey there!'])->into($this->table);
 
         $this->assertEquals(1, $query->execute());
     }
 
-    public function test_default_processor_overridden_by_wildcard()
+    public function test_select_processor_is_overridden()
     {
-        $this->connection->setDefaultProcessor(function (PDOStatement $statement) {
+        $this->connection->setCommandHandler(function (PDOStatement $statement) {
             return $statement->fetch(PDO::FETCH_OBJ);
-        });
+        }, 'select');
 
         $query = $this->connection->select()->from($this->table)->limit(1);
 
         $this->assertInstanceOf(stdClass::class, $query->execute());
-    }
-
-    public function test_wildcard_processor_overridden_by_specific_processor()
-    {
-        $this->connection->setDefaultProcessor(function (PDOStatement $statement) {
-            return 'Hello world!';
-        }, 'select');
-
-        $query = $this->connection->select()->from($this->table);
-
-        $this->assertEquals('Hello world!', $query->execute());
     }
 
     public function test_user_supplied_processor_overrides_all()
@@ -67,9 +56,9 @@ class QueryTest extends TestCase
         $query = $this->connection->select()->from($this->table);
 
         $result = $query->execute(function (PDOStatement $statement) {
-            return 'Hello universe!';
+            return 'Hello world!';
         });
 
-        $this->assertEquals('Hello universe!', $result);
+        $this->assertEquals('Hello world!', $result);
     }
 }

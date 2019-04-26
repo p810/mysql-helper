@@ -23,11 +23,6 @@ class Query
     protected $database;
 
     /**
-     * @var array<string,callable>
-     */
-    protected $processor = [];
-
-    /**
      * Specifies the Connection and Builder that the query should use
      * 
      * @param \p810\MySQL\ConnectionInterface $database The Connection to use
@@ -73,39 +68,15 @@ class Query
      */
     public function execute(?callable $processor = null, bool $callbackOnBool = false)
     {
-        $statement = $this->database->prepare($this->builder->build());
+        $statement = $this->database->query($this->builder->build(), $this->builder->input);
 
-        if (! $statement instanceof PDOStatement) {
-            return false;
+        if ($statement || $callbackOnBool) {
+            $callback = $processor ?? $this->database->getCommandHandler($this->getCommand());
+
+            return $callback($statement);
         }
 
-        $result = $statement->execute($this->builder->input);
-        $callback = $processor ?? $this->getProcessor();
-
-        if ($result || ($callbackOnBool && $processor)) {
-            $result = $callback($statement);
-        }
-
-        return $result;
-    }
-
-    /**
-     * Returns the proper callback to handle a \PDOStatement
-     * 
-     * The order of precedence in which a processor is chosen is:
-     *  1. A callback registered explicitly for the type of query
-     *  2. A callback registered to handle every type of query
-     *  3. The Builder object's `process()` method
-     * 
-     * If a callback is provided to the `execute()` call, it will supersede all of the above
-     * 
-     * @return callable
-     */
-    public function getProcessor(): callable
-    {
-        return $this->database->processors[$this->getQueryType()]
-            ?? $this->database->processors['*']
-            ?? [$this->builder, 'process'];
+        return null;
     }
 
     /**
@@ -113,7 +84,7 @@ class Query
      * 
      * @return string
      */
-    protected function getQueryType(): string
+    protected function getCommand(): string
     {
         $reflection = new ReflectionClass($this->builder);
 

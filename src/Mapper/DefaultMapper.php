@@ -173,7 +173,7 @@ class DefaultMapper implements MapperInterface
      */
     public function query(string $query, array $input = [])
     {
-        return $this->adapter->raw($query, $input);
+        return $this->adapter->query($query, $input);
     }
 
     /**

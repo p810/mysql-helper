@@ -18,9 +18,9 @@ class Connection implements ConnectionInterface
     protected $autocommit;
 
     /**
-     * @var callable[]
+     * @var \p810\MySQL\Processor
      */
-    public $processors = [];
+    protected $processor;
 
     /**
      * @param string $user       The user to connect to MySQL with
@@ -53,47 +53,72 @@ class Connection implements ConnectionInterface
         if ($exceptions) {
             $this->shouldThrowExceptions();
         }
-    }
 
-    /**
-     * @inheritdoc
-     */
-    public function getPdo(): PDO
-    {
-        return $this->database;
-    }
-
-    /**
-     * @throws \PDOException
-     * @return false|\PDOStatement
-     */
-    public function prepare(string $query)
-    {
-        return $this->database->prepare($query);
+        $this->processor = new PdoProcessor;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setDefaultProcessor(callable $processor, string $type = '*'): void
+    public function getConnector(): object
     {
-        if ($type !== '*') {
-            $type = strtolower($type);
-        }
-
-        $this->processors[$type] = $processor;
+        return $this->database;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function raw(string $query, array $input = [])
+    public function prepare(string $query): ?object
+    {
+        $statement = $this->database->prepare($query);
+
+        if (! $statement) {
+            return null;
+        }
+
+        return $statement;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setProcessor(Processor $processor): void
+    {
+        $this->processor = $processor;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setCommandHandler(callable $processor, string $command = '*'): void
+    {
+        if ($command !== '*') {
+            $command = strtolower($command);
+        }
+
+        $this->processor->setHandler($processor, $command);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCommandHandler(string $command = '*'): callable
+    {
+        return $this->processor->getHandler($command);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function query(string $query, array $input = []): ?object
     {
         $statement = $this->prepare($query);
 
-        if ($statement) {
-            $statement->execute($input);
+        if (! $statement) {
+            return null;
         }
+
+        $statement->execute($input);
 
         return $statement;
     }

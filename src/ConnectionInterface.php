@@ -5,42 +5,60 @@ namespace p810\MySQL;
 use PDO;
 
 /**
- * Represents a connection to the database and wraps an instance of \PDO.
+ * Represents a connection to the database
  */
 interface ConnectionInterface
 {
     /**
-     * Returns the connection's \PDO instance
+     * Returns the connector that the class uses to communicate with the database
      * 
-     * @return \PDO
+     * @return object
      */
-    public function getPdo(): PDO;
+    public function getConnector(): object;
 
     /**
-     * Proxies the provided $query into \PDO::prepare()
+     * Prepares the given query for execution by the database and returns a statement object
      * 
-     * @throws \PDOException
-     * @return false|\PDOStatement
+     * Returns null if the query could not be prepared
+     * 
+     * @return null|object
      */
-    public function prepare(string $query);
+    public function prepare(string $query): ?object;
+
+    /**
+     * Overrides the default \p810\MySQL\Processor that the class uses
+     * 
+     * @param \p810\MySQL\Processor $processor
+     * @return void
+     */
+    public function setProcessor(Processor $processor): void;
 
     /**
      * Specifies a default query processor for all queries, or the given query type
      * 
      * @param callable $processor The callback to use when the query is executed
-     * @param string   $type      An optional query type for which this processor should be used
+     * @param string   $command   An optional query type for which this processor should be used
      * @return void
      */
-    public function setDefaultProcessor(callable $processor, string $type = '*'): void;
+    public function setCommandHandler(callable $processor, string $command = '*'): void;
 
     /**
-     * Executes the given query and returns a \PDOStatement
+     * Returns a callback to process the result of a query
+     * 
+     * @return callable
+     */
+    public function getCommandHandler(string $command = '*'): callable;
+
+    /**
+     * Executes the given query and returns a statement object
+     * 
+     * Returns null if the query could not be prepared or executed
      * 
      * @param string $query
      * @param array  $input
-     * @return bool|\PDOStatement
+     * @return null|object
      */
-    public function raw(string $query, array $input = []);
+    public function query(string $query, array $input = []): ?object;
 
     /**
      * Returns an instance of \p810\MySQL\Query with a Select builder

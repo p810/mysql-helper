@@ -22,7 +22,7 @@ class ConnectionTest extends TestCase
 
     public function test_connection_returns_pdo()
     {
-        $this->assertInstanceOf(PDO::class, $this->connection->getPdo());
+        $this->assertInstanceOf(PDO::class, $this->connection->getConnector());
     }
 
     public function test_connection_begins_transaction()

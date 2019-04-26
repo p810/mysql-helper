@@ -75,7 +75,7 @@ interface MapperInterface
      * 
      * @param string $query The query to execute
      * @param array  $input An optional array of user input
-     * @return bool|\PDOStatement
+     * @return null|object
      */
     public function query(string $query, array $input = []);
 }
