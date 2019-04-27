@@ -186,3 +186,67 @@ An `on duplicate key update ...` clause may be appended with `p810\MySQL\Builder
 // insert into table (...) on duplicate key update table_id = ?
 $connection->insert()->into('table')->onDuplicateKeyUpdate('table_id', 'blah')
 ```
+
+## Update
+Updates are started with `p810\MySQL\Connection::update()`. You can optionally specify a table at instantiation via this method, or later on with `p810\MySQL\Builder\Update::table()`.
+
+```php
+// update table ...
+$connection->update('table')
+$connection->update()->table('table')
+```
+
+### `set()`
+`p810\MySQL\Builder\Update::set()` takes an associative array mapping columns to values. This method can be called more than once if necessary.
+
+```php
+// update table set message = ?
+$connection->update('table')->set(['message' => 'Testing, one two'])
+```
+
+### Where clauses
+> :notebook: See the [above section on `WHERE` clauses](#) or the [API docs](#) for more information.
+
+## Delete
+Deleting rows from a table is very straightforward. `p810\MySQL\Connection::delete()` may take a string specifying the table to delete rows from, or the table can be given to `p810\MySQL\Builder\Delete::from()`:
+
+```php
+// delete from table ...
+$connection->delete('table')
+$connection->delete()->from('table')
+```
+
+### Where clauses
+> :notebook: See the [above section on `WHERE` clauses](#) or the [API docs](#) for more information.
+
+## Replace
+`REPLACE` queries are identical to `INSERT` except that, if one of the given rows has a conflicting primary or unique key, it will delete that row before inserting its replacement. This query builder shares the same API as both `p810\MySQL\Builder\Insert` and `p810\MySQL\Builder\Update`.
+
+To use an assignment list (update):
+
+```php
+// replace into table set message = ? where table_id = ?
+$connection->replace('table')->set('message', 'Hello world')->where('table_id', 1)
+```
+
+> :bulb: **Note:** `p810\MySQL\Builder\Replace::set()` may be called more than one time to specify multiple assignments, or an associative array may be passed for the same effect.
+
+To use a value list (insert):
+
+```php
+// replace into table (message) values (?) where table_id = ?
+$connection->replace('table')
+           ->columns(['message'])
+           ->values(['Hello world'])
+           ->where('table_id', 1)
+```
+
+### Where clauses
+> :notebook: See the [above section on `WHERE` clauses](#) or the [API docs](#) for more information.
+
+## Raw queries
+`p810\MySQL\Connection::query()` takes a query string and an optional array of parameters to bind to the query for a prepared statement. If the query couldn't be prepared this method will return `null`. Otherwise, it will return `false` if query execution failed, or a `PDOStatement` object.
+
+```php
+$connection->query('select last_insert_id() from users limit 1')
+```
