@@ -41,7 +41,7 @@ To order the result set returned from the database by a certain column, call `p8
 $connection->select()->from('table')->orderBy('table_id')
 ```
 
-> :bulb: *Note:** This method may be called more than once to specify multiple `order by` clauses.
+> :bulb: **Note:** This method may be called more than once to specify multiple `order by` clauses.
 
 ### Where clauses
 `WHERE` clauses may be added to a query by the methods provided in `p810\MySQL\Builder\Grammar\Where`.
