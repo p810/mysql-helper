@@ -43,7 +43,7 @@ $connection->setCommandHandler(function (PDOStatement $statement) {
 }, 'select');
 ```
 
-> **Note:** Handlers that are called by `p810\MySQL\Connection` must take an instance of `PDOStatement` as their first argument.
+> :bulb: **Note:** Handlers that are called by `p810\MySQL\Connection` must take an instance of `PDOStatement` as their first argument.
 
 #### Overriding the default processor
 You can override the default `p810\MySQL\Processor` object with your own object by calling `p810\MySQL\Connection::setProcessor()`. Your object must extend `p810\MySQL\Processor`.

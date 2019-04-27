@@ -3,7 +3,7 @@
 
 Each method corresponds to a subclass of `p810\MySQL\Builder\Builder`. These objects can be fluently chained in any order to build your queries.
 
-> **Note:** These methods will return an instance of `p810\MySQL\Query`, which proxies your calls to an instance of `p810\MySQL\Builder\Builder`. You can directly instantiate the builder objects if you don't need the query functionality.
+> :bulb: **Note:** These methods will return an instance of `p810\MySQL\Query`, which proxies your calls to an instance of `p810\MySQL\Builder\Builder`. You can directly instantiate the builder objects if you don't need the query functionality.
 
 ## Select
 To start a `SELECT` query, run `p810\MySQL\Connection::select()`. You can pass a string or array to specify columns; no value defaults to `*`. If the given value is an array, it can either be a list (numeric array) or associative to specify table names before the columns:
@@ -41,7 +41,7 @@ To order the result set returned from the database by a certain column, call `p8
 $connection->select()->from('table')->orderBy('table_id')
 ```
 
-> **Note:** This method may be called more than once to specify multiple `order by` clauses.
+> :bulb: *Note:** This method may be called more than once to specify multiple `order by` clauses.
 
 ### Where clauses
 `WHERE` clauses may be added to a query by the methods provided in `p810\MySQL\Builder\Grammar\Where`.
@@ -53,7 +53,7 @@ For example, adding a simple `WHERE` clause (*column* = *value*) can be done wit
 $connection->select()->from('table')->where('table_id', 1)
 ```
 
-> **Note:** These methods automatically bind the values you provide for use in a prepared statement.
+> :bulb: **Note:** These methods automatically bind the values you provide for use in a prepared statement.
 
 Each `where*()` method has an `orWhere*()` counterpart. For example, `whereLike()` and `orWhereLike()`:
 
@@ -97,7 +97,7 @@ Or you can specify one or more expressions with `on()`:
 $connection->select()->from('table')->innerJoin('other_table')->on('table.table_id', 'other_table.foo')
 ```
 
-> **Note:** You must manually specify the table prefix for each column in the expression.
+> :bulb: **Note:** You must manually specify the table prefix for each column in the expression.
 
 `p810\MySQL\Builder\Grammar\Join::on()` has an equivalent method that specifies `or` as the logical operator, `orOn()`:
 
@@ -125,7 +125,7 @@ $connection->insert([
 ])
 ```
 
-> **Note:** Your values are automatically bound for a prepared statement.
+> :bulb: **Note:** Your values are automatically bound for a prepared statement.
 
 ### `into()`
 Specify the table that this data should be placed in with `p810\MySQL\Builder\Insert::into()`:
@@ -145,7 +145,7 @@ $connection->insert()->highPriority()->into('table')
 $connection->insert()->into('table')->lowPriority()
 ```
 
-> **Note:** `DELAYED` is not a supported option as it has been deprecated in MySQL 5.6.6 and removed in 5.7.
+> :bulb: **Note:** `DELAYED` is not a supported option as it has been deprecated in MySQL 5.6.6 and removed in 5.7.
 
 ### `ignore()`
 To ignore rows that may have invalid data and continue inserting valid rows (instead of erroring out), call `p810\MySQL\Builder\Insert::ignore()`:
