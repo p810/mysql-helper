@@ -28,8 +28,8 @@ class Replace extends Insert
      */
     public function compilePriority(): ?string
     {
-        if ($this->priority == 'high_priority') {
-            throw new InvalidArgumentException('Replace queries do not support the HIGH_PRIORITY modifier, only LOW_PRIORITY or DELAYED');
+        if ($this->priority && $this->priority !== 'low_priority') {
+            throw new InvalidArgumentException('REPLACE queries only support the LOW_PRIORITY modifier');
         }
 
         return parent::compilePriority();

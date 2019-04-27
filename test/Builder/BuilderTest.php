@@ -88,7 +88,7 @@ class BuilderTest extends TestCase
         $this->assertEquals('delete from users where username != ?', $query->build());
     }
 
-    public function test_replace_builder()
+    public function test_replace_builder_with_assignment_list()
     {
         $query = new Replace;
 
@@ -97,5 +97,16 @@ class BuilderTest extends TestCase
               ->set('password', 'abc123');
         
         $this->assertEquals('replace into users set username = ?, password = ?', $query->build());
+    }
+
+    public function test_replace_builder_with_value_list()
+    {
+        $query = new Replace;
+
+        $query->into('users')
+              ->columns(['username', 'password'])
+              ->values(['Carl', 'abc123']);
+        
+        $this->assertEquals('replace into users (username, password) values (?, ?)', $query->build());
     }
 }
