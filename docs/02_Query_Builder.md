@@ -205,7 +205,7 @@ $connection->update('table')->set(['message' => 'Testing, one two'])
 ```
 
 ### Where clauses
-> :notebook: See the [above section on `WHERE` clauses](#) or the [API docs](#) for more information.
+> :notebook: See the [above section on `WHERE` clauses](#where-clauses) or the [API docs](#) for more information.
 
 ## Delete
 Deleting rows from a table is very straightforward. `p810\MySQL\Connection::delete()` may take a string specifying the table to delete rows from, or the table can be given to `p810\MySQL\Builder\Delete::from()`:
@@ -217,7 +217,7 @@ $connection->delete()->from('table')
 ```
 
 ### Where clauses
-> :notebook: See the [above section on `WHERE` clauses](#) or the [API docs](#) for more information.
+> :notebook: See the [above section on `WHERE` clauses](#where-clauses) or the [API docs](#) for more information.
 
 ## Replace
 `REPLACE` queries are identical to `INSERT` except that, if one of the given rows has a conflicting primary or unique key, it will delete that row before inserting its replacement. This query builder shares the same API as both `p810\MySQL\Builder\Insert` and `p810\MySQL\Builder\Update`.
@@ -242,7 +242,7 @@ $connection->replace('table')
 ```
 
 ### Where clauses
-> :notebook: See the [above section on `WHERE` clauses](#) or the [API docs](#) for more information.
+> :notebook: See the [above section on `WHERE` clauses](#where-clauses) or the [API docs](#) for more information.
 
 ## Raw queries
 `p810\MySQL\Connection::query()` takes a query string and an optional array of parameters to bind to the query for a prepared statement. If the query couldn't be prepared this method will return `null`. Otherwise, it will return `false` if query execution failed, or a `PDOStatement` object.
