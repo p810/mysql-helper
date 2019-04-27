@@ -34,10 +34,10 @@ if ($result) {
 The available factory methods are `select()`, `insert()`, `update()`, `delete()`, and `replace()`. To run a query and get its `PDOStatement` object (rather than process the results), you can run `p810\MySQL\Connection::raw()`:
 
 ```php
-$statement = $connection->raw('select last_insert_id() from users limit 1');
+$statement = $connection->query('select last_insert_id() from users limit 1');
 ```
 
-`raw()` also supports binding input for prepared statements. Just pass an array after the query.
+`query()` also supports binding input for prepared statements. Just pass an array after the query.
 
 ### Entities and data mappers
 You can make models of your domain logic by implementing `p810\MySQL\Mapper\EntityInterface`. These models can be mapped to MySQL via implementations of `p810\MySQL\Mapper\MapperInterface`. Most mappers should extend `p810\MySQL\Mapper\DefaultMapper`, as it handles most operations out of the box:
@@ -113,7 +113,7 @@ $users = $mapper->read(function (\p810\MySQL\Query $query) use ($input) {
 });
 ```
 
-> **Note:** It's recommended that you specify your query's constraints in methods belonging to your mapper. Be careful not to run a CRUD method via the mapper without manipulating the query unless you have an absolute use case, otherwise you will end up with potentially large result sets or dangerous side effects. For example, `DefaultMapper::delete()` without any customization will delete *every* row in the table represented by your mapper.
+> :bulb: **Note:** It's recommended that you specify your query's constraints in methods belonging to your mapper. Be careful not to run a CRUD method via the mapper without manipulating the query unless you have an absolute use case, otherwise you will end up with potentially large result sets or dangerous side effects. For example, `DefaultMapper::delete()` without any customization will delete *every* row in the table represented by your mapper.
 
 If you want to run a generic query against the `p810\MySQL\Connection`, you can pass it through `MapperInterface::query()` which has the same signature as `Connection::raw()`.
 
