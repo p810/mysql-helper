@@ -1,5 +1,5 @@
 ## Connecting to the database
-To connect to the database, create a new instance of `p810\MySQL\Connection`:
+`p810\MySQL\ConnectionInterface` describes a connection to MySQL, that can be used to fluently build queries and automatically process the results. The default implementation provided by this package is `p810\MySQL\Connection` which relies on PDO as its connector. Create a new instance of this object by passing your username, password, and database: 
 
 ```php
 $connection = new p810\MySQL\Connection('username', 'password', 'database');
@@ -7,7 +7,7 @@ $connection = new p810\MySQL\Connection('username', 'password', 'database');
 
 The default hostname is `127.0.0.1`. This can be overridden by passing a string as the fourth argument.
 
-By default, the `Connection` will tell PDO that it should raise exceptions when an error occurs. To disable this via the constructor, pass `false` as the fifth argument.
+By default, `p810\MySQL\Connection` will tell PDO that it should raise exceptions when an error occurs. To disable this via the constructor, pass `false` as the fifth argument.
 
 If you want to specify any additional parameters for the DSN string that's passed into PDO's constructor, you can provide an associative array as the sixth argument.
 
@@ -26,11 +26,27 @@ $connection = new p810\MySQL\Connection(
 ```
 
 ### Get the `PDO` instance
-To get the instance of `PDO` that the `Connection` uses, call `Connection::getPdo()`:
+To get the instance of `PDO` that the `Connection` uses, call `Connection::getConnector()`:
 
 ```php
-$pdo = $connection->getPdo();
+$pdo = $connection->getConnector();
 ```
+
+### Query processors
+`p810\MySQL\Connection` relies on an instance of `p810\MySQL\PdoProcessor` to process queries.
+
+To specify a different callback for the processor to use for a given command (e.g. `SELECT`), call `p810\MySQL\Connection::setCommandHandler()`. If you only pass a callback to this method then your handler will be used for any command that doesn't already have an explicit callback defined. The following example returns an array of objects in response to a `SELECT` query:
+
+```php
+$connection->setCommandHandler(function (PDOStatement $statement) {
+    return $statement->fetchAll(PDO::FETCH_OBJ);
+}, 'select');
+```
+
+> **Note:** Handlers that are called by `p810\MySQL\Connection` must take an instance of `PDOStatement` as their first argument.
+
+#### Overriding the default processor
+You can override the default `p810\MySQL\Processor` object with your own object by calling `p810\MySQL\Connection::setProcessor()`. Your object must extend `p810\MySQL\Processor`.
 
 ## Connection options
 ### Setting PDO attributes
