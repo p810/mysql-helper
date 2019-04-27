@@ -1,4 +1,5 @@
-`p810\MySQL\Connection` has factory methods for basic CRUD operations with MySQL: `insert()`, `select()`, `update()`, and `delete()`. `replace()` is also supported. Manual queries may be executed with `raw()`.
+## Using the query builder
+`p810\MySQL\ConnectionInterface` objects have factory methods for basic CRUD operations with MySQL: `insert()`, `select()`, `update()`, and `delete()`. `replace()` is also supported. Manual queries may be executed with `query()`.
 
 Each method corresponds to a subclass of `p810\MySQL\Builder\Builder`. These objects can be fluently chained in any order to build your queries.
 
@@ -58,7 +59,7 @@ Each `where*()` method has an `orWhere*()` counterpart. For example, `whereLike(
 
 ```php
 // select * from table where table_value like ? or table_value like ?
-$query = $connection->select()->from('table')->whereLike('table_value', 'foo')->orWhereLike('table_value', 'bar')
+$connection->select()->from('table')->whereLike('table_value', 'foo')->orWhereLike('table_value', 'bar')
 ```
 
 You can also chain methods with `and()` and `or()`:
@@ -110,3 +111,78 @@ $connection->select()
 ```
 
 To see the rest of this functionality, consult the [API docs](#).
+
+## Insert
+To insert new data, call `p810\MySQL\Connection::insert()`, optionally passing an associative array of column to value pairs containing the data you're inserting:
+
+```php
+// insert into ...
+$connection->insert()
+// insert into ... (foo, bar) values (?, ?)
+$connection->insert([
+    'foo' => 'hello',
+    'bar' => 'world'
+])
+```
+
+> **Note:** Your values are automatically bound for a prepared statement.
+
+### `into()`
+Specify the table that this data should be placed in with `p810\MySQL\Builder\Insert::into()`:
+
+```php
+// insert into table ...
+$connection->insert()->into('table')
+```
+
+### Priority
+You can specify whether the query is of [high or low priority](https://stackoverflow.com/questions/3234972/what-are-the-advantages-of-update-low-priority-and-insert-delayed-into) by using `p810\MySQL\Builder\Insert::highPriority()` or `p810\MySQL\Builder\Insert::lowPriority()` respectively:
+
+```php
+// insert high_priority into table ...
+$connection->insert()->highPriority()->into('table')
+// insert low_priority into table ...
+$connection->insert()->into('table')->lowPriority()
+```
+
+> **Note:** `DELAYED` is not a supported option as it has been deprecated in MySQL 5.6.6 and removed in 5.7.
+
+### `ignore()`
+To ignore rows that may have invalid data and continue inserting valid rows (instead of erroring out), call `p810\MySQL\Builder\Insert::ignore()`:
+
+```php
+// insert ignore into table ...
+$connection->insert()->into('table')->ignore()
+```
+
+### `columns()` and `values()`
+Both `p810\MySQL\Builder\Insert::columns()` and `p810\MySQL\Builder\Insert::values()` take arrays to specify the query's columns and values:
+
+```php
+// insert into table (foo, bar) values (?, ?)
+$connection->insert()
+           ->into('table')
+           ->columns(['foo', 'bar'])
+           ->values(['hello', 'world'])
+```
+
+`p810\MySQL\Builder\Insert::values()` may take multiple arrays to insert multiple rows:
+
+```php
+// insert into table (foo, bar) values (?, ?), (?, ?)
+$connection->insert()
+           ->into('table')
+           ->columns(['foo', 'bar'])
+           ->values(
+               ['hello', 'world'],
+               ['hello', 'universe']
+            )
+```
+
+### `onDuplicateKeyUpdate()`
+An `on duplicate key update ...` clause may be appended with `p810\MySQL\Builder\Insert::onDuplicateKeyUpdate()` or the slightly shorter `p810\MySQL\Builder\Insert::updateDuplicate()`. These methods require a column and a value for the clause's expression. Multiple expressions may be appended by successive calls to the methods:
+
+```php
+// insert into table (...) on duplicate key update table_id = ?
+$connection->insert()->into('table')->onDuplicateKeyUpdate('table_id', 'blah')
+```
