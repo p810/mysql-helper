@@ -16,7 +16,7 @@ Connect to MySQL with a new instance of `p810\MySQL\Connection`:
 $connection = new p810\MySQL\Connection('username', 'password', 'database');
 ```
 
-> **Note:** For more connection options, see [the documentation](#).
+> **Note:** For more connection options, see [the documentation](docs/01_Getting_Started.md).
 
 Then use the builder factory methods to fluently build your SQL queries with `p810\MySQL\Builder\Builder`s:
 
@@ -127,7 +127,7 @@ $user->password = 'some_new_password1@%';
 $user->save();
 ```
 
-For more information on what's possible with the query builder and data mapper, check out [the documentation](#).
+For more information on what's possible with the query builder and data mapper, check out [the documentation](docs/03_Data_Mapper.md).
 
 ## Development
 ### Unit testing
