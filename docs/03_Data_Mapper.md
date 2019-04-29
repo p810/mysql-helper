@@ -117,7 +117,7 @@ $mapper->updateById(1, $entity);
 $mapper->deleteById(1);
 ```
 
-## `RowMapper` and `Row`
+## Live entities
 If you're worried about the verbosity of having to manage multiple objects for your models, or favor a more Active Record inspired approach, `p810\MySQL\Mapper\RowMapper` should make things a bit easier for you. This mapper extends `p810\MySQL\Mapper\DefaultMapper` in such a way that it returns instances of `p810\MySQL\Mapper\Row`, which is an `EntityInterface` that wraps around another `EntityInterface` *and* the `MapperInterface` that represents it.
 
 With a `p810\MySQL\Mapper\Row`, you can update and/or delete the database row associated with the object by calling `save()` or `delete()` respectively. Additional functionality for relationship modeling is planned for a future release.
