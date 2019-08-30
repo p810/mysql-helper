@@ -1,3 +1,46 @@
+### 3.1.0
+- Changes to how you interact with query processor objects
+    * `p810\MySQL\ConnectionInterface::setCommandHandler()` has been removed
+    * `p810\MySQL\ConnectionInterface::getProcessor()` has been added
+- `Processor` is now its own namespace
+    * `p810\MySQL\Processor` has become `p810\MySQL\Processor\AbstractProcessor`
+    * `p810\MySQL\Processor\ProcessorInterface` has been added so that the `ConnectionInterface` isn't dependent on an implementation
+    * `p810\MySQL\PdoProcessor` is now `p810\MySQL\Processor\Pdo`
+- `Builder` classes now have a `COMMAND` constant which will be used to identify them to the processor; previously it used the Reflection API which I wasn't fond of
+- Removed `p810\MySQL\Builder\Select::prefixColumns()` because it's easier just to write the prefix, and I didn't test it at first so I failed to realize that only one column could claim a table name, which isn't very helpful (and I didn't feel it was worth adding the complexity to support nested arrays, because who would ever want to write the query like that)<sup>*</sup>
+- Fixed an oversight in `p810\MySQL\Mapper\Row::toArray()` where columns (properties) with null values would not be included
+- Moved `p810\MySQL\ConnectionInterface::getDsn()` to `p810\MySQL\makePdoDsn()`
+- Updated source to respect PSR-2 guideline on line length
+    * This only applies to code lines, for the most part I left documentation untouched
+    * Strings are left in tact to allow searching / preveng ugliness
+    * In general I tried to keep lines under 80 chars, however some go up to 120 (the hard limit) for readability and presentation reasons -- which is *ok* IIRC
+- Fixed some problems with the migration script...
+    * Suppressed a PHP notice that's raised when `get_cli_arg()` is called and no arguments were passed
+    * Added a condition to check for the success of `json_decode()`
+    * Removed `--table` since it's defined in the configuration file
+- ... and then rewrote the migration script
+    * Integrated League's CLImate package
+    * Added a usage message
+    * Added a shorthand form for the `--file` argument (`-f`, obviously)
+    * Reworked parts of the script to be compliant with PSR-2
+
+Technically (according to semantic versioning) this should be a major release, but I don't feel like jumping up a major version number yet, and no one uses this package so it doesn't matter if I make backwards incompatible changes. One day I'll advertise this package somewhere, but for now I'll enjoy my autonomy.
+
+When I pushed 3.0.0 back in April, I felt uneasy about the way that the processor logic was coupled to the `Connection` class, though I wasn't entirely sure why or what to do about it. I was too busy fixing other parts of the codebase that I felt deserved more attention at the time, and my concern fell to the background for a bit. Well, now I've addressed it, and I feel a bit better about this little project overall. It was weird to have a method on the `ConnectionInterface` to do what was obviously the responsibility of a processor. Also, I've recognized that having a dependency on an abstract implementation is still a violation of the dependency inversion principle. So I made it so that `ConnectionInterface` expects a `ProcessorInterface` instead of the former, abstract `Processor` class. Learning!
+
+<details>
+<summary><sup>* Here's an example of what that would look like:</sup></summary>
+
+```php
+$query->select([
+    ['user' => 'username'],
+    ['user' => 'password']
+]) // select user.username, user.password (...)
+```
+
+I could invert the keys and values, but that would not be as intuitive and presents the problem of collisions with column names, which, though less likely for the majority of cases, is still a problem. It's easiest just to write it out.
+</details>
+
 ### 3.0.0
 - Rewrites the way that queries are compiled
     * Builder objects follow SRP better: `p810\MySQL\Processor` replaces `p810\MySQL\Builder\Builder::handleResults()`
