@@ -13,7 +13,7 @@ trait Join
     protected $joins;
 
     /**
-     * @var \p810\MySQL\Builder\Grammar\JoinExpression
+     * @var null|\p810\MySQL\Builder\Grammar\JoinExpression
      */
     protected $currentJoin;
 
