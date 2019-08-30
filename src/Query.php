@@ -5,6 +5,7 @@ namespace p810\MySQL;
 use PDOStatement;
 use BadMethodCallException;
 use p810\MySQL\Builder\Builder;
+use p810\MySQL\Processor\ProcessorInterface;
 
 use function strtolower;
 use function method_exists;
@@ -29,15 +30,15 @@ class Query
     /**
      * Specifies the Connection and Builder that the query should use
      * 
-     * @param \p810\MySQL\ConnectionInterface $database  The Connection to use
-     * @param \p810\MySQL\Builder\Builder     $builder   The Builder instance to use
-     * @param \p810\MySQL\Processor           $processor Command processor to use
+     * @param \p810\MySQL\ConnectionInterface $database 
+     * @param \p810\MySQL\Builder\Builder $builder
+     * @param \p810\MySQL\Processor\ProcessorInterface $processor
      * @return void
      */
     function __construct(
         ConnectionInterface $database,
         Builder $builder,
-        Processor $processor
+        ProcessorInterface $processor
     ) {
         $this->database = $database;
         $this->builder = $builder;

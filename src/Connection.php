@@ -4,6 +4,8 @@ namespace p810\MySQL;
 
 use PDO;
 use PDOException;
+use p810\MySQL\Processor\ProcessorInterface;
+use p810\MySQL\Processor\Pdo as PdoProcessor;
 
 class Connection implements ConnectionInterface
 {
@@ -18,7 +20,7 @@ class Connection implements ConnectionInterface
     protected $autocommit;
 
     /**
-     * @var \p810\MySQL\Processor
+     * @var \p810\MySQL\Processor\ProcessorInterface
      */
     protected $processor;
 
@@ -82,7 +84,15 @@ class Connection implements ConnectionInterface
     /**
      * {@inheritdoc}
      */
-    public function setProcessor(Processor $processor): void
+    public function getProcessor(): ProcessorInterface
+    {
+        return $this->processor;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setProcessor(ProcessorInterface $processor): void
     {
         $this->processor = $processor;
     }
@@ -223,11 +233,7 @@ class Connection implements ConnectionInterface
         $query = new Query($this, new Builder\Insert, $this->processor);
 
         if ($columnsToValues) {
-            $columns = array_keys($columnsToValues);
-            $values  = array_values($columnsToValues);
-
-            $query->columns($columns);
-            $query->values($values);
+            $query->setColumnsAndValues($columnsToValues);
         }
 
         return $query;
@@ -269,11 +275,7 @@ class Connection implements ConnectionInterface
         $query = new Query($this, new Builder\Replace, $this->processor);
 
         if ($columnsToValues) {
-            $columns = array_keys($columnsToValues);
-            $values  = array_values($columnsToValues);
-
-            $query->columns($columns);
-            $query->values($values);
+            $query->setColumnsAndValues($columnsToValues);
         }
 
         return $query;

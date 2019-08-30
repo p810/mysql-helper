@@ -3,6 +3,7 @@
 namespace p810\MySQL;
 
 use PDO;
+use p810\MySQL\Processor\ProcessorInterface;
 
 /**
  * Represents a connection to the database
@@ -26,12 +27,19 @@ interface ConnectionInterface
     public function prepare(string $query): ?object;
 
     /**
+     * Returns a \p810\MySQL\Processor
+     * 
+     * @return \p810\MySQL\Processor\ProcessorInterface
+     */
+    public function getProcessor(): ProcessorInterface;
+
+    /**
      * Overrides the default \p810\MySQL\Processor that the class uses
      * 
-     * @param \p810\MySQL\Processor $processor
+     * @param \p810\MySQL\Processor\ProcessorInterface $processor
      * @return void
      */
-    public function setProcessor(Processor $processor): void;
+    public function setProcessor(ProcessorInterface $processor): void;
 
     /**
      * Executes the given query and returns a statement object
