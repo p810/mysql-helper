@@ -39,9 +39,9 @@ class Connection implements ConnectionInterface
         string $host = '127.0.0.1',
         bool $exceptions = true,
         array $dsnParams = [],
-        array $options = [])
-    {
-        $arguments = [$this->getDsn($host, $database, $dsnParams), $user, $password];
+        array $options = []
+    ) {
+        $arguments = [makePdoDsn($host, $database, $dsnParams), $user, $password];
 
         if (! empty($options)) {
             $arguments[] = $options;
@@ -90,26 +90,6 @@ class Connection implements ConnectionInterface
     /**
      * {@inheritdoc}
      */
-    public function setCommandHandler(callable $processor, string $command = '*'): void
-    {
-        if ($command !== '*') {
-            $command = strtolower($command);
-        }
-
-        $this->processor->setHandler($processor, $command);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getCommandHandler(string $command = '*'): callable
-    {
-        return $this->processor->getHandler($command);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function query(string $query, array $input = []): ?object
     {
         $statement = $this->prepare($query);
@@ -121,27 +101,6 @@ class Connection implements ConnectionInterface
         $statement->execute($input);
 
         return $statement;
-    }
-
-    /**
-     * Returns a DSN to be passed into \PDO::__construct()
-     * 
-     * @param string $host      The hostname MySQL lives on
-     * @param string $database  The database to use
-     * @param array  $arguments An optional array of arguments
-     * @return string
-     */
-    private function getDsn(string $host, string $database, array $arguments = []): string
-    {
-        $dsn = "mysql:host=$host;dbname=$database";
-
-        if ($arguments) {
-            foreach ($arguments as $argument => $value) {
-                $dsn .= ";$argument=$value";
-            }
-        }
-
-        return $dsn;
     }
 
     /**
@@ -251,7 +210,7 @@ class Connection implements ConnectionInterface
      */
     public function select($columns = null): Query
     {
-        $query = new Query($this, new Builder\Select);
+        $query = new Query($this, new Builder\Select, $this->processor);
 
         return $query->columns($columns ?? '*');
     }
@@ -261,7 +220,7 @@ class Connection implements ConnectionInterface
      */
     public function insert(?array $columnsToValues = null): Query
     {
-        $query = new Query($this, new Builder\Insert);
+        $query = new Query($this, new Builder\Insert, $this->processor);
 
         if ($columnsToValues) {
             $columns = array_keys($columnsToValues);
@@ -279,7 +238,7 @@ class Connection implements ConnectionInterface
      */
     public function update(?string $table = null): Query
     {
-        $query = new Query($this, new Builder\Update);
+        $query = new Query($this, new Builder\Update, $this->processor);
 
         if ($table) {
             $query->table($table);
@@ -293,7 +252,7 @@ class Connection implements ConnectionInterface
      */
     public function delete(?string $table = null): Query
     {
-        $query = new Query($this, new Builder\Delete);
+        $query = new Query($this, new Builder\Delete, $this->processor);
 
         if ($table) {
             $query->from($table);
@@ -307,7 +266,7 @@ class Connection implements ConnectionInterface
      */
     public function replace(?array $columnsToValues = null): Query
     {
-        $query = new Query($this, new Builder\Replace);
+        $query = new Query($this, new Builder\Replace, $this->processor);
 
         if ($columnsToValues) {
             $columns = array_keys($columnsToValues);

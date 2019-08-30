@@ -8,6 +8,7 @@ use stdClass;
 use PDOStatement;
 use p810\MySQL\Query;
 use p810\MySQL\Connection;
+use p810\MySQL\PdoProcessor;
 use p810\MySQL\Builder\Insert;
 use p810\MySQL\Builder\Select;
 use PHPUnit\Framework\TestCase;
@@ -42,9 +43,13 @@ class QueryTest extends TestCase
 
     public function test_select_processor_is_overridden()
     {
-        $this->connection->setCommandHandler(function (PDOStatement $statement) {
+        $processor = new PdoProcessor();
+        
+        $processor->setHandler(function (PDOStatement $statement) {
             return $statement->fetch(PDO::FETCH_OBJ);
         }, 'select');
+
+        $this->connection->setProcessor($processor);
 
         $query = $this->connection->select()->from($this->table)->limit(1);
 

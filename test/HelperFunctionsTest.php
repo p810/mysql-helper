@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 
 use function p810\MySQL\spaces;
 use function p810\MySQL\commas;
+use function p810\MySQL\makePdoDsn;
 use function p810\MySQL\parentheses;
 
 class HelperFunctionsTest extends TestCase
@@ -28,5 +29,17 @@ class HelperFunctionsTest extends TestCase
     public function test_parentheses_with_string()
     {
         $this->assertEquals('(hello world)', parentheses('hello world'));
+    }
+
+    public function test_dsn_is_made()
+    {
+        $expected = 'mysql:host=localhost;dbname=test_db;foo=bar;bam=quux';
+        
+        $actual = makePdoDsn('localhost', 'test_db', [
+            'foo' => 'bar',
+            'bam' => 'quux'
+        ]);
+
+        $this->assertEquals($expected, $actual);
     }
 }

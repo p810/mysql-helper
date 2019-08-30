@@ -3,7 +3,6 @@
 namespace p810\MySQL;
 
 use PDOStatement;
-use ReflectionClass;
 use BadMethodCallException;
 use p810\MySQL\Builder\Builder;
 
@@ -23,16 +22,26 @@ class Query
     protected $database;
 
     /**
+     * @var \p810\MySQL\Processor
+     */
+    protected $processor;
+
+    /**
      * Specifies the Connection and Builder that the query should use
      * 
-     * @param \p810\MySQL\ConnectionInterface $database The Connection to use
-     * @param \p810\MySQL\Builder\Builder     $builder  The Builder instance to use
+     * @param \p810\MySQL\ConnectionInterface $database  The Connection to use
+     * @param \p810\MySQL\Builder\Builder     $builder   The Builder instance to use
+     * @param \p810\MySQL\Processor           $processor Command processor to use
      * @return void
      */
-    function __construct(ConnectionInterface $database, Builder $builder)
-    {
+    function __construct(
+        ConnectionInterface $database,
+        Builder $builder,
+        Processor $processor
+    ) {
         $this->database = $database;
         $this->builder = $builder;
+        $this->processor = $processor;
     }
 
     /**
@@ -71,23 +80,11 @@ class Query
         $statement = $this->database->query($this->builder->build(), $this->builder->input);
 
         if ($statement || $callbackOnBool) {
-            $callback = $processor ?? $this->database->getCommandHandler($this->getCommand());
+            $callback = $processor ?? $this->processor->getHandler($this->builder::COMMAND);
 
             return $callback($statement);
         }
 
         return null;
-    }
-
-    /**
-     * Returns the type of query based on the class's short name
-     * 
-     * @return string
-     */
-    protected function getCommand(): string
-    {
-        $reflection = new ReflectionClass($this->builder);
-
-        return strtolower($reflection->getShortName());
     }
 }

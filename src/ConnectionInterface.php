@@ -34,22 +34,6 @@ interface ConnectionInterface
     public function setProcessor(Processor $processor): void;
 
     /**
-     * Specifies a default query processor for all queries, or the given query type
-     * 
-     * @param callable $processor The callback to use when the query is executed
-     * @param string   $command   An optional query type for which this processor should be used
-     * @return void
-     */
-    public function setCommandHandler(callable $processor, string $command = '*'): void;
-
-    /**
-     * Returns a callback to process the result of a query
-     * 
-     * @return callable
-     */
-    public function getCommandHandler(string $command = '*'): callable;
-
-    /**
      * Executes the given query and returns a statement object
      * 
      * Returns null if the query could not be prepared or executed
