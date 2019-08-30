@@ -23,7 +23,7 @@ class Query
     protected $database;
 
     /**
-     * @var \p810\MySQL\Processor
+     * @var \p810\MySQL\Processor\ProcessorInterface
      */
     protected $processor;
 
