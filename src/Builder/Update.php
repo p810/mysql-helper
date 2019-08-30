@@ -15,6 +15,11 @@ class Update extends Builder
     /**
      * @inheritdoc
      */
+    const COMMAND = 'update';
+
+    /**
+     * @inheritdoc
+     */
     protected $components = [
         'update',
         'set',

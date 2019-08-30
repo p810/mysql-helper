@@ -15,6 +15,11 @@ use function p810\MySQL\spaces;
 abstract class Builder
 {
     /**
+     * @var string
+     */
+    const COMMAND = '';
+
+    /**
      * @var string[]
      */
     protected $components;

@@ -14,6 +14,11 @@ class Replace extends Insert
     /**
      * @inheritdoc
      */
+    const COMMAND = 'replace';
+
+    /**
+     * @inheritdoc
+     */
     protected $components = [
         'replace',
         'priority',

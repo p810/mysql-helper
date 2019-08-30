@@ -15,6 +15,11 @@ class Insert extends Builder
     /**
      * @inheritdoc
      */
+    const COMMAND = 'insert';
+
+    /**
+     * @inheritdoc
+     */
     protected $components = [
         'insert',
         'priority',
@@ -167,7 +172,8 @@ class Insert extends Builder
     /**
      * Specifies an "on duplicate key update" clause for the query
      * 
-     * @param bool $shouldUpdateOnDuplicate
+     * @param string $column
+     * @param mixed  $value
      * @return self
      */
     public function onDuplicateKeyUpdate(string $column, $value): self
@@ -180,7 +186,8 @@ class Insert extends Builder
     /**
      * Alias for \p810\MySQL\Builder\Insert::onDuplicateKeyUpdate()
      * 
-     * @param bool $shouldUpdateOnDuplicate
+     * @param string $column
+     * @param mixed  $value
      * @return self
      */
     public function updateDuplicate(string $column, $value): self

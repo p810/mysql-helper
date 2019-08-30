@@ -11,6 +11,11 @@ class Delete extends Builder
     /**
      * @inheritdoc
      */
+    const COMMAND = 'delete';
+
+    /**
+     * @inheritdoc
+     */
     protected $components = [
         'from',
         'where'

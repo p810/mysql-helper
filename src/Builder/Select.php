@@ -18,6 +18,11 @@ class Select extends Builder
     /**
      * @inheritdoc
      */
+    const COMMAND = 'select';
+
+    /**
+     * @inheritdoc
+     */
     protected $components = [
         'select',
         'from',
