@@ -1,38 +1,43 @@
 #!/usr/bin/env php
 <?php
 
+php_sapi_name() === 'cli' or die();
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
-/**
- * get CLI arguments
- */
-if (! isset($argv)) {
-    exit('This script must be run in a CLI environment' . PHP_EOL);
+$cli = new League\CLImate\CLImate();
+
+$cli->arguments->add([
+    'file' => [
+        'prefix'       => 'f',
+        'longPrefix'   => 'file',
+        'description'  => 'Database configuration file for testing'
+    ]
+]);
+
+$cli->arguments->parse();
+
+$file = __DIR__ . '/../.db.env';
+
+if ($cli->arguments->defined('file')) {
+    $file = __DIR__ 
+        . DIRECTORY_SEPARATOR
+        . $cli->arguments->get('file');
 }
 
-$options = [
-    'file'  => __DIR__ . '/../.db.env'
-];
-
-foreach ($options as $variable => $default) {
-    $$variable = get_cli_arg($variable) ?? $default;
-}
-
-/**
- * get the database credentials file
- */
-file_exists($file) or exit('Failed to locate your database configuration. Is it saved some place other than .db.env?' . PHP_EOL);
+file_exists($file) or stop('Failed to locate configuration file');
 
 $credentials = json_decode(@file_get_contents($file));
+$credentials or stop('Failed to decode or load configuration file');
 
-if (! $credentials) {
-    exit('Failed to decode credentials file' . PHP_EOL);
-}
-
-/**
- * begin running the SQL queries to import the test data
- */
-$connection = new p810\MySQL\Connection($credentials->user, $credentials->password, $credentials->database);
+$connection = new p810\MySQL\Connection(
+    $credentials->user,
+    $credentials->password,
+    $credentials->database,
+    $credentials->host,
+    true,
+    ['port' => $credentials->port]
+);
 
 $createTable = "create table if not exists {$credentials->table} (
     test_id int(11) not null auto_increment,
@@ -45,40 +50,41 @@ $created = $connection->query($createTable)->execute();
 
 if ($created) {
     foreach (['I am the first row', 'I am the second row'] as $message) {
-        $inserted = $connection->insert(['message' => $message])->into($credentials->table)->execute();
+        $inserted = $connection
+            ->insert(['message' => $message])
+            ->into($credentials->table)
+            ->execute();
 
         if (! $inserted) {
-            exit('Failed to put one or more rows into the test table' . PHP_EOL);
+            stop('Failed to insert one or more rows', false);
         }
     }
 
-    exit('Successfully imported sample data. You can now run the test suite.' . PHP_EOL);
+    stop('Successfully imported sample data. You can now run the test suite.', false);
 }
 
 /**
- * Iterates over $argv and attempts to match a given $name to an argument passed
- * via the command line when this script was invoked. Returns null if no such arg
- * could be found, or a string containing the value that the user supplied for that
- * argument.
+ * Stops the script with an option message / usage dialog
  * 
- * @param string $name The name of the argument
- * @return null|string
+ * @param null|string $message
+ * @param bool $usage
+ * @return void
  */
-function get_cli_arg(string $name): ?string
+function stop(?string $message = null, bool $usage = true): void
 {
-    global $argv;
-    $value = null;
+    global $cli;
 
-    foreach ($argv as $arg) {
-        $pattern = sprintf('/^--%s(?:=?|\s*)([A-Za-z0-9_.\/\\-]+)$/i', $name);
-        $matched = preg_match($pattern, $arg, $matches);
+    if ($usage) {
+        $cli->usage();
 
-        if ($matched === false) {
-            continue;
+        if ($message) {
+            echo PHP_EOL . PHP_EOL;
         }
-
-        $value = @$matches[1];
     }
 
-    return $value;
+    if ($message) {
+        $cli->out($message);
+    }
+
+    exit();
 }
