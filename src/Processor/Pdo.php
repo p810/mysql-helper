@@ -1,11 +1,11 @@
 <?php
 
-namespace p810\MySQL;
+namespace p810\MySQL\Processor;
 
-use PDO;
+use PDO as DB;
 use PDOStatement;
 
-class PdoProcessor extends Processor
+class Pdo extends AbstractProcessor
 {
     function __construct()
     {
@@ -19,7 +19,7 @@ class PdoProcessor extends Processor
      */
     public function handleResultSet(PDOStatement $statement): array
     {
-        return $statement->fetchAll(PDO::FETCH_ASSOC);
+        return $statement->fetchAll(DB::FETCH_ASSOC);
     }
 
     /**

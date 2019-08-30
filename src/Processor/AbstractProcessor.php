@@ -1,8 +1,8 @@
 <?php
 
-namespace p810\MySQL;
+namespace p810\MySQL\Processor;
 
-abstract class Processor
+abstract class AbstractProcessor implements ProcessorInterface
 {
     /**
      * @var array<string,callable>
@@ -10,10 +10,9 @@ abstract class Processor
     protected $callbacks;
 
     /**
-     * @param string $command
-     * @return mixed
+     * {@inheritdoc}
      */
-    public function getHandler(string $command)
+    public function getHandler(string $command = '*'): callable
     {
         $handler = $this->callbacks[$command] ?? $this->callbacks['*'];
 
@@ -21,9 +20,7 @@ abstract class Processor
     }
 
     /**
-     * @param callable $handler
-     * @param string   $command
-     * @return void
+     * {@inheritdoc}
      */
     public function setHandler(callable $handler, string $command = '*'): void
     {
