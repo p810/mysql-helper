@@ -7,6 +7,8 @@ use PDOStatement;
 use p810\MySQL\Builder\Grammar\Expression;
 
 use function array_map;
+use function array_keys;
+use function array_values;
 use function p810\MySQL\commas;
 use function p810\MySQL\parentheses;
 
@@ -271,5 +273,19 @@ class Insert extends Builder
         }
 
         return 'values ' . commas($lists);
+    }
+
+    /**
+     * Sets this query's columns and values from an associative array
+     * 
+     * @param array<string,mixed> $columnsToValues
+     * @return self
+     */
+    public function setColumnsAndValues(array $columnsToValues): self
+    {
+        $this->columns(array_keys($columnsToValues));
+        $this->values(array_values($columnsToValues));
+
+        return $this;
     }
 }
