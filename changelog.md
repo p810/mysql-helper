@@ -1,3 +1,9 @@
+### 3.1.1
+- Removed `league/climate` dependency
+- Added `league/climate` as a *dev* dependency
+
+Woops, should have thought about that before I pushed the last tag.
+
 ### 3.1.0
 - Changes to how you interact with query processor objects
     * `p810\MySQL\ConnectionInterface::setCommandHandler()` has been removed
