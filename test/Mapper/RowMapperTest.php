@@ -44,6 +44,18 @@ class RowMapperTest extends TestCase
     /**
      * @depends test_mapper_returns_row
      */
+    public function test_row_as_array(Row $row): Row
+    {
+        $keys = array_keys($row->toArray());
+
+        $this->assertEquals(['test_id', 'message'], $keys);
+
+        return $row;
+    }
+
+    /**
+     * @depends test_row_as_array
+     */
     public function test_row_is_saved_after_update(Row $row): string
     {
         $message = $row->message = sprintf('Hello world! I am being updated at: %s', microtime(true));
