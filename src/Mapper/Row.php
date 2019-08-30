@@ -74,7 +74,7 @@ class Row implements EntityInterface
     public function toArray(): array
     {
         return array_filter($this->getCombinedProperties(), function ($value) {
-            return is_scalar($value);
+            return is_scalar($value) || $value === null;
         });
     }
 
