@@ -180,7 +180,10 @@ class Insert extends Builder
      */
     public function onDuplicateKeyUpdate(string $column, $value): self
     {
-        $this->updateOnDuplicate[] = new Expression($column, $this->bind($value));
+        $this->updateOnDuplicate[] = new Expression(
+            $column,
+            $this->bind($value)
+        );
 
         return $this;
     }

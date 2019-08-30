@@ -86,7 +86,10 @@ class Row implements EntityInterface
     public function save(): bool
     {
         if ($this->hasUniqueKey()) {
-            return $this->mapper->updateById($this->getUniqueKey(), $this->entity);
+            return $this->mapper->updateById(
+                $this->getUniqueKey(),
+                $this->entity
+            );
         }
 
         return false;
@@ -114,7 +117,10 @@ class Row implements EntityInterface
      */
     protected function getCombinedProperties(): array
     {
-        return array_merge((array) $this, $this->entity->toArray());
+        return array_merge(
+            (array) $this,
+            $this->entity->toArray()
+        );
     }
 
     /**

@@ -43,7 +43,11 @@ class Connection implements ConnectionInterface
         array $dsnParams = [],
         array $options = []
     ) {
-        $arguments = [makePdoDsn($host, $database, $dsnParams), $user, $password];
+        $arguments = [
+            makePdoDsn($host, $database, $dsnParams),
+            $user,
+            $password
+        ];
 
         if (! empty($options)) {
             $arguments[] = $options;
@@ -130,12 +134,12 @@ class Connection implements ConnectionInterface
     /**
      * Tells \PDO to either throw exceptions or silently ignore warnings by setting \PDO::ATTR_ERRMODE
      * 
-     * @param bool $shouldThrowExceptions Whether \PDO should throw exceptions on failure
+     * @param bool $throw Whether \PDO should throw exceptions on failure
      * @return self
      */
-    public function shouldThrowExceptions(bool $shouldThrowExceptions = true): self
+    public function shouldThrowExceptions(bool $throw = true): self
     {
-        $errLevel = $shouldThrowExceptions ? PDO::ERRMODE_EXCEPTION : PDO::ERRMODE_SILENT;
+        $errLevel = $throw ? PDO::ERRMODE_EXCEPTION : PDO::ERRMODE_SILENT;
 
         $this->database->setAttribute(PDO::ATTR_ERRMODE, $errLevel);
         

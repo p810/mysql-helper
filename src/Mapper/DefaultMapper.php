@@ -40,7 +40,9 @@ class DefaultMapper implements MapperInterface
         $this->adapter = $connection;
 
         if (! $this->table || ! $this->entity) {
-            throw new LogicException('Children of \p810\MySQL\Mapper\DefaultMapper must define their $table and $entity to use certain functionality');
+            throw new LogicException(
+                'Children of \p810\MySQL\Mapper\DefaultMapper must define their $table and $entity to use certain functionality'
+            );
         }
     }
 
@@ -134,9 +136,12 @@ class DefaultMapper implements MapperInterface
     {
         $this->requireKeyToBeSetFor('updateById');
 
-        return $this->update($entity, function (Query $q, EntityInterface $entity) use ($id) {
-            return $q->where($this->key, $id);
-        });
+        return $this->update(
+            $entity,
+            function (Query $q, EntityInterface $entity) use ($id) {
+                return $q->where($this->key, $id);
+            }
+        );
     }
 
     /**
@@ -220,7 +225,9 @@ class DefaultMapper implements MapperInterface
     protected function requireKeyToBeSetFor(string $method = null): void
     {
         if (! $this->key) {
-            throw new LogicException("\p810\MySQL\Mapper\DefaultMapper::$method() failed: A key is required and must be specified in Mapper::\$key");
+            throw new LogicException(
+                "\p810\MySQL\Mapper\DefaultMapper::$method() failed: A key is required and must be specified in Mapper::\$key"
+            );
         }
     }
 }

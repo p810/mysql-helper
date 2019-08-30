@@ -67,9 +67,7 @@ class Select extends Builder
     /**
      * An alias for \p810\MySQL\Builder\Select::select()
      * 
-     * @param array|string $columns Either a string or array; if an array, it can
-     *                              be numerically indexed for a list of columns,
-     *                              or associative to specify table prefixes
+     * @param array|string $columns
      * @return self
      */
     public function columns($columns = '*'): self

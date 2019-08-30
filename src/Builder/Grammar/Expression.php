@@ -38,8 +38,12 @@ class Expression
      * @param string $logical    A logical operator used to concatenate expressions
      * @return void
      */
-    function __construct(string $left, $right, string $comparison = '=', string $logical = 'and')
-    {
+    function __construct(
+        string $left,
+        $right,
+        string $comparison = '=',
+        string $logical = 'and'
+    ) {
         $this->left = $left;
         $this->right = $right;
         $this->logicalOperator = $logical;

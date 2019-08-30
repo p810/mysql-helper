@@ -49,12 +49,13 @@ class Query
      * Proxies calls on this object to the injected Builder if the method
      * doesn't exist
      * 
-     * @param string $method    The method being called
+     * @param string $method The method being called
      * @param array  $arguments An optional, variadic list of arguments
      * @return mixed
-     * @throws \BadMethodCallException if the method is not defined in Query or the injected Builder object
+     * @throws \BadMethodCallException if the method is not defined in Query or
+     *                                 the injected Builder object
      */
-    function __call(string $method, array $arguments)
+    function __call(string $method, array $arguments = [])
     {
         if (method_exists($this, $method)) {
             return $this->$method(...$arguments);
@@ -72,16 +73,21 @@ class Query
     /**
      * Executes a prepared query and returns the result
      * 
-     * @param null|callable $processor      An optional callback used to process the result of the query
-     * @param bool          $callbackOnBool Whether to call the user-supplied $processor when \PDOStatement::execute() returns false
+     * @param null|callable $handler An optional callback used to process the result of the query
+     * @param bool $callbackOnBool Whether to call the user-supplied $processor when \PDOStatement::execute() returns false
      * @return mixed
      */
-    public function execute(?callable $processor = null, bool $callbackOnBool = false)
-    {
-        $statement = $this->database->query($this->builder->build(), $this->builder->input);
+    public function execute(
+        ?callable $handler = null,
+        bool $callbackOnBool = false
+    ) {
+        $statement = $this->database->query(
+            $this->builder->build(),
+            $this->builder->input
+        );
 
         if ($statement || $callbackOnBool) {
-            $callback = $processor ?? $this->processor->getHandler($this->builder::COMMAND);
+            $callback = $handler ?? $this->processor->getHandler($this->builder::COMMAND);
 
             return $callback($statement);
         }

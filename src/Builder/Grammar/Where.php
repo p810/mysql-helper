@@ -27,15 +27,24 @@ trait Where
      * @param string $logical  A logical operator used to concatenate the expression in the clause
      * @return self
      */
-    public function where(string $column, $value, string $operator = '=', string $logical = 'and'): self
-    {
+    public function where(
+        string $column,
+        $value,
+        string $operator = '=',
+        string $logical = 'and'
+    ): self {
         if ($this->nextLogicalOperator) {
             $logical = $this->nextLogicalOperator;
 
             unset($this->nextLogicalOperator);
         }
         
-        $this->wheres[] = new Expression($column, $this->prepareValue($value), $operator, $logical);
+        $this->wheres[] = new Expression(
+            $column,
+            $this->prepareValue($value),
+            $operator,
+            $logical
+        );
 
         return $this;
     }
@@ -91,8 +100,11 @@ trait Where
      * @param string $operator Middle of the expression (comparison operator)
      * @return self
      */
-    public function orWhere(string $column, $value, string $operator = '='): self
-    {
+    public function orWhere(
+        string $column,
+        $value,
+        string $operator = '='
+    ): self {
         return $this->where($column, $value, $operator, 'or');
     }
 
@@ -104,8 +116,11 @@ trait Where
      * @param string $logical A logical operator used to concatenate the expression in the clause
      * @return self
      */
-    public function whereNotEquals(string $column, $value, string $logical = 'and'): self
-    {
+    public function whereNotEquals(
+        string $column,
+        $value,
+        string $logical = 'and'
+    ): self {
         return $this->where($column, $value, '!=', $logical);
     }
 
@@ -117,8 +132,11 @@ trait Where
      * @param string $logical A logical operator used to concatenate the expression in the clause
      * @return self
      */
-    public function whereNot(string $column, $value, string $logical = 'and'): self
-    {
+    public function whereNot(
+        string $column,
+        $value,
+        string $logical = 'and'
+    ): self {
         return $this->whereNotEquals($column, $value, $logical);
     }
 
@@ -155,8 +173,11 @@ trait Where
      * @param string $logical A logical operator used to concatenate the expression in the clause
      * @return self
      */
-    public function whereLess(string $column, $value, string $logical = 'and'): self
-    {
+    public function whereLess(
+        string $column,
+        $value,
+        string $logical = 'and'
+    ): self {
         return $this->where($column, $value, '<', $logical);
     }
 
@@ -181,8 +202,11 @@ trait Where
      * @param string $logical A logical operator used to concatenate the expression in the clause
      * @return self
      */
-    public function whereLessOrEqual(string $column, $value, string $logical = 'and'): self
-    {
+    public function whereLessOrEqual(
+        string $column,
+        $value,
+        string $logical = 'and'
+    ): self {
         return $this->where($column, $value, '<=', $logical);
     }
 
@@ -207,8 +231,11 @@ trait Where
      * @param string $logical A logical operator used to concatenate the expression in the clause
      * @return self
      */
-    public function whereGreater(string $column, $value, string $logical = 'and'): self
-    {
+    public function whereGreater(
+        string $column,
+        $value,
+        string $logical = 'and'
+    ): self {
         return $this->where($column, $value, '>', $logical);
     }
 
@@ -233,8 +260,11 @@ trait Where
      * @param string $logical A logical operator used to concatenate the expression in the clause
      * @return self
      */
-    public function whereGreaterOrEqual(string $column, $value, string $logical = 'and'): self
-    {
+    public function whereGreaterOrEqual(
+        string $column,
+        $value,
+        string $logical = 'and'
+    ): self {
         return $this->where($column, $value, '>=', $logical);
     }
 
@@ -259,8 +289,11 @@ trait Where
      * @param string $logical A logical operator used to concatenate the expression in the clause
      * @return self
      */
-    public function whereLike(string $column, $value, string $logical = 'and'): self
-    {
+    public function whereLike(
+        string $column,
+        $value,
+        string $logical = 'and'
+    ): self {
         return $this->where($column, $value, 'like', $logical);
     }
 
@@ -285,8 +318,11 @@ trait Where
      * @param string $logical                A logical operator used to concatenate the expression in the clause
      * @return self
      */
-    public function whereIn(string $columnOrExpression, $value, string $logical = 'and'): self
-    {
+    public function whereIn(
+        string $columnOrExpression,
+        $value,
+        string $logical = 'and'
+    ): self {
         return $this->where($columnOrExpression, $value, 'in', $logical);
     }
 
@@ -311,8 +347,11 @@ trait Where
      * @param string $logical                A logical operator used to concatenate the expression in the clause
      * @return self
      */
-    public function whereNotIn(string $columnOrExpression, $value, string $logical = 'and'): self
-    {
+    public function whereNotIn(
+        string $columnOrExpression,
+        $value,
+        string $logical = 'and'
+    ): self {
         return $this->where($columnOrExpression, $value, 'not in', $logical);
     }
 

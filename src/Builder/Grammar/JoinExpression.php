@@ -97,8 +97,11 @@ class JoinExpression
      * @param string $logical A logical operator to concatenate the clauses
      * @return void
      */
-    public function on(string $left, string $right, string $logical = 'and'): void
-    {
+    public function on(
+        string $left,
+        string $right,
+        string $logical = 'and'
+    ): void {
         if (! $this->method) {
             $this->method = 'on';
         }

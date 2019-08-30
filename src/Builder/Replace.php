@@ -34,7 +34,9 @@ class Replace extends Insert
     public function compilePriority(): ?string
     {
         if ($this->priority && $this->priority !== 'low_priority') {
-            throw new InvalidArgumentException('REPLACE queries only support the LOW_PRIORITY modifier');
+            throw new InvalidArgumentException(
+                'REPLACE queries only support the LOW_PRIORITY modifier'
+            );
         }
 
         return parent::compilePriority();
