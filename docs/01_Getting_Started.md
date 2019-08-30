@@ -33,9 +33,11 @@ $pdo = $connection->getConnector();
 ```
 
 ### Query processors
-`p810\MySQL\Connection` relies on an instance of `p810\MySQL\PdoProcessor` to process queries.
+`p810\MySQL\Connection` relies on an instance of `p810\MySQL\Processor\ProcessorInterface` to process queries. By default it uses an instance of `p810\MySQL\Processor\Pdo`.
 
-To specify a different callback for the processor to use for a given command (e.g. `SELECT`), call `p810\MySQL\Connection::setCommandHandler()`. If you only pass a callback to this method then your handler will be used for any command that doesn't already have an explicit callback defined. The following example returns an array of objects in response to a `SELECT` query:
+You can get this object by calling `p810\MySQL\ConnectionInterface::getProcessor()`, or inject your own with `p810\MySQL\ConnectionInterface::setProcessor()`.
+
+To specify a different callback for the processor to use for a given command (e.g. `SELECT`), call `p810\MySQL\Processor\ProcessorInterface::setHandler()`. If you only pass a callback to this method then your handler will be used for any command that doesn't already have an explicit callback defined. The following example returns an array of objects in response to a `SELECT` query:
 
 ```php
 $connection->setCommandHandler(function (PDOStatement $statement) {
@@ -43,10 +45,7 @@ $connection->setCommandHandler(function (PDOStatement $statement) {
 }, 'select');
 ```
 
-> :bulb: **Note:** Handlers that are called by `p810\MySQL\Connection` must take an instance of `PDOStatement` as their first argument.
-
-#### Overriding the default processor
-You can override the default `p810\MySQL\Processor` object with your own object by calling `p810\MySQL\Connection::setProcessor()`. Your object must extend `p810\MySQL\Processor`.
+> :bulb: **Note:** Handlers must receive an instance of `PDOStatement` as their first argument.
 
 ## Connection options
 ### Setting PDO attributes
