@@ -41,3 +41,24 @@ function spaces(array $list): string
 {
     return implode(' ', $list);
 }
+
+/**
+ * Returns a DSN to be used with PDO's constructor
+ * 
+ * @param string $host      MySQL host name e.g. localhost
+ * @param string $database  MySQL database name
+ * @param array  $arguments PDO arguments
+ * @return string
+ */
+function makePdoDsn(string $host, string $database, array $arguments = []): string
+{
+    $dsn = "mysql:host=$host;dbname=$database";
+
+    if ($arguments) {
+        foreach ($arguments as $argument => $value) {
+            $dsn .= ";$argument=$value";
+        }
+    }
+
+    return $dsn;
+}
