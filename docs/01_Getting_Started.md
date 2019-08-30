@@ -40,7 +40,7 @@ You can get this object by calling `p810\MySQL\ConnectionInterface::getProcessor
 To specify a different callback for the processor to use for a given command (e.g. `SELECT`), call `p810\MySQL\Processor\ProcessorInterface::setHandler()`. If you only pass a callback to this method then your handler will be used for any command that doesn't already have an explicit callback defined. The following example returns an array of objects in response to a `SELECT` query:
 
 ```php
-$connection->setCommandHandler(function (PDOStatement $statement) {
+$connection->getProcessor()->setHandler(function (PDOStatement $statement) {
     return $statement->fetchAll(PDO::FETCH_OBJ);
 }, 'select');
 ```
