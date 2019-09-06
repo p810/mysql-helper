@@ -87,6 +87,8 @@ class Query
         );
 
         if ($statement || $callbackOnBool) {
+            $statement = $statement ?: null;
+
             $callback = $handler ?? $this->processor->getHandler($this->builder::COMMAND);
 
             return $callback($statement);

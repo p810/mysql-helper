@@ -45,7 +45,22 @@ $connection->getProcessor()->setHandler(function (PDOStatement $statement) {
 }, 'select');
 ```
 
-> :bulb: **Note:** Handlers must receive an instance of `PDOStatement` as their first argument.
+> :bulb: **Note:** Handlers must receive an instance of `PDOStatement` as their first argument. You can make this argument nullable if you expect to handle failed queries, explained below.
+
+### Handling failed queries
+By default, when a query fails to be prepared `p810\MySQL\ConnectionInterface::query()` will return null and the processor callback *won't* be invoked. If you want to handle such cases with the processor callback, supply `true` after the callback (or null, for the default) to `p810\MySQL\Query::execute()`:
+
+```php
+$query->execute(function (?PDOStatement $statement) {
+    if (! $statement) {
+        // ...
+    }
+
+    return $statement->fetchAll(PDO::FETCH_OBJ);
+}, true);
+```
+
+> :bulb: **Note:** If the statement was prepared successfully but the query itself yielded no results, you will still receive a `PDOStatement`.
 
 ## Connection options
 ### Setting PDO attributes
