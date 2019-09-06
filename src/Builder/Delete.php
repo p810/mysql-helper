@@ -7,7 +7,9 @@ use PDOStatement;
 class Delete extends Builder
 {
     use Grammar\Where;
+    use Grammar\Limit;
     use Grammar\Ignore;
+    use Grammar\OrderBy;
     use Grammar\Priority;
 
     /**
@@ -22,7 +24,9 @@ class Delete extends Builder
         'priority',
         'ignore',
         'from',
-        'where'
+        'where',
+        'order',
+        'limit'
     ];
 
     /**
