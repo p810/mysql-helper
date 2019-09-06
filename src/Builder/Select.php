@@ -13,6 +13,7 @@ class Select extends Builder
 {
     use Grammar\Join;
     use Grammar\Where;
+    use Grammar\Limit;
     use Grammar\OrderBy;
     use Grammar\Priority;
 
@@ -33,11 +34,6 @@ class Select extends Builder
         'order',
         'limit'
     ];
-
-    /**
-     * @var int|null
-     */
-    protected $limit;
 
     /**
      * @var string
@@ -116,32 +112,5 @@ class Select extends Builder
         }
 
         return "from $this->table";
-    }
-
-    /**
-     * Specifies a limit of rows to return in the result set
-     * 
-     * @param int $limit The maximum number of rows to return
-     * @return self
-     */
-    public function limit(int $limit): self
-    {
-        $this->limit = $limit;
-
-        return $this;
-    }
-
-    /**
-     * Compiles the limit clause
-     * 
-     * @return null|string
-     */
-    protected function compileLimit(): ?string
-    {
-        if (! $this->limit) {
-            return null;
-        }
-
-        return "limit $this->limit";
     }
 }
