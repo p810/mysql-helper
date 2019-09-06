@@ -136,9 +136,7 @@ $ ./bin/migrate
 $ ./vendor/bin/phpunit ./test/
 ```
 
-A file named `.db.env` is loaded when PHPUnit is run, to get database connection options. An example of this file's contents can be found in `.db.env.example`. To change the location of this file, modify the environment variable in `phpunit.xml`.
-
-The migration script will create a small table for the unit tests to read from and write to. You may specify a different table when running the script by passing `--table` and updating the corresponding key in `.db.env`. If you're using a file other than `.db.env` be sure to pass the `--file` flag when running the migration.
+A file named `.db.env` is loaded when PHPUnit is run, to get database connection options. An example of this file's contents can be found in `.db.env.example`. To change the location of this file, modify the environment variable in `phpunit.xml`. To point the migration script to an alternate file you can pass the `-f` or `--file` flag with the relative path to your file.
 
 ### Code quality
 ```
