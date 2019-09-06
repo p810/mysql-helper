@@ -7,6 +7,7 @@ use PDOStatement;
 class Delete extends Builder
 {
     use Grammar\Where;
+    use Grammar\Ignore;
     use Grammar\Priority;
 
     /**
@@ -19,6 +20,7 @@ class Delete extends Builder
      */
     protected $components = [
         'priority',
+        'ignore',
         'from',
         'where'
     ];
