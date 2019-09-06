@@ -56,11 +56,6 @@ class Insert extends Builder
     protected $priority;
 
     /**
-     * @var bool
-     */
-    protected $ignore;
-
-    /**
      * @var \p810\MySQL\Builder\Grammar\Expression[]
      */
     protected $updateOnDuplicate;
