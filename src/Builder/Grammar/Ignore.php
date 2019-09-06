@@ -18,6 +18,10 @@ trait Ignore
 
     protected function compileIgnore(): ?string
     {
-        return $this->ignore ? 'ignore' : null;
+        if (! $this->ignore) {
+            return null;
+        }
+
+        return 'ignore';
     }
 }
