@@ -7,6 +7,7 @@ use PDOStatement;
 class Delete extends Builder
 {
     use Grammar\Where;
+    use Grammar\Priority;
 
     /**
      * @inheritdoc
@@ -17,6 +18,7 @@ class Delete extends Builder
      * @inheritdoc
      */
     protected $components = [
+        'priority',
         'from',
         'where'
     ];

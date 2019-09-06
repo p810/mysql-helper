@@ -14,6 +14,7 @@ class Select extends Builder
     use Grammar\Join;
     use Grammar\Where;
     use Grammar\OrderBy;
+    use Grammar\Priority;
 
     /**
      * @inheritdoc
@@ -25,6 +26,7 @@ class Select extends Builder
      */
     protected $components = [
         'select',
+        'priority',
         'from',
         'join',
         'where',
