@@ -4,7 +4,6 @@ namespace p810\MySQL\Builder;
 
 use PDO;
 use PDOStatement;
-use p810\MySQL\Builder\Grammar\Priority;
 use p810\MySQL\Builder\Grammar\Expression;
 
 use function array_map;
@@ -15,7 +14,8 @@ use function p810\MySQL\parentheses;
 
 class Insert extends Builder
 {
-    use Priority;
+    use Grammar\Ignore;
+    use Grammar\Priority;
 
     /**
      * @inheritdoc
@@ -108,34 +108,6 @@ class Insert extends Builder
         }
 
         return 'insert';
-    }
-
-    /**
-     * Appends the "ignore" modifier telling MySQL to ignore errors that occur when
-     * inserting new rows
-     * 
-     * @param bool $shouldIgnore
-     * @return self
-     */
-    public function ignore(bool $shouldIgnore = true): self
-    {
-        $this->ignore = $shouldIgnore;
-
-        return $this;
-    }
-
-    /**
-     * Compiles the ignore clause of the query
-     * 
-     * @return null|string
-     */
-    protected function compileIgnore(): ?string
-    {
-        if (! $this->ignore) {
-            return null;
-        }
-
-        return 'ignore';
     }
 
     /**
