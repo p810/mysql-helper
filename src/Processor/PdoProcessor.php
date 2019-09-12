@@ -19,7 +19,7 @@ class PdoProcessor extends AbstractProcessor
      */
     public function handleResultSet(PDOStatement $statement): array
     {
-        return $statement->fetchAll(DB::FETCH_ASSOC);
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
