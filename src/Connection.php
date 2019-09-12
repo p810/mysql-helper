@@ -4,8 +4,8 @@ namespace p810\MySQL;
 
 use PDO;
 use PDOException;
+use p810\MySQL\Processor\PdoProcessor;
 use p810\MySQL\Processor\ProcessorInterface;
-use p810\MySQL\Processor\Pdo as PdoProcessor;
 
 class Connection implements ConnectionInterface
 {
@@ -60,7 +60,7 @@ class Connection implements ConnectionInterface
             $this->shouldThrowExceptions();
         }
 
-        $this->processor = new PdoProcessor;
+        $this->processor = new PdoProcessor();
     }
 
     /**

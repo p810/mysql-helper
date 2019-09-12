@@ -2,10 +2,10 @@
 
 namespace p810\MySQL\Processor;
 
-use PDO as DB;
+use PDO;
 use PDOStatement;
 
-class Pdo extends AbstractProcessor
+class PdoProcessor extends AbstractProcessor
 {
     function __construct()
     {
