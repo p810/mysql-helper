@@ -193,15 +193,21 @@ class DefaultMapper implements MapperInterface
     {
         $this->requireKeyToBeSetFor('lastInsertId');
 
-        $result = $this->query("select $this->key from $this->table order by $this->key desc limit 1");
+        $query = $this->adapter
+            ->select($this->key)
+            ->from($this->table)
+            ->orderBy($this->key)
+            ->limit(1);
+        
+        return $query->execute(function (?PDOStatement $statement): ?int {
+            if (! $statement) {
+                return null;
+            }
 
-        if ($result instanceof PDOStatement) {
-            $result = $result->fetch(PDO::FETCH_ASSOC);
+            $rows = $statement->fetch(PDO::FETCH_ASSOC);
 
-            return (int) $result[$this->key];
-        }
-
-        return null;
+            return (int) $rows[$this->key];
+        }, true);
     }
 
     /**
