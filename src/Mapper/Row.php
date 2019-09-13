@@ -65,7 +65,7 @@ class Row implements EntityInterface
      */
     public static function from(array $state): EntityInterface
     {
-        throw new BadMethodCallException;
+        throw new BadMethodCallException();
     }
 
     /**
@@ -117,10 +117,7 @@ class Row implements EntityInterface
      */
     protected function getCombinedProperties(): array
     {
-        return array_merge(
-            (array) $this,
-            $this->entity->toArray()
-        );
+        return array_merge((array) $this, $this->entity->toArray());
     }
 
     /**
