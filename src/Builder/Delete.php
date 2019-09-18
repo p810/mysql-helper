@@ -6,6 +6,7 @@ use PDOStatement;
 
 class Delete extends Builder
 {
+    use Grammar\From;
     use Grammar\Where;
     use Grammar\Limit;
     use Grammar\Ignore;
@@ -21,6 +22,7 @@ class Delete extends Builder
      * @inheritdoc
      */
     protected $components = [
+        'delete',
         'priority',
         'ignore',
         'from',
@@ -28,24 +30,6 @@ class Delete extends Builder
         'order',
         'limit'
     ];
-
-    /**
-     * @var string
-     */
-    protected $table;
-
-    /**
-     * Specifies the table to remove data from
-     * 
-     * @param string $table The table to remove data from
-     * @return self
-     */
-    public function from(string $table): self
-    {
-        $this->table = $table;
-
-        return $this;
-    }
 
     /**
      * An alias for \p810\MySQL\Builder\Delete::from()
@@ -59,16 +43,12 @@ class Delete extends Builder
     }
 
     /**
-     * Compiles the delete from clause
+     * Returns the `DELETE` keyword
      * 
-     * @return null|string
+     * @return string
      */
-    protected function compileFrom(): ?string
+    protected function compileDelete(): string
     {
-        if (! $this->table) {
-            return null;
-        }
-
-        return "delete from $this->table";
+        return self::COMMAND;
     }
 }

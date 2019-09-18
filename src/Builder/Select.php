@@ -11,6 +11,7 @@ use function p810\MySQL\commas;
 
 class Select extends Builder
 {
+    use Grammar\From;
     use Grammar\Join;
     use Grammar\Where;
     use Grammar\Limit;
@@ -34,11 +35,6 @@ class Select extends Builder
         'order',
         'limit'
     ];
-
-    /**
-     * @var string
-     */
-    protected $table;
 
     /**
      * @var string
@@ -85,32 +81,5 @@ class Select extends Builder
         }
 
         return "select $this->columns";
-    }
-
-    /**
-     * Specifies which table to pull data from
-     * 
-     * @param string $table The table to get data from
-     * @return self
-     */
-    public function from(string $table): self
-    {
-        $this->table = $table;
-        
-        return $this;
-    }
-
-    /**
-     * Compiles the from clause
-     * 
-     * @return null|string
-     */
-    protected function compileFrom(): ?string
-    {
-        if (! $this->table) {
-            return null;
-        }
-
-        return "from $this->table";
     }
 }
