@@ -18,7 +18,7 @@ $connection = new p810\MySQL\Connection('username', 'password', 'database');
 
 > **Note:** For more connection options, see [the documentation](docs/01_Getting_Started.md).
 
-Then use the builder factory methods to fluently build your SQL queries with `p810\MySQL\Builder\Builder`s:
+Then use the builder factory methods to fluently build your SQL queries with a `p810\MySQL\Builder\Builder` object:
 
 ```php
 $query = $connection->select()->from('users')->where('username', 'Bob');
@@ -102,6 +102,8 @@ class UserMapper extends \p810\MySQL\Mapper\DefaultMapper
     protected $entity = User::class;
 }
 ```
+
+> :bulb: **Note:** The `$key` property is optional, but setting it allows you to use live entities, which are explained below. These entities have first class support for Active Record style methods, e.g. `Row::save()`.
 
 When running a query via a mapper, you have the option to manipulate the `p810\MySQL\Query` that it generates by passing a callback to the method call:
 

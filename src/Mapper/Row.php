@@ -110,8 +110,8 @@ class Row implements EntityInterface
     }
 
     /**
-     * Returns the properties of the entity this row represents and any
-     * properties defined specifically on the object
+     * Returns the properties of the entity this row represents and any properties
+     * defined specifically on the object
      * 
      * @return array
      */
