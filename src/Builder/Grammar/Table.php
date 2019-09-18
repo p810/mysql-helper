@@ -2,12 +2,17 @@
 
 namespace p810\MySQL\Builder\Grammar;
 
-trait From
+trait Table
 {
     /**
      * @var string
      */
     protected $from;
+    
+    /**
+     * @var string
+     */
+    protected $into;
 
     /**
      * Specifies the source table for the query
@@ -18,6 +23,19 @@ trait From
     public function from(string $table): self
     {
         $this->from = $table;
+
+        return $this;
+    }
+
+    /**
+     * Specifies the source table for an `INSERT` query
+     * 
+     * @param string $table
+     * @return self
+     */
+    public function into(string $table): self
+    {
+        $this->into = $table;
 
         return $this;
     }
@@ -34,5 +52,19 @@ trait From
         }
 
         return "from $this->from";
+    }
+
+    /**
+     * Compiles the query's `INTO` clause
+     * 
+     * @return null|string
+     */
+    protected function compileInto(): ?string
+    {
+        if (! $this->into) {
+            return null;
+        }
+
+        return "into $this->into";
     }
 }
