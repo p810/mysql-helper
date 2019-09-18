@@ -6,7 +6,7 @@ use PDOStatement;
 
 class Delete extends Builder
 {
-    use Grammar\From;
+    use Grammar\Table;
     use Grammar\Where;
     use Grammar\Limit;
     use Grammar\Ignore;

@@ -14,6 +14,7 @@ use function p810\MySQL\parentheses;
 
 class Insert extends Builder
 {
+    use Grammar\Table;
     use Grammar\Ignore;
     use Grammar\Priority;
 
@@ -36,11 +37,6 @@ class Insert extends Builder
     ];
 
     /**
-     * @var string
-     */
-    protected $table;
-
-    /**
      * @var array
      */
     protected $columns;
@@ -56,48 +52,13 @@ class Insert extends Builder
     protected $updateOnDuplicate;
 
     /**
-     * Specifies the table that the data should be inserted into
+     * Returns the `INSERT` keyword
      * 
-     * @param string $table The table to insert data into
-     * @return self
+     * @return string
      */
-    public function into(string $table): self
+    protected function compileInsert(): string
     {
-        $this->table = $table;
-
-        return $this;
-    }
-
-    /**
-     * Compiles the into clause of the query
-     * 
-     * @return null|string
-     */
-    protected function compileInto(): ?string
-    {
-        if (! $this->table) {
-            return null;
-        }
-
-        return "into $this->table";
-    }
-
-    /**
-     * Begins the query with the insert command
-     * 
-     * Previously this function included the "into" clause as well, but
-     * to support the priority and ignore modifiers, that had to be separated
-     * into its own component
-     * 
-     * @return null|string
-     */
-    protected function compileInsert(): ?string
-    {
-        if (! $this->table) {
-            return null;
-        }
-
-        return 'insert';
+        return self::COMMAND;
     }
 
     /**

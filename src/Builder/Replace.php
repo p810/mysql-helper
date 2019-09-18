@@ -30,15 +30,11 @@ class Replace extends Insert
     /**
      * Returns the query command
      * 
-     * @return null|string
+     * @return string
      */
-    protected function compileReplace(): ?string
+    protected function compileReplace(): string
     {
-        if (! $this->table) {
-            return null;
-        }
-
-        return 'replace';
+        return self::COMMAND;
     }
 
     /**

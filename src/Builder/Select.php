@@ -11,8 +11,8 @@ use function p810\MySQL\commas;
 
 class Select extends Builder
 {
-    use Grammar\From;
     use Grammar\Join;
+    use Grammar\Table;
     use Grammar\Where;
     use Grammar\Limit;
     use Grammar\OrderBy;
