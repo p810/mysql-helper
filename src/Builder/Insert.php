@@ -51,11 +51,6 @@ class Insert extends Builder
     protected $values;
 
     /**
-     * @var string
-     */
-    protected $priority;
-
-    /**
      * @var \p810\MySQL\Builder\Grammar\Expression[]
      */
     protected $updateOnDuplicate;
