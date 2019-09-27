@@ -105,7 +105,7 @@ class Expression
         $clauses = [];
         
         array_walk($expressions, function ($value, $key) use (&$clauses) {
-            $useLogicalOperator = $key === 0 ? false : true;
+            $useLogicalOperator = $key >= 1;
             
             if ($value instanceof Expression) {
                 $value = $value->compile($useLogicalOperator);
