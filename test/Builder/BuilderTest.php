@@ -14,7 +14,7 @@ class BuilderTest extends TestCase
 {
     public function test_select_builder()
     {
-        $query = new Select;
+        $query = new Select();
 
         $query->from('users')
               ->select(['username', 'password'])
@@ -28,7 +28,7 @@ class BuilderTest extends TestCase
 
     public function test_insert_builder_single_row()
     {
-        $query = new Insert;
+        $query = new Insert();
 
         $query->into('users')
               ->values(['Payton', 'password'])
@@ -41,7 +41,7 @@ class BuilderTest extends TestCase
 
     public function test_insert_builder_with_multiple_rows()
     {
-        $query = new Insert;
+        $query = new Insert();
 
         $query->into('users')
               ->columns(['username', 'password'])
@@ -55,7 +55,7 @@ class BuilderTest extends TestCase
 
     public function test_update_builder_with_single_set()
     {
-        $query = new Update;
+        $query = new Update();
 
         $query->update('users')
               ->set('username', 'Carl')
@@ -66,7 +66,7 @@ class BuilderTest extends TestCase
 
     public function test_update_builder_with_multiple_set()
     {
-        $query = new Update;
+        $query = new Update();
 
         $query->update('users')
               ->set([
@@ -80,7 +80,7 @@ class BuilderTest extends TestCase
 
     public function test_delete_builder()
     {
-        $query = new Delete;
+        $query = new Delete();
 
         $query->from('users')
               ->whereNot('username', 'Carl');
@@ -90,7 +90,7 @@ class BuilderTest extends TestCase
 
     public function test_replace_builder_with_assignment_list()
     {
-        $query = new Replace;
+        $query = new Replace();
 
         $query->into('users')
               ->set('username', 'Carl')
@@ -101,7 +101,7 @@ class BuilderTest extends TestCase
 
     public function test_replace_builder_with_value_list()
     {
-        $query = new Replace;
+        $query = new Replace();
 
         $query->into('users')
               ->columns(['username', 'password'])

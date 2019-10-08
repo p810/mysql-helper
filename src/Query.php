@@ -67,7 +67,7 @@ class Query
             return $this;
         }
 
-        throw new BadMethodCallException;
+        throw new BadMethodCallException();
     }
 
     /**

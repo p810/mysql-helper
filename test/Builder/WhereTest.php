@@ -10,7 +10,7 @@ class WhereTest extends TestCase
 {
     public function test_where_equals(): Select
     {
-        $query = new Select;
+        $query = new Select();
 
         $query->where('foo', 'bar');
 

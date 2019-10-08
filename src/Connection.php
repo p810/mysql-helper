@@ -224,7 +224,7 @@ class Connection implements ConnectionInterface
      */
     public function select($columns = null): Query
     {
-        $query = new Query($this, new Builder\Select, $this->processor);
+        $query = new Query($this, new Builder\Select(), $this->processor);
 
         return $query->columns($columns ?? '*');
     }
@@ -234,7 +234,7 @@ class Connection implements ConnectionInterface
      */
     public function insert(?array $columnsToValues = null): Query
     {
-        $query = new Query($this, new Builder\Insert, $this->processor);
+        $query = new Query($this, new Builder\Insert(), $this->processor);
 
         if ($columnsToValues) {
             $query->setColumnsAndValues($columnsToValues);
@@ -248,7 +248,7 @@ class Connection implements ConnectionInterface
      */
     public function update(?string $table = null): Query
     {
-        $query = new Query($this, new Builder\Update, $this->processor);
+        $query = new Query($this, new Builder\Update(), $this->processor);
 
         if ($table) {
             $query->table($table);
@@ -262,7 +262,7 @@ class Connection implements ConnectionInterface
      */
     public function delete(?string $table = null): Query
     {
-        $query = new Query($this, new Builder\Delete, $this->processor);
+        $query = new Query($this, new Builder\Delete(), $this->processor);
 
         if ($table) {
             $query->from($table);
@@ -276,7 +276,7 @@ class Connection implements ConnectionInterface
      */
     public function replace(?array $columnsToValues = null): Query
     {
-        $query = new Query($this, new Builder\Replace, $this->processor);
+        $query = new Query($this, new Builder\Replace(), $this->processor);
 
         if ($columnsToValues) {
             $query->setColumnsAndValues($columnsToValues);

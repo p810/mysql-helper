@@ -9,7 +9,7 @@ class JoinTest extends TestCase
 {
     public function test_single_join_using()
     {
-        $query = new Select;
+        $query = new Select();
 
         $query->innerJoin('bans')
               ->using('user_id');
@@ -19,7 +19,7 @@ class JoinTest extends TestCase
 
     public function test_single_join_on()
     {
-        $query = new Select;
+        $query = new Select();
 
         $query->innerJoin('bans')
               ->on('users.user_id', 'bans.issuer_id');
@@ -29,7 +29,7 @@ class JoinTest extends TestCase
 
     public function test_multiple_join_on()
     {
-        $query = new Select;
+        $query = new Select();
 
         $query->innerJoin('bans')
               ->on('users.user_id', 'bans.issuer_id')
@@ -40,7 +40,7 @@ class JoinTest extends TestCase
 
     public function test_join_predicate_queue()
     {
-        $query = new Select;
+        $query = new Select();
 
         $query->using('user_id')
               ->innerJoin('bans');

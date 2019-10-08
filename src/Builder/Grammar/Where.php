@@ -405,7 +405,7 @@ trait Where
      */
     public function whereNested(callable $cb, string $logical = 'and'): self
     {
-        $query = $cb(new ComplexWhere);
+        $query = $cb(new ComplexWhere());
 
         $clause = $this->wheres ? "$logical $query" : "$query";
 

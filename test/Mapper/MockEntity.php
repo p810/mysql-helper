@@ -31,7 +31,7 @@ class MockEntity implements EntityInterface
     public static function from(array $state): EntityInterface
     {
         if (! array_key_exists('message', $state)) {
-            throw new OutOfBoundsException;
+            throw new OutOfBoundsException();
         }
         
         return new self($state['message']);
