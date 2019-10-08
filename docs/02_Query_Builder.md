@@ -196,12 +196,21 @@ $connection->update('table')
 $connection->update()->table('table')
 ```
 
-### `set()`
-`p810\MySQL\Builder\Update::set()` takes an associative array mapping columns to values. This method can be called more than once if necessary.
+### `set()` and `setMany()`
+`p810\MySQL\Builder\Grammar\Set::set()` takes a column (string) and value. This method can be called more than once if necessary.
 
 ```php
 // update table set message = ?
-$connection->update('table')->set(['message' => 'Testing, one two'])
+$connection->update('table')->set('message', 'Testing, one two')
+```
+
+`p810\MySQL\Builder\Grammar\Set::setMany()` allows you to pass an associative array to set multiple columns at once:
+
+```php
+$connection->update('table')->setMany([
+    'foo' => 'hello',
+    'bar' => 'world'
+])
 ```
 
 ### Where clauses
@@ -229,7 +238,7 @@ To use an assignment list (update):
 $connection->replace('table')->set('message', 'Hello world')->where('table_id', 1)
 ```
 
-> :bulb: **Note:** `p810\MySQL\Builder\Replace::set()` may be called more than one time to specify multiple assignments, or an associative array may be passed for the same effect.
+> :bulb: **Note:** `p810\MySQL\Builder\Replace::set()` may be called more than one time to specify multiple assignments, or you can call `setMany()` with an associative array to achieve the same thing.
 
 To use a value list (insert):
 
