@@ -175,6 +175,7 @@ class Insert extends Builder
     public function setColumnsAndValues(array $columnsToValues): self
     {
         $this->columns(array_keys($columnsToValues));
+        
         $this->values(array_values($columnsToValues));
 
         return $this;
