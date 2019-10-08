@@ -2,12 +2,10 @@
 
 namespace p810\MySQL;
 
-use PDOStatement;
 use BadMethodCallException;
 use p810\MySQL\Builder\Builder;
 use p810\MySQL\Processor\ProcessorInterface;
 
-use function strtolower;
 use function method_exists;
 
 class Query

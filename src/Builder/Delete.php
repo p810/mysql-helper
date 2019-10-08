@@ -2,8 +2,6 @@
 
 namespace p810\MySQL\Builder;
 
-use PDOStatement;
-
 class Delete extends Builder
 {
     use Grammar\Table;

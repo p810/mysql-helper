@@ -2,7 +2,6 @@
 
 namespace p810\MySQL\Builder\Grammar;
 
-use PDOStatement;
 use p810\MySQL\Builder\Builder;
 
 use function p810\MySQL\parentheses;

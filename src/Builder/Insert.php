@@ -2,8 +2,6 @@
 
 namespace p810\MySQL\Builder;
 
-use PDO;
-use PDOStatement;
 use p810\MySQL\Builder\Grammar\Expression;
 
 use function array_map;

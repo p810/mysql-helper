@@ -2,11 +2,7 @@
 
 namespace p810\MySQL\Builder;
 
-use PDO;
-use PDOStatement;
-
 use function is_array;
-use function is_string;
 use function p810\MySQL\commas;
 
 class Select extends Builder

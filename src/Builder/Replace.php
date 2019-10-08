@@ -2,8 +2,6 @@
 
 namespace p810\MySQL\Builder;
 
-use PDOStatement;
-use InvalidArgumentException;
 use p810\MySQL\Builder\Grammar\Expression;
 
 use function is_array;

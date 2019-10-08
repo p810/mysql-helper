@@ -3,7 +3,6 @@
 namespace p810\MySQL;
 
 use PDO;
-use PDOException;
 use p810\MySQL\Processor\PdoProcessor;
 use p810\MySQL\Processor\ProcessorInterface;
 

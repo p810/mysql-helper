@@ -2,9 +2,7 @@
 
 namespace p810\MySQL\Builder\Grammar;
 
-use function substr;
 use function sprintf;
-use function in_array;
 use function array_walk;
 use function p810\MySQL\spaces;
 use function p810\MySQL\parentheses;

@@ -2,7 +2,6 @@
 
 namespace p810\MySQL;
 
-use PDO;
 use p810\MySQL\Processor\ProcessorInterface;
 
 /**
