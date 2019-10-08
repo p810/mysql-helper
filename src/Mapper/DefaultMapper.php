@@ -116,7 +116,7 @@ class DefaultMapper implements MapperInterface
      */
     public function update(EntityInterface $entity, ?callable $cb = null): bool
     {
-        $query = $this->adapter->update($this->table)->set($entity->toArray());
+        $query = $this->adapter->update($this->table)->setMany($entity->toArray());
 
         if ($cb) {
             $query = $cb($query, $entity);

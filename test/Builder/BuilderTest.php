@@ -69,7 +69,7 @@ class BuilderTest extends TestCase
         $query = new Update();
 
         $query->update('users')
-              ->set([
+              ->setMany([
                   'username' => 'Carl',
                   'password' => 'hatestherain'
               ])
