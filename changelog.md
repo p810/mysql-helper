@@ -1,3 +1,31 @@
+### 3.1.2
+- Updated `Query` to pass null instead of false to processor callbacks when a statement fails to be built in `ConnectionInterface::query()`
+    * This allows processors to include a nullable type hint for `PDOStatement` if they plan to handle failure cases
+- Added new grammar traits:
+    * `Priority` which moves `highPriority()` and `lowPriority()` from the Insert builder
+    * `Ignore` which moves `ignore()` from the Insert builder
+    * `Limit` which moves `limit()` from the Select builder
+    * `Table` which moves `from()` from the Select and Delete builders, and `into()` from the Insert and Replace builders
+    * `Set` which moves `set()` from the Update and Replace builders
+        - `set()` now only takes a column and value; to specify multiple columns with an array, use `setMany()`
+- Updated various builders to utilize new grammar traits:
+    * Select, Delete, Insert, and Replace now use `Table` to specify the query's source table
+    * Select and Delete can now use functionality from `Priority`
+    * Delete may now use `Ignore`, `OrderBy`, and `Limit` functionality
+- Removed a condition that would raise an exception if the priority value in a Replace query was invalid
+- Changed `p810\MySQL\Processor\Pdo` to `PdoProcessor` for consistency with `AbstractProcessor` and to better communicate the purpose of the class
+- Updated `p810\MySQL\Mapper\DefaultMapper::lastInsertId()` to use the query builder instead of a raw query
+- Formatting and code style changes:
+    * Removes unused class and function imports
+    * Updates multiple instances of object instantiation that lacked parentheses after the class name
+    * Updates multiple docblocks to:
+        - Ensure lines are not broken before hitting the 120th column, per PSR rules
+        - Ensure class names, methods, etc. are wrapped with backticks
+        - Ensure annotations are consistently spaced; for example, some param lists were formatted like tables while others weren't
+- Added `Builder::__toString()` which is an alias for `Builder::build()` and allows for passing/representing builder objects as a string
+
+I think this package is about to the point where it's mature enough that I'll finally make myself start following semver. Of course, I've felt that way before and turned around and overhauled much of the internals a few months later, so who knows. At this point I still enjoy the flexibility I have with versioning because I can move quickly and break things without risking harming anyone's projects. Eventually I'll muster up the courage to share this on r/php et. al places, but for now I'll tinker away at it in solitude.
+
 ### 3.1.1
 - Removed `league/climate` dependency
 - Added `league/climate` as a *dev* dependency
