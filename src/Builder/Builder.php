@@ -69,4 +69,14 @@ abstract class Builder
 
         return spaces($parts);
     }
+
+    /**
+     * Returns the query as a string
+     * 
+     * @return string
+     */
+    function __toString(): string
+    {
+        return $this->build();
+    }
 }
