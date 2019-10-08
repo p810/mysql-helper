@@ -10,8 +10,8 @@ trait Priority
     protected $priority;
 
     /**
-     * Specifies that this query should be delayed until all other clients have finished
-     * their operations on the specified table
+     * Specifies that this query should be delayed until all other clients have finished their operations on the
+     * specified table
      * 
      * @return self
      */
@@ -23,8 +23,7 @@ trait Priority
     }
 
     /**
-     * Overrides `--low-priority-updates` if this option is set in MySQL and disables
-     * concurrent updates
+     * Overrides `--low-priority-updates` if this option is set in MySQL and disables concurrent updates
      * 
      * @return self
      */
