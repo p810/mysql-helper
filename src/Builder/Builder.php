@@ -47,10 +47,9 @@ abstract class Builder
     /**
      * Compiles a query
      * 
-     * Each builder specifies a list of $components which will be iterated
-     * to get a compiler method, e.g. compileFrom(). The result of that call
-     * (if applicable) is then appended to a list of strings that will be 
-     * joined by spaces to form the query string.
+     * Each builder specifies a list of $components which will be iterated to get a compiler method, for example
+     * `compileFrom()`. The result of that call (if applicable) is then appended to a list of strings that will be 
+     * joined (with spaces) to form the query string.
      * 
      * @return string
      */

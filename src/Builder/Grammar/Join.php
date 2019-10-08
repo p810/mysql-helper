@@ -25,7 +25,7 @@ trait Join
     /**
      * Appends a join to the query
      * 
-     * @param string $type  The type of join (e.g. inner, left)
+     * @param string $type The type of join (e.g. inner, left)
      * @param string $table The table to join data from 
      * @return self
      */
@@ -127,8 +127,8 @@ trait Join
     /**
      * Appends an "on" clause to the current join
      * 
-     * @param string $left    The lefthand column
-     * @param string $right   The righthand column
+     * @param string $left The left hand column
+     * @param string $right The right hand column
      * @param string $logical A logical operator used to concatenate the clauses
      * @return self
      */
@@ -146,8 +146,8 @@ trait Join
     /**
      * Appends an "on" clause to the current join with "or" as the logical operator
      * 
-     * @param string $left  The lefthand column
-     * @param string $right The righthand column
+     * @param string $left The left hand column
+     * @param string $right The right hand column
      * @return self
      */
     public function orOn(string $left, string $right): self

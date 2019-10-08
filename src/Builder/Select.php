@@ -55,7 +55,7 @@ class Select extends Builder
     }
 
     /**
-     * An alias for \p810\MySQL\Builder\Select::select()
+     * An alias for `\p810\MySQL\Builder\Select::select()`
      * 
      * @param array|string $columns
      * @return self

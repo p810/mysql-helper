@@ -35,7 +35,7 @@ class JoinExpression
     /**
      * Constructs the expression with the given join type (e.g. inner, left) and table
      * 
-     * @param string $type  The type of join being appended
+     * @param string $type The type of join being appended
      * @param string $table The table to fetch data from
      * @return void
      */
@@ -92,8 +92,8 @@ class JoinExpression
     /**
      * Sets an "on" clause for the join
      * 
-     * @param string $left    The lefthand side of the clause (a column)
-     * @param string $right   The righthand side of the clause (another column)
+     * @param string $left The left hand side of the clause (a column)
+     * @param string $right The right hand side of the clause (another column)
      * @param string $logical A logical operator to concatenate the clauses
      * @return void
      */

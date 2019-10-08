@@ -30,7 +30,7 @@ class Delete extends Builder
     ];
 
     /**
-     * An alias for \p810\MySQL\Builder\Delete::from()
+     * An alias for `\p810\MySQL\Builder\Delete::from()`
      * 
      * @param string $table The table to remove data from
      * @return self

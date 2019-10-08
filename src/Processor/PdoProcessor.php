@@ -14,6 +14,8 @@ class PdoProcessor extends AbstractProcessor
     }
 
     /**
+     * Returns an array of associative arrays representing a result set (rows) returned from a query
+     * 
      * @param \PDOStatement $statement
      * @return array
      */
@@ -23,6 +25,8 @@ class PdoProcessor extends AbstractProcessor
     }
 
     /**
+     * Returns an integer indicating the number of rows affected by a query
+     * 
      * @param \PDOStatement $statement
      * @return int
      */

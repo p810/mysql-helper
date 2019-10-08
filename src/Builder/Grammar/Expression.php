@@ -30,10 +30,10 @@ class Expression
     public $comparisonOperator;
 
     /**
-     * @param string $left       Lefthand side of the expression
-     * @param mixed  $right      Righthand side of the expression
+     * @param string $left Left hand side of the expression
+     * @param mixed  $right Right hand side of the expression
      * @param string $comparison Middle of the expression
-     * @param string $logical    A logical operator used to concatenate expressions
+     * @param string $logical A logical operator used to concatenate expressions
      * @return void
      */
     function __construct(

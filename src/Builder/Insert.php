@@ -77,7 +77,7 @@ class Insert extends Builder
     }
 
     /**
-     * Alias for \p810\MySQL\Builder\Insert::onDuplicateKeyUpdate()
+     * Alias for `\p810\MySQL\Builder\Insert::onDuplicateKeyUpdate()`
      * 
      * @param string $column
      * @param mixed  $value

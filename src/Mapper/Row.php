@@ -24,7 +24,7 @@ class Row implements EntityInterface
     /**
      * Injects dependencies necessary for this Row to be built
      * 
-     * @param \p810\MySQL\Mapper\DefaultMapper   $mapper
+     * @param \p810\MySQL\Mapper\DefaultMapper $mapper
      * @param \p810\MySQL\Mapper\EntityInterface $entity
      */
     function __construct(DefaultMapper $mapper, EntityInterface $entity)
@@ -110,8 +110,7 @@ class Row implements EntityInterface
     }
 
     /**
-     * Returns the properties of the entity this row represents and any properties
-     * defined specifically on the object
+     * Returns the properties of the entity this row represents and any properties defined specifically on the object
      * 
      * @return array
      */

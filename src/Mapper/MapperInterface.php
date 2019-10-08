@@ -7,7 +7,7 @@ use p810\MySQL\ConnectionInterface;
 interface MapperInterface
 {
     /**
-     * Injects an instance of \p810\MySQL\ConnectionInterface into the mapper
+     * Injects an instance of `\p810\MySQL\ConnectionInterface` into the mapper
      * 
      * @param \p810\MySQL\ConnectionInterface $connection The connection (or adapter)
      * @return void

@@ -14,7 +14,7 @@ trait OrderBy
     /**
      * Appends an order by clause to the query
      * 
-     * @param string $column    The column to order by
+     * @param string $column The column to order by
      * @param string $direction The direction that results should be ordered in (asc/desc)
      * @return self
      */

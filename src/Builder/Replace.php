@@ -38,10 +38,9 @@ class Replace extends Insert
     /**
      * Sets values for an assignment list
      * 
-     * If the first argument is an array, it will expect it to be associative
-     * and iterate over it to call \p810\MySQL\Builder\Replace::set() for each
-     * column => value pair. If two arguments are passed then it will append an
-     * instance of p810\MySQL\Builder\Grammar\Expression to the assignment list.
+     * If the first argument is an array, it will expect it to be associative and iterate over it to call
+     * `\p810\MySQL\Builder\Replace::set()` for each column => value pair. If two arguments are passed then it will
+     * append an instance of `p810\MySQL\Builder\Grammar\Expression` to the assignment list.
      * 
      * @param array $arguments A variadic list of arguments
      * @return self
@@ -62,8 +61,7 @@ class Replace extends Insert
     }
 
     /**
-     * Checks whether this query is using an assignment list or value list
-     * and returns a string accordingly
+     * Checks whether this query is using an assignment or value list and returns a string accordingly
      * 
      * @return null|string
      */

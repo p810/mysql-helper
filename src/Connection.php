@@ -24,13 +24,15 @@ class Connection implements ConnectionInterface
     protected $processor;
 
     /**
-     * @param string $user       The user to connect to MySQL with
-     * @param string $password   The password of the MySQL user
-     * @param string $database   The database to connect to
-     * @param string $host       The hostname of the MySQL server
-     * @param bool   $exceptions Specifies whether \PDO should raise an exception when it encounters an error
-     * @param array  $dsnParams  Optional parameters to pass to the DSN used when instantiating \PDO
-     * @param array  $options    Optional arguments to include in the construction of the \PDO instance
+     * Establishes a connection to MySQL with PDO
+     * 
+     * @param string $user The user to connect to MySQL with
+     * @param string $password The password of the MySQL user
+     * @param string $database The database to connect to
+     * @param string $host The hostname of the MySQL server
+     * @param bool $exceptions Specifies whether \PDO should raise an exception when it encounters an error
+     * @param array $dsnParams Optional parameters to pass to the DSN used when instantiating \PDO
+     * @param array $options Optional arguments to include in the construction of the \PDO instance
      * @throws \PDOException if the database connection failed
      */
     function __construct(
@@ -117,10 +119,10 @@ class Connection implements ConnectionInterface
     }
 
     /**
-     * Proxies a call to \PDO::setAttribute()
+     * Proxies a call to `\PDO::setAttribute()`
      * 
-     * @param int   $attribute The attribute constant to set
-     * @param mixed $value     The value to set the attribute to
+     * @param int $attribute The attribute constant to set
+     * @param mixed $value The value to set the attribute to
      * @return self
      */
     public function setAttribute(int $attribute, $value): self
@@ -131,9 +133,9 @@ class Connection implements ConnectionInterface
     }
 
     /**
-     * Tells \PDO to either throw exceptions or silently ignore warnings by setting \PDO::ATTR_ERRMODE
+     * Tells PDO to either throw exceptions or silently ignore warnings by setting `\PDO::ATTR_ERRMODE`
      * 
-     * @param bool $throw Whether \PDO should throw exceptions on failure
+     * @param bool $throw Whether PDO should throw exceptions on failure
      * @return self
      */
     public function shouldThrowExceptions(bool $throw = true): self
@@ -146,7 +148,7 @@ class Connection implements ConnectionInterface
     }
 
     /**
-     * Tells \PDO whether the database should auto-commit results by setting \PDO::ATTR_AUTOCOMMIT
+     * Tells PDO whether the database should auto-commit results by setting `\PDO::ATTR_AUTOCOMMIT`
      * 
      * @param bool $shouldAutoCommit Whether the database should auto-commit results
      * @return self
@@ -163,7 +165,7 @@ class Connection implements ConnectionInterface
     /**
      * Begins a transaction with the database 
      * 
-     * @throws \PDOException from \PDO::beginTransaction() if the attempt to start a transaction fails
+     * @throws \PDOException from `\PDO::beginTransaction()` if the attempt to start a transaction fails
      * @return bool
      */
     public function transact(): bool
@@ -176,9 +178,9 @@ class Connection implements ConnectionInterface
     }
 
     /**
-     * An alias for \p810\MySQL\Connection::transact()
+     * An alias for `\p810\MySQL\Connection::transact()`
      * 
-     * @throws \PDOException from \PDO::beginTransaction() if the attempt to start a transaction fails
+     * @throws \PDOException from `\PDO::beginTransaction()` if the attempt to start a transaction fails
      * @return bool
      */
     public function beginTransaction(): bool

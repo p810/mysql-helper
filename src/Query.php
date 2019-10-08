@@ -44,14 +44,12 @@ class Query
     }
 
     /**
-     * Proxies calls on this object to the injected Builder if the method
-     * doesn't exist
+     * Proxies calls on this object to the injected Builder if the method doesn't exist
      * 
      * @param string $method The method being called
-     * @param array  $arguments An optional, variadic list of arguments
+     * @param array $arguments An optional, variadic list of arguments
      * @return mixed
-     * @throws \BadMethodCallException if the method is not defined in Query or
-     *                                 the injected Builder object
+     * @throws \BadMethodCallException if the method is not defined in Query or the injected builder object
      */
     function __call(string $method, array $arguments = [])
     {
@@ -72,13 +70,12 @@ class Query
      * Executes a prepared query and returns the result
      * 
      * @param null|callable $handler An optional callback used to process the result of the query
-     * @param bool $callbackOnBool Whether to call the user-supplied $processor when \PDOStatement::execute() returns false
+     * @param bool $callbackOnBool Whether to call the user-supplied $processor when \PDOStatement::execute() returns
+     *                             false
      * @return mixed
      */
-    public function execute(
-        ?callable $handler = null,
-        bool $callbackOnBool = false
-    ) {
+    public function execute(?callable $handler = null, bool $callbackOnBool = false)
+    {
         $statement = $this->database->query(
             $this->builder->build(),
             $this->builder->input

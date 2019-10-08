@@ -8,8 +8,8 @@ use function is_array;
 /**
  * Returns the given value surrounded by parentheses
  * 
- * @param string|array $value The value to surround with parentheses; if this is
- *                     an array, it will be turned into a comma delimited string
+ * @param string|array $value The value to surround with parentheses; if this is an array, it will be turned into a
+ *                            comma delimited string
  * @return string
  */
 function parentheses($value): string
@@ -46,9 +46,9 @@ function spaces(array $list): string
 /**
  * Returns a DSN to be used with PDO's constructor
  * 
- * @param string $host      MySQL host name e.g. localhost
- * @param string $database  MySQL database name
- * @param array  $arguments PDO arguments
+ * @param string $host MySQL host name e.g. localhost
+ * @param string $database MySQL database name
+ * @param array $arguments PDO arguments
  * @return string
  */
 function makePdoDsn(string $host, string $database, array $arguments = []): string

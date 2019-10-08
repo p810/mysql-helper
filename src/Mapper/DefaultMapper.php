@@ -99,7 +99,7 @@ class DefaultMapper implements MapperInterface
     }
 
     /**
-     * Retrieves the first result from a call to \p810\MySQL\Mapper\DefaultMapper::read()
+     * Retrieves the first result from a call to `\p810\MySQL\Mapper\DefaultMapper::read()`
      * 
      * @param null|callable $cb An optional callback used to modify the query
      * @return null|\p810\MySQL\Mapper\EntityInterface
@@ -184,9 +184,8 @@ class DefaultMapper implements MapperInterface
     /**
      * Fetches the ID of the last inserted row, if applicable
      * 
-     * @todo Investigate whether it's possible to use LAST_INSERT_ID() over this query
-     *       (currently it's returning 0 each time due to some limitation with the driver)
-     * 
+     * @todo Investigate whether it's possible to use LAST_INSERT_ID() over this query (currently it's returning 0 each
+     *       time due to some limitation with the driver)
      * @return null|int
      */
     public function lastInsertId(): ?int
