@@ -8,7 +8,7 @@ use function array_map;
 use function array_reduce;
 use function p810\MySQL\spaces;
 
-abstract class Builder
+abstract class AbstractBuilder implements BuilderInterface
 {
     /**
      * @var string
