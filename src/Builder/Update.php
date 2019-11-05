@@ -2,7 +2,7 @@
 
 namespace p810\MySQL\Builder;
 
-class Update extends Builder
+class Update extends AbstractBuilder
 {
     use Grammar\Set;
     use Grammar\Where;

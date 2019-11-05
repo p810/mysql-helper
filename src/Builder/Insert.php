@@ -10,7 +10,7 @@ use function array_values;
 use function p810\MySQL\commas;
 use function p810\MySQL\parentheses;
 
-class Insert extends Builder
+class Insert extends AbstractBuilder
 {
     use Grammar\Table;
     use Grammar\Ignore;

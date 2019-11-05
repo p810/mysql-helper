@@ -5,7 +5,7 @@ namespace p810\MySQL\Builder;
 use function is_array;
 use function p810\MySQL\commas;
 
-class Select extends Builder
+class Select extends AbstractBuilder
 {
     use Grammar\Join;
     use Grammar\Table;

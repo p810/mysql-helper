@@ -3,7 +3,7 @@
 namespace p810\MySQL;
 
 use BadMethodCallException;
-use p810\MySQL\Builder\Builder;
+use p810\MySQL\Builder\BuilderInterface;
 use p810\MySQL\Processor\ProcessorInterface;
 
 use function method_exists;
@@ -11,7 +11,7 @@ use function method_exists;
 class Query
 {
     /**
-     * @var \p810\MySQL\Builder\Builder
+     * @var \p810\MySQL\Builder\BuilderInterface
      */
     protected $builder;
 
@@ -29,11 +29,11 @@ class Query
      * Specifies the Connection and Builder that the query should use
      * 
      * @param \p810\MySQL\ConnectionInterface $database 
-     * @param \p810\MySQL\Builder\Builder $builder
+     * @param \p810\MySQL\Builder\BuilderInterface $builder
      * @param \p810\MySQL\Processor\ProcessorInterface $processor
      * @return void
      */
-    function __construct(ConnectionInterface $database, Builder $builder, ProcessorInterface $processor)
+    function __construct(ConnectionInterface $database, BuilderInterface $builder, ProcessorInterface $processor)
     {
         $this->database = $database;
         $this->builder = $builder;

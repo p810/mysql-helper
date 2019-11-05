@@ -2,7 +2,7 @@
 
 namespace p810\MySQL\Builder;
 
-class Delete extends Builder
+class Delete extends AbstractBuilder
 {
     use Grammar\Table;
     use Grammar\Where;

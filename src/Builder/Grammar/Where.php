@@ -346,7 +346,7 @@ trait Where
      * first argument and return that object. An example of how that callback might look is:
      *
      * ```php
-     * $query->whereNested(function (Builder $q) {
+     * $query->whereNested(function (BuilderInterface $q) {
      *     return $q->where('foo', 'bar')->orWhere('bam', 'baz');
      * });
      * ```

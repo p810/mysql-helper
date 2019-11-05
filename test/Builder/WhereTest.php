@@ -3,8 +3,8 @@
 namespace p810\MySQL\Test\Builder;
 
 use p810\MySQL\Builder\Select;
-use p810\MySQL\Builder\Builder;
 use PHPUnit\Framework\TestCase;
+use p810\MySQL\Builder\BuilderInterface;
 
 class WhereTest extends TestCase
 {
@@ -97,7 +97,7 @@ class WhereTest extends TestCase
      */
     public function test_where_nested(Select $query): Select
     {
-        $query->whereNested(function (Builder $q) {
+        $query->whereNested(function (BuilderInterface $q) {
             return $q->where('boo', 'far');
         });
 

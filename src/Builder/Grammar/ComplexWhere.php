@@ -2,11 +2,11 @@
 
 namespace p810\MySQL\Builder\Grammar;
 
-use p810\MySQL\Builder\Builder;
+use p810\MySQL\Builder\AbstractBuilder;
 
 use function p810\MySQL\parentheses;
 
-class ComplexWhere extends Builder
+class ComplexWhere extends AbstractBuilder
 {
     use Where;
 
