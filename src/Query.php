@@ -33,11 +33,8 @@ class Query
      * @param \p810\MySQL\Processor\ProcessorInterface $processor
      * @return void
      */
-    function __construct(
-        ConnectionInterface $database,
-        Builder $builder,
-        ProcessorInterface $processor
-    ) {
+    function __construct(ConnectionInterface $database, Builder $builder, ProcessorInterface $processor)
+    {
         $this->database = $database;
         $this->builder = $builder;
         $this->processor = $processor;
@@ -76,10 +73,7 @@ class Query
      */
     public function execute(?callable $handler = null, bool $callbackOnBool = false)
     {
-        $statement = $this->database->query(
-            $this->builder->build(),
-            $this->builder->input
-        );
+        $statement = $this->database->query($this->builder->build(), $this->builder->input);
 
         if ($statement || $callbackOnBool) {
             $statement = $statement ?: null;

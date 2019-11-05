@@ -86,10 +86,7 @@ class Row implements EntityInterface
     public function save(): bool
     {
         if ($this->hasUniqueKey()) {
-            return $this->mapper->updateById(
-                $this->getUniqueKey(),
-                $this->entity
-            );
+            return $this->mapper->updateById($this->getUniqueKey(), $this->entity);
         }
 
         return false;

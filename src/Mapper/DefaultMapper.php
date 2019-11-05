@@ -136,12 +136,9 @@ class DefaultMapper implements MapperInterface
     {
         $this->requireKeyToBeSetFor('updateById');
 
-        return $this->update(
-            $entity,
-            function (Query $q, EntityInterface $entity) use ($id) {
-                return $q->where($this->key, $id);
-            }
-        );
+        return $this->update($entity, function (Query $q, EntityInterface $entity) use ($id) {
+            return $q->where($this->key, $id);
+        });
     }
 
     /**
