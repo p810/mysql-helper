@@ -10,7 +10,7 @@ interface ProcessorInterface
      * @param string $command
      * @return callable
      */
-    public function getHandler(string $command = '*'): callable;
+    public function getHandler(?string $command): callable;
 
     /**
      * Sets the callback handler for a given command

@@ -13,8 +13,10 @@ abstract class AbstractProcessor implements ProcessorInterface
     /**
      * {@inheritdoc}
      */
-    public function getHandler(string $command = '*'): callable
+    public function getHandler(?string $command): callable
     {
+        $command = $command ?: '*';
+
         $handler = $this->callbacks[$command] ?? $this->callbacks['*'];
 
         return $handler;
