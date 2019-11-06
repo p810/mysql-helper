@@ -5,16 +5,10 @@ namespace p810\MySQL\Builder;
 use function ucfirst;
 use function is_array;
 use function array_map;
-use function array_reduce;
 use function p810\MySQL\spaces;
 
 abstract class AbstractBuilder implements BuilderInterface
 {
-    /**
-     * @var string
-     */
-    const COMMAND = '';
-
     /**
      * @var string[]
      */
@@ -23,13 +17,10 @@ abstract class AbstractBuilder implements BuilderInterface
     /**
      * @var array
      */
-    public $input = [];
+    protected $input = [];
 
     /**
-     * Binds a value for use in a prepared query
-     * 
-     * @param array|string|int $value The value to bind
-     * @return string|array
+     * {@inheritdoc}
      */
     public function bind($value)
     {
@@ -45,28 +36,29 @@ abstract class AbstractBuilder implements BuilderInterface
     }
 
     /**
-     * Compiles a query
-     * 
-     * Each builder specifies a list of $components which will be iterated to get a compiler method, for example
-     * `compileFrom()`. The result of that call (if applicable) is then appended to a list of strings that will be 
-     * joined (with spaces) to form the query string.
-     * 
-     * @return string
+     * {@inheritdoc}
      */
     public function build(): string
     {
-        $parts = array_reduce($this->components, function ($value, $component) {
+        $parts = [];
+
+        foreach ($this->components as $component) {
             $method = 'compile' . ucfirst($component);
-            $result = $this->$method();
 
-            if ($result) {
-                $value[] = $result;
+            if ($compiledPart = $this->$method()) {
+                $parts[] = $compiledPart;
             }
-
-            return $value;
-        }, []);
+        }
 
         return spaces($parts);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getParameters(): array
+    {
+        return $this->input;
     }
 
     /**
