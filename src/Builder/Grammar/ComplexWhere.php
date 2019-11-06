@@ -21,4 +21,12 @@ class ComplexWhere extends AbstractBuilder
 
         return parentheses($clauses);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCommand(): ?string
+    {
+        return null;
+    }
 }

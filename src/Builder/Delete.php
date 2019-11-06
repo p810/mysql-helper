@@ -14,11 +14,6 @@ class Delete extends AbstractBuilder
     /**
      * @inheritdoc
      */
-    const COMMAND = 'delete';
-
-    /**
-     * @inheritdoc
-     */
     protected $components = [
         'delete',
         'priority',
@@ -47,6 +42,14 @@ class Delete extends AbstractBuilder
      */
     protected function compileDelete(): string
     {
-        return self::COMMAND;
+        return 'delete';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCommand(): ?string
+    {
+        return 'delete';
     }
 }

@@ -10,11 +10,6 @@ class Update extends AbstractBuilder
     /**
      * @inheritdoc
      */
-    const COMMAND = 'update';
-
-    /**
-     * @inheritdoc
-     */
     protected $components = [
         'update',
         'set',
@@ -62,5 +57,13 @@ class Update extends AbstractBuilder
         }
 
         return "update $this->table";
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCommand(): string
+    {
+        return 'update';
     }
 }

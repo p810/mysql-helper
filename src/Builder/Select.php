@@ -17,11 +17,6 @@ class Select extends AbstractBuilder
     /**
      * @inheritdoc
      */
-    const COMMAND = 'select';
-
-    /**
-     * @inheritdoc
-     */
     protected $components = [
         'select',
         'priority',
@@ -77,5 +72,13 @@ class Select extends AbstractBuilder
         }
 
         return "select $this->columns";
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCommand(): string
+    {
+        return 'select';
     }
 }

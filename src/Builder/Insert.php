@@ -19,11 +19,6 @@ class Insert extends AbstractBuilder
     /**
      * @inheritdoc
      */
-    const COMMAND = 'insert';
-
-    /**
-     * @inheritdoc
-     */
     protected $components = [
         'insert',
         'priority',
@@ -56,7 +51,7 @@ class Insert extends AbstractBuilder
      */
     protected function compileInsert(): string
     {
-        return self::COMMAND;
+        return 'insert';
     }
 
     /**
@@ -176,5 +171,13 @@ class Insert extends AbstractBuilder
         $this->values(array_values($columnsToValues));
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCommand(): ?string
+    {
+        return 'insert';
     }
 }

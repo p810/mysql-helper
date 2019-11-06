@@ -11,11 +11,6 @@ class Replace extends Insert
     /**
      * @inheritdoc
      */
-    const COMMAND = 'replace';
-
-    /**
-     * @inheritdoc
-     */
     protected $components = [
         'replace',
         'priority',
@@ -31,7 +26,7 @@ class Replace extends Insert
      */
     protected function compileReplace(): string
     {
-        return self::COMMAND;
+        return 'replace';
     }
 
     /**
@@ -46,5 +41,13 @@ class Replace extends Insert
         }
 
         return parent::compileValues();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCommand(): ?string
+    {
+        return 'replace';
     }
 }
