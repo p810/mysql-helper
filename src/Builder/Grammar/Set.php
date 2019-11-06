@@ -7,7 +7,7 @@ use function p810\MySQL\commas;
 trait Set
 {
     /**
-     * @var array<string,mixed>
+     * @var array<int,\p810\MySQL\Builder\Grammar\Expression>
      */
     protected $setValues = [];
 

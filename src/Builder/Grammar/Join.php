@@ -2,7 +2,6 @@
 
 namespace p810\MySQL\Builder\Grammar;
 
-use function array_walk;
 use function p810\MySQL\spaces;
 
 trait Join
@@ -38,9 +37,9 @@ trait Join
             // or Join::using() was called before this method was, so we need to unpack
             // all of that data into the current JoinExpression
             foreach ($this->callsBeforeFirstJoin as $method => $calls) {
-                array_walk($calls, function ($arguments, $key) use ($join, $method) {
+                foreach ($calls as $arguments) {
                     $join->$method(...$arguments);
-                });
+                }
             }
 
             $this->callsBeforeFirstJoin = [];

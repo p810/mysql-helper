@@ -19,16 +19,19 @@ class JoinExpression
 
     /**
      * @var string
+     * @psalm-suppress PropertyNotSetInConstructor
      */
     public $method;
 
     /**
      * @var string
+     * @psalm-suppress PropertyNotSetInConstructor
      */
     public $column;
 
     /**
      * @var \p810\MySQL\Builder\Grammar\Expression[]
+     * @psalm-suppress PropertyNotSetInConstructor
      */
     public $predicates;
 

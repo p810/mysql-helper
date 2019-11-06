@@ -62,7 +62,7 @@ class Update extends AbstractBuilder
     /**
      * {@inheritdoc}
      */
-    public function getCommand(): string
+    public function getCommand(): ?string
     {
         return 'update';
     }

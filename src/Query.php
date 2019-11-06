@@ -78,7 +78,7 @@ class Query
         if ($statement || $callbackOnBool) {
             $statement = $statement ?: null;
 
-            $callback = $handler ?? $this->processor->getHandler($this->builder->getCommand());
+            $callback = $handler ?? $this->processor->getHandler($this->builder->getCommand() ?? '*');
 
             return $callback($statement);
         }

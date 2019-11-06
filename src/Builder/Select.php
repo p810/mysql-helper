@@ -77,7 +77,7 @@ class Select extends AbstractBuilder
     /**
      * {@inheritdoc}
      */
-    public function getCommand(): string
+    public function getCommand(): ?string
     {
         return 'select';
     }

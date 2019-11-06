@@ -16,7 +16,7 @@ class Connection implements ConnectionInterface
     /**
      * @var bool
      */
-    protected $autocommit;
+    protected $autocommit = true;
 
     /**
      * @var \p810\MySQL\Processor\ProcessorInterface

@@ -86,6 +86,7 @@ class Row implements EntityInterface
     public function save(): bool
     {
         if ($this->hasUniqueKey()) {
+            /** @psalm-suppress PossiblyNullArgument */
             return $this->mapper->updateById($this->getUniqueKey(), $this->entity);
         }
 
@@ -100,6 +101,7 @@ class Row implements EntityInterface
     public function delete(): bool
     {
         if ($this->hasUniqueKey()) {
+            /** @psalm-suppress PossiblyNullArgument */
             return $this->mapper->deleteById($this->getUniqueKey());
         }
 

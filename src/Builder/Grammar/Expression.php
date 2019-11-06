@@ -101,7 +101,7 @@ class Expression
     public static function listToString(array $expressions): string
     {
         $clauses = [];
-        
+
         array_walk($expressions, function ($value, $key) use (&$clauses) {
             $useLogicalOperator = $key >= 1;
             
