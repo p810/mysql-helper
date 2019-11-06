@@ -14,16 +14,19 @@ class DefaultMapper implements MapperInterface
 {
     /**
      * @var string
+     * @psalm-suppress PropertyNotSetInConstructor
      */
     public $table;
 
     /**
      * @var string
+     * @psalm-suppress PropertyNotSetInConstructor
      */
     public $key;
 
     /**
      * @var string
+     * @psalm-suppress PropertyNotSetInConstructor
      */
     protected $entity;
 
