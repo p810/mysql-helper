@@ -9,9 +9,9 @@ use function p810\MySQL\parentheses;
 trait Where
 {
     /**
-     * @var array
+     * @var array<int,\p810\MySQL\Builder\Grammar\Expression|string>
      */
-    protected $wheres;
+    protected $wheres = [];
 
     /**
      * Appends an expression to the where clause

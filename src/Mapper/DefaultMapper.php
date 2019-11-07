@@ -78,7 +78,7 @@ class DefaultMapper implements MapperInterface
         $result = $query->execute();
 
         if ($result) {
-            return array_map(function ($row) {
+            return array_map(function (array $row) {
                 return $this->getEntityFrom($row);
             }, $result);
         }
@@ -97,7 +97,7 @@ class DefaultMapper implements MapperInterface
     {
         $this->requireKeyToBeSetFor('findById');
 
-        return $this->first(function (Query $q) use ($id) {
+        return $this->first(function (Query $q) use ($id): Query {
             return $q->where($this->key, $id);
         });
     }
@@ -140,7 +140,7 @@ class DefaultMapper implements MapperInterface
     {
         $this->requireKeyToBeSetFor('updateById');
 
-        return $this->update($entity, function (Query $q, EntityInterface $entity) use ($id) {
+        return $this->update($entity, function (Query $q, EntityInterface $entity) use ($id): Query {
             return $q->where($this->key, $id);
         });
     }

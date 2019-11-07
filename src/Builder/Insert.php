@@ -30,19 +30,19 @@ class Insert extends AbstractBuilder
     ];
 
     /**
-     * @var array
+     * @var null|array
      */
     protected $columns;
 
     /**
-     * @var array
+     * @var null|array
      */
     protected $values;
 
     /**
      * @var \p810\MySQL\Builder\Grammar\Expression[]
      */
-    protected $updateOnDuplicate;
+    protected $updateOnDuplicate = [];
 
     /**
      * Returns the `INSERT` keyword

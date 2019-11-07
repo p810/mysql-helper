@@ -9,7 +9,7 @@ trait Join
     /**
      * @var \p810\MySQL\Builder\Grammar\JoinExpression[]
      */
-    protected $joins;
+    protected $joins = [];
 
     /**
      * @var null|\p810\MySQL\Builder\Grammar\JoinExpression

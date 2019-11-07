@@ -5,7 +5,7 @@ namespace p810\MySQL\Builder\Grammar;
 trait Limit
 {
     /**
-     * @var int
+     * @var null|int
      */
     protected $limit;
 

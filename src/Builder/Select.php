@@ -30,7 +30,7 @@ class Select extends AbstractBuilder
     /**
      * @var string
      */
-    protected $columns;
+    protected $columns = '*';
 
     /**
      * Specifies which columns to return in the result set

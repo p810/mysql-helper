@@ -5,12 +5,12 @@ namespace p810\MySQL\Builder\Grammar;
 trait Table
 {
     /**
-     * @var string
+     * @var null|string
      */
     protected $from;
     
     /**
-     * @var string
+     * @var null|string
      */
     protected $into;
 

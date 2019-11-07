@@ -5,7 +5,7 @@ namespace p810\MySQL\Builder\Grammar;
 trait Priority
 {
     /**
-     * @var string
+     * @var null|string
      */
     protected $priority;
 

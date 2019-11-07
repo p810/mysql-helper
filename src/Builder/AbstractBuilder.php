@@ -12,7 +12,7 @@ abstract class AbstractBuilder implements BuilderInterface
     /**
      * @var string[]
      */
-    protected $components;
+    protected $components = [];
 
     /**
      * @var array

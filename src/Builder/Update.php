@@ -17,7 +17,7 @@ class Update extends AbstractBuilder
     ];
 
     /**
-     * @var string
+     * @var null|string
      */
     protected $table;
 

@@ -97,11 +97,13 @@ class Expression
      * 
      * @param array $expressions A list of expressions
      * @return string
+     * @todo Remove the `psalm-suppress` annotation inline below and use a union type when PHP 8 rolls around
      */
     public static function listToString(array $expressions): string
     {
         $clauses = [];
 
+        /** @psalm-suppress MissingClosureParamType */
         array_walk($expressions, function ($value, $key) use (&$clauses) {
             $useLogicalOperator = $key >= 1;
             
