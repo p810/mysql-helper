@@ -14,11 +14,6 @@ trait Where
     protected $wheres;
 
     /**
-     * @var string
-     */
-    protected $nextLogicalOperator;
-
-    /**
      * Appends an expression to the where clause
      * 
      * @param string $column Left hand side of the expression (column)
@@ -29,42 +24,12 @@ trait Where
      */
     public function where(string $column, $value, string $operator = '=', string $logical = 'and'): self
     {
-        if ($this->nextLogicalOperator) {
-            $logical = $this->nextLogicalOperator;
-
-            unset($this->nextLogicalOperator);
-        }
-        
         $this->wheres[] = new Expression(
             $column,
             $this->prepareValue($value),
             $operator,
             $logical
         );
-
-        return $this;
-    }
-
-    /**
-     * Sets the next logical operator to be "or," overriding the value passed with the function
-     * 
-     * @return self
-     */
-    public function or(): self
-    {
-        $this->nextLogicalOperator = 'or';
-
-        return $this;
-    }
-
-    /**
-     * Sets the next logical operator to be "and," overriding the value passed with the function
-     * 
-     * @return self
-     */
-    public function and(): self
-    {
-        $this->nextLogicalOperator = 'and';
 
         return $this;
     }

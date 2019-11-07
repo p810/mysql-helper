@@ -108,17 +108,4 @@ class WhereTest extends TestCase
 
         return $query;
     }
-
-    /**
-     * @depends test_where_nested
-     */
-    public function test_logical_operator_chaining_with_methods(Select $query)
-    {
-        $query->or()->where('string_is', 'comically_long');
-
-        $this->assertEquals(
-            'where foo = ? and bam != ? or fem = ? and a < ? or a <= ? and b > ? or b >= ? and id in (?, ?, ?, ?) and id not in (?, ?) and quux like ? and (boo = ?) or string_is = ?',
-            $query->build()
-        );
-    }
 }
