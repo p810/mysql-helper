@@ -114,7 +114,7 @@ trait Join
      */
     public function using(string $column): self
     {
-        if (! $this->currentJoin instanceof JoinExpression) {        
+        if (! $this->currentJoin instanceof JoinExpression) {
             $this->callsBeforeFirstJoin['using'][] = [$column];
         } else {
             $this->currentJoin->using($column);
