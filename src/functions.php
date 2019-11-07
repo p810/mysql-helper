@@ -22,7 +22,7 @@ function parentheses($value): string
 }
 
 /**
- * Transforms an array into a comma delimited string
+ * Returns a comma delimited string from an array of values
  * 
  * @param array $list A list of values to transform
  * @return string
@@ -33,7 +33,7 @@ function commas(array $list): string
 }
 
 /**
- * Transforms an array into a space delimited string
+ * Returns a space delimited string from an array of values
  * 
  * @param array $list A list of values to transform
  * @return string
@@ -44,7 +44,7 @@ function spaces(array $list): string
 }
 
 /**
- * Returns a DSN to be used with PDO's constructor
+ * Returns a DSN string to be used with PDO's constructor
  * 
  * @param string $host MySQL host name e.g. localhost
  * @param string $database MySQL database name

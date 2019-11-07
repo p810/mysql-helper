@@ -23,14 +23,14 @@ interface ConnectionInterface
     public function prepare(string $query): ?object;
 
     /**
-     * Returns a `\p810\MySQL\Processor`
+     * Returns an instance of `\p810\MySQL\Processor\ProcessorInterface`
      * 
      * @return \p810\MySQL\Processor\ProcessorInterface
      */
     public function getProcessor(): ProcessorInterface;
 
     /**
-     * Overrides the default `\p810\MySQL\Processor` that the class uses
+     * Overrides the default `\p810\MySQL\Processor\ProcessorInterface` that the class uses
      * 
      * @param \p810\MySQL\Processor\ProcessorInterface $processor
      * @return void
@@ -51,9 +51,9 @@ interface ConnectionInterface
     /**
      * Returns an instance of `\p810\MySQL\Query` with a Select builder
      * 
-     * @param string|array|null $columns Which columns to include in the query's results. Accepts either a numeric or
-     *                                   associative array; in the latter case, the keys are used as tables and prefix
-     *                                   each column.
+     * @param string|array|null $columns Which columns to include in the query's results. Accepts a string or either a
+     *                                   numeric or associative array; in the latter case, the keys are used as tables
+     *                                   and prefix each column.
      * @return \p810\MySQL\Query
      */
     public function select($columns = null): Query;
