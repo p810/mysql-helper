@@ -1,3 +1,13 @@
+### 3.2.0
+- Removed `p810\MySQL\Builder\Grammar\Where::and()` and `Where::or()` to simplify the trait's logic, since these don't provide much benefit over just chaining the next method, and may arguably hurt readability
+- Introduced `p810\MySQL\Builder\BuilderInterface` and replaced `p810\MySQL\Builder\Builder` with `p810\MySQL\Builder\AbstractBuilder`
+    * `AbstractBuilder::$input` is now protected since `BuilderInterface::getParameters()` is now available, making that functionality part of the contract
+    * The constant `AbstractBuilder::COMMAND` was replaced with `BuilderInterface::getCommand()` which makes that functionality contractual as well
+    * Changed `AbstractBuilder::build()` to use a loop instead of a call to `array_reduce()` for the sake of micro-optimizations
+- Various formatting and code style changes
+
+Finally squashed all of those errors and notices from Psalm! There are some suppressed that I want to come back and fix later when things like union types are available, though.
+
 ### 3.1.2
 - Updated `Query` to pass null instead of false to processor callbacks when a statement fails to be built in `ConnectionInterface::query()`
     * This allows processors to include a nullable type hint for `PDOStatement` if they plan to handle failure cases

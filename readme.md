@@ -18,10 +18,11 @@ $connection = new p810\MySQL\Connection('username', 'password', 'database');
 
 > **Note:** For more connection options, see [the documentation](docs/01_Getting_Started.md).
 
-Then use the builder factory methods to fluently build your SQL queries with a `p810\MySQL\Builder\Builder` object:
+Then use the builder factory methods to fluently build your SQL queries with a `p810\MySQL\Builder\BuilderInterface` object:
 
 ```php
 $query = $connection->select()->from('users')->where('username', 'Bob');
+
 $result = $query->execute();
 
 if ($result) {
@@ -31,7 +32,7 @@ if ($result) {
 }
 ```
 
-The available factory methods are `select()`, `insert()`, `update()`, `delete()`, and `replace()`. To run a query and get its `PDOStatement` object (rather than process the results), you can run `p810\MySQL\Connection::raw()`:
+The available factory methods are `select()`, `insert()`, `update()`, `delete()`, and `replace()`. To run a query and get its `PDOStatement` object (rather than process the results), you can run `p810\MySQL\Connection::query()`:
 
 ```php
 $statement = $connection->query('select last_insert_id() from users limit 1');
