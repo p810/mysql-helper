@@ -1,9 +1,9 @@
 ## Using the query builder
 `p810\MySQL\ConnectionInterface` objects have factory methods for basic CRUD operations with MySQL: `insert()`, `select()`, `update()`, and `delete()`. `replace()` is also supported. Manual queries may be executed with `query()`.
 
-Each method corresponds to a subclass of `p810\MySQL\Builder\Builder`. These objects can be fluently chained in any order to build your queries.
+Each method (except for `query()`) returns an instance of `p810\MySQL\Builder\BuilderInterface`. These objects can be fluently chained in any order to build your queries.
 
-> :bulb: **Note:** These methods will return an instance of `p810\MySQL\Query`, which proxies your calls to an instance of `p810\MySQL\Builder\Builder`. You can directly instantiate the builder objects if you don't need the query functionality.
+> :bulb: **Note:** These methods will return an instance of `p810\MySQL\Query`, which proxies your calls to an instance of `p810\MySQL\Builder\BuilderInterface`. You can directly instantiate the builder objects if you don't need the query functionality.
 
 ## Select
 To start a `SELECT` query, run `p810\MySQL\Connection::select()`. You can pass a string or array to specify columns; no value defaults to `*`. If the given value is an array, it can either be a list (numeric array) or associative to specify table names before the columns:
@@ -60,13 +60,6 @@ Each `where*()` method has an `orWhere*()` counterpart. For example, `whereLike(
 ```php
 // select * from table where table_value like ? or table_value like ?
 $connection->select()->from('table')->whereLike('table_value', 'foo')->orWhereLike('table_value', 'bar')
-```
-
-You can also chain methods with `and()` and `or()`:
-
-```php
-// select * from table where foo = ? or bar = ?
-$connection->select()->from('table')->where('foo', 'bar')->or()->where('bar', 'foo')
 ```
 
 For more information on what all you can do with `p810\MySQL\Builder\Grammar\Where` see the [API docs](#).
