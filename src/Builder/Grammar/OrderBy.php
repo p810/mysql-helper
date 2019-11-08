@@ -2,27 +2,26 @@
 
 namespace p810\MySQL\Builder\Grammar;
 
+use p810\MySQL\Builder\BuilderInterface;
+
 use function p810\MySQL\commas;
 
 trait OrderBy
 {
     /**
-     * @var string[]
-     */
-    protected $order = [];
-
-    /**
      * Appends an order by clause to the query
      * 
      * @param string $column The column to order by
      * @param string $direction The direction that results should be ordered in (asc/desc)
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function orderBy(string $column, string $direction = 'desc'): self
+    public function orderBy(string $column, string $direction = 'desc'): BuilderInterface
     {
-        $this->order[] = "$column $direction";
+        $order = $this->getParameter('order') ?? [];
 
-        return $this;
+        $order[] = "$column $direction";
+
+        return $this->setParameter('order', $order);
     }
 
     /**
@@ -32,10 +31,12 @@ trait OrderBy
      */
     protected function compileOrder(): ?string
     {
-        if (! $this->order) {
+        $order = $this->getParameter('order');
+
+        if (! $order) {
             return null;
         }
         
-        return 'order by ' . commas($this->order);
+        return 'order by ' . commas($order);
     }
 }

@@ -30,21 +30,6 @@ class Insert extends AbstractBuilder
     ];
 
     /**
-     * @var null|array
-     */
-    protected $columns;
-
-    /**
-     * @var null|array
-     */
-    protected $values;
-
-    /**
-     * @var \p810\MySQL\Builder\Grammar\Expression[]
-     */
-    protected $updateOnDuplicate = [];
-
-    /**
      * Returns the `INSERT` keyword
      * 
      * @return string
@@ -59,13 +44,15 @@ class Insert extends AbstractBuilder
      * 
      * @param string $column
      * @param mixed  $value
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function onDuplicateKeyUpdate(string $column, $value): self
+    public function onDuplicateKeyUpdate(string $column, $value): BuilderInterface
     {
-        $this->updateOnDuplicate[] = new Expression($column, $this->bind($value));
+        $values = $this->getParameter('updateOnDuplicate') ?? [];
+        
+        $values[] = new Expression($column, $this->bind($value));
 
-        return $this;
+        return $this->setParameter('updateOnDuplicate', $values);
     }
 
     /**
@@ -73,9 +60,9 @@ class Insert extends AbstractBuilder
      * 
      * @param string $column
      * @param mixed  $value
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function updateDuplicate(string $column, $value): self
+    public function updateDuplicate(string $column, $value): BuilderInterface
     {
         return $this->onDuplicateKeyUpdate($column, $value);
     }
@@ -87,24 +74,24 @@ class Insert extends AbstractBuilder
      */
     protected function compileOnDuplicateKeyUpdate(): ?string
     {
-        if (! $this->updateOnDuplicate) {
+        $updateOnDuplicate = $this->getParameter('updateOnDuplicate');
+
+        if (! $updateOnDuplicate) {
             return null;
         }
 
-        return 'on duplicate key update ' . commas($this->updateOnDuplicate);
+        return 'on duplicate key update ' . commas($updateOnDuplicate);
     }
 
     /**
      * Specifies an optional list of columns that corresponds to the inserted values
      * 
      * @param string[] $columns A list of column names
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function columns(array $columns): self
+    public function columns(array $columns): BuilderInterface
     {
-        $this->columns = $columns;
-
-        return $this;
+        return $this->setParameter('columns', $columns);
     }
 
     /**
@@ -114,28 +101,32 @@ class Insert extends AbstractBuilder
      */
     protected function compileColumns(): ?string
     {
-        if (! $this->columns) {
+        $columns = $this->getParameter('columns');
+
+        if (! $columns) {
             return null;
         }
 
-        return parentheses($this->columns);
+        return parentheses($columns);
     }
 
     /**
      * Specifies the values to insert into the database
      * 
      * @param array[] $rows An array containing any number of lists of values to insert
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function values(...$rows): self
+    public function values(...$rows): BuilderInterface
     {
+        $values = $this->getParameter('values') ?? [];
+
         foreach ($rows as $row) {
-            $this->values[] = array_map(function ($value) {
+            $values[] = array_map(function ($value) {
                 return $this->bind($value);
             }, $row);
         }
 
-        return $this;
+        return $this->setParameter('values', $values);
     }
 
     /**
@@ -145,26 +136,26 @@ class Insert extends AbstractBuilder
      */
     protected function compileValues(): ?string
     {
-        if (! $this->values) {
+        $values = $this->getParameter('values');
+
+        if (! $values) {
             return null;
         }
 
-        $lists = [];
+        $values = array_map(function (array $list): string {
+            return parentheses($list);
+        }, $values);
 
-        foreach ($this->values as $list) {
-            $lists[] = parentheses($list);
-        }
-
-        return 'values ' . commas($lists);
+        return 'values ' . commas($values);
     }
 
     /**
      * Sets this query's columns and values from an associative array
      * 
      * @param array<string,mixed> $columnsToValues
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function setColumnsAndValues(array $columnsToValues): self
+    public function setColumnsAndValues(array $columnsToValues): BuilderInterface
     {
         $this->columns(array_keys($columnsToValues));
         

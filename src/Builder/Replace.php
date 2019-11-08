@@ -2,8 +2,6 @@
 
 namespace p810\MySQL\Builder;
 
-use p810\MySQL\Builder\Grammar\Expression;
-
 class Replace extends Insert
 {
     use Grammar\Set;
@@ -36,7 +34,7 @@ class Replace extends Insert
      */
     public function compileValues(): ?string
     {
-        if ($this->setValues && $this->setValues[0] instanceof Expression) {
+        if ($this->getParameter('set')) {
             return $this->compileSet();
         }
 

@@ -2,42 +2,30 @@
 
 namespace p810\MySQL\Builder\Grammar;
 
+use p810\MySQL\Builder\BuilderInterface;
+
 trait Table
 {
-    /**
-     * @var null|string
-     */
-    protected $from;
-    
-    /**
-     * @var null|string
-     */
-    protected $into;
-
     /**
      * Specifies the source table for the query
      * 
      * @param string $table
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function from(string $table): self
+    public function from(string $table): BuilderInterface
     {
-        $this->from = $table;
-
-        return $this;
+        return $this->setParameter('from', $table);
     }
 
     /**
      * Specifies the source table for an `INSERT` query
      * 
      * @param string $table
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function into(string $table): self
+    public function into(string $table): BuilderInterface
     {
-        $this->into = $table;
-
-        return $this;
+        return $this->setParameter('into', $table);
     }
 
     /**
@@ -47,11 +35,13 @@ trait Table
      */
     protected function compileFrom(): ?string
     {
-        if (! $this->from) {
+        $from = $this->getParameter('from');
+
+        if (! $from) {
             return null;
         }
 
-        return "from $this->from";
+        return "from $from";
     }
 
     /**
@@ -61,10 +51,12 @@ trait Table
      */
     protected function compileInto(): ?string
     {
-        if (! $this->into) {
+        $into = $this->getParameter('into');
+
+        if (! $into) {
             return null;
         }
 
-        return "into $this->into";
+        return "into $into";
     }
 }

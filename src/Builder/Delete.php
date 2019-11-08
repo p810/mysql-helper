@@ -28,9 +28,9 @@ class Delete extends AbstractBuilder
      * An alias for `\p810\MySQL\Builder\Delete::from()`
      * 
      * @param string $table The table to remove data from
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function delete(string $table): self
+    public function delete(string $table): BuilderInterface
     {
         return $this->from($table);
     }

@@ -2,6 +2,7 @@
 
 namespace p810\MySQL\Test\Builder;
 
+use BadMethodCallException;
 use PHPUnit\Framework\TestCase;
 use p810\MySQL\Builder\Grammar\Join;
 use p810\MySQL\Builder\AbstractBuilder;
@@ -59,13 +60,12 @@ class JoinTest extends TestCase
         $this->assertEquals('inner join bans on users.user_id = bans.issuer_id or users.user_id = bans.user_id', $query->build());
     }
 
-    public function test_join_predicate_queue()
+    public function test_append_predicate_throws_exception_before_setter()
     {
         $query = $this->getMockQueryBuilder();
 
-        $query->using('user_id')
-              ->innerJoin('bans');
-        
-        $this->assertEquals('inner join bans using (user_id)', $query->build());
+        $this->expectException(BadMethodCallException::class);
+
+        $query->orOn('users.user_id', 'bans.user_id')->innerJoin('bans');
     }
 }

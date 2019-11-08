@@ -2,36 +2,29 @@
 
 namespace p810\MySQL\Builder\Grammar;
 
+use p810\MySQL\Builder\BuilderInterface;
+
 trait Priority
 {
-    /**
-     * @var null|string
-     */
-    protected $priority;
-
     /**
      * Specifies that this query should be delayed until all other clients have finished their operations on the
      * specified table
      * 
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function lowPriority(): self
+    public function lowPriority(): BuilderInterface
     {
-        $this->priority = 'low_priority';
-
-        return $this;
+        return $this->setParameter('priority', 'low_priority');
     }
 
     /**
      * Overrides `--low-priority-updates` if this option is set in MySQL and disables concurrent updates
      * 
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function highPriority(): self
+    public function highPriority(): BuilderInterface
     {
-        $this->priority = 'high_priority';
-
-        return $this;
+        return $this->setParameter('priority', 'high_priority');
     }
 
     /**
@@ -41,6 +34,6 @@ trait Priority
      */
     protected function compilePriority(): ?string
     {
-        return $this->priority;
+        return $this->getParameter('priority');
     }
 }

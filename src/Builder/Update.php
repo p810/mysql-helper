@@ -17,30 +17,23 @@ class Update extends AbstractBuilder
     ];
 
     /**
-     * @var null|string
-     */
-    protected $table;
-
-    /**
      * Specifies the table to update data in
      * 
      * @param string $table The table to update
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function update(string $table): self
+    public function update(string $table): BuilderInterface
     {
-        $this->table = $table;
-
-        return $this;
+        return $this->setParameter('table', $table);
     }
 
     /**
      * An alias for `\p810\MySQL\Builder\Update::update()`
      * 
      * @param string $table The table to update
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function table(string $table): self
+    public function table(string $table): BuilderInterface
     {
         return $this->update($table);
     }
@@ -52,11 +45,13 @@ class Update extends AbstractBuilder
      */
     protected function compileUpdate(): ?string
     {
-        if (! $this->table) {
+        $table = $this->getParameter('table');
+
+        if (! $table) {
             return null;
         }
 
-        return "update $this->table";
+        return "update $table";
     }
 
     /**

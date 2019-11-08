@@ -2,23 +2,18 @@
 
 namespace p810\MySQL\Builder\Grammar;
 
+use p810\MySQL\Builder\BuilderInterface;
+
 trait Ignore
 {
     /**
-     * @var bool
-     */
-    protected $ignore = false;
-
-    /**
      * Adds the `IGNORE` operator to the query
      * 
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function ignore(): self
+    public function ignore(): BuilderInterface
     {
-        $this->ignore = true;
-
-        return $this;
+        return $this->setParameter('ignore', 'ignore');
     }
 
     /**
@@ -28,10 +23,6 @@ trait Ignore
      */
     protected function compileIgnore(): ?string
     {
-        if (! $this->ignore) {
-            return null;
-        }
-
-        return 'ignore';
+        return $this->getParameter('ignore');
     }
 }

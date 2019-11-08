@@ -3,6 +3,7 @@
 namespace p810\MySQL\Builder\Grammar;
 
 use p810\MySQL\Query;
+use p810\MySQL\Builder\BuilderInterface;
 
 use function p810\MySQL\parentheses;
 
@@ -20,18 +21,20 @@ trait Where
      * @param mixed  $value Right hand side of the expression (value)
      * @param string $operator Middle of the expression (comparison operator)
      * @param string $logical A logical operator used to concatenate the expression in the clause
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function where(string $column, $value, string $operator = '=', string $logical = 'and'): self
+    public function where(string $column, $value, string $operator = '=', string $logical = 'and'): BuilderInterface
     {
-        $this->wheres[] = new Expression(
+        $wheres = $this->getParameter('where') ?? [];
+
+        $wheres[] = new Expression(
             $column,
             $this->prepareValue($value),
             $operator,
             $logical
         );
 
-        return $this;
+        return $this->setParameter('where', $wheres);
     }
 
     /**
@@ -58,9 +61,9 @@ trait Where
      * @param string $column Left hand side of the expression (column)
      * @param mixed  $value Right hand side of the expression (value)
      * @param string $operator Middle of the expression (comparison operator)
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function orWhere(string $column, $value, string $operator = '='): self
+    public function orWhere(string $column, $value, string $operator = '='): BuilderInterface
     {
         return $this->where($column, $value, $operator, 'or');
     }
@@ -71,9 +74,9 @@ trait Where
      * @param string $column Left hand side of the expression (column)
      * @param mixed  $value Right hand side of the expression (value)
      * @param string $logical A logical operator used to concatenate the expression in the clause
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function whereNotEquals(string $column, $value, string $logical = 'and'): self
+    public function whereNotEquals(string $column, $value, string $logical = 'and'): BuilderInterface
     {
         return $this->where($column, $value, '!=', $logical);
     }
@@ -84,9 +87,9 @@ trait Where
      * @param string $column Lefthand side of the expression (column)
      * @param mixed  $value Righthand side of the expression (value)
      * @param string $logical A logical operator used to concatenate the expression in the clause
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function whereNot(string $column, $value, string $logical = 'and'): self
+    public function whereNot(string $column, $value, string $logical = 'and'): BuilderInterface
     {
         return $this->whereNotEquals($column, $value, $logical);
     }
@@ -96,9 +99,9 @@ trait Where
      * 
      * @param string $column Left hand side of the expression (column)
      * @param mixed  $value Right hand side of the expression (value)
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function orWhereNotEquals(string $column, $value): self
+    public function orWhereNotEquals(string $column, $value): BuilderInterface
     {
         return $this->whereNotEquals($column, $value, 'or');
     }
@@ -108,9 +111,9 @@ trait Where
      * 
      * @param string $column Left hand side of the expression (column)
      * @param mixed  $value Right hand side of the expression (value)
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function orWhereNot(string $column, $value): self
+    public function orWhereNot(string $column, $value): BuilderInterface
     {
         return $this->orWhereNotEquals($column, $value);
     }
@@ -121,9 +124,9 @@ trait Where
      * @param string $column Left hand side of the expression (column)
      * @param mixed  $value Right hand side of the expression (value)
      * @param string $logical A logical operator used to concatenate the expression in the clause
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function whereLess(string $column, $value, string $logical = 'and'): self
+    public function whereLess(string $column, $value, string $logical = 'and'): BuilderInterface
     {
         return $this->where($column, $value, '<', $logical);
     }
@@ -133,9 +136,9 @@ trait Where
      * 
      * @param string $column Left hand side of the expression (column)
      * @param mixed  $value Right hand side of the expression (value)
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function orWhereLess(string $column, $value): self
+    public function orWhereLess(string $column, $value): BuilderInterface
     {
         return $this->whereLess($column, $value, 'or');
     }
@@ -146,9 +149,9 @@ trait Where
      * @param string $column Left hand side of the expression (column)
      * @param mixed  $value Right hand side of the expression (value)
      * @param string $logical A logical operator used to concatenate the expression in the clause
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function whereLessOrEqual(string $column, $value, string $logical = 'and'): self
+    public function whereLessOrEqual(string $column, $value, string $logical = 'and'): BuilderInterface
     {
         return $this->where($column, $value, '<=', $logical);
     }
@@ -158,9 +161,9 @@ trait Where
      * 
      * @param string $column Left hand side of the expression (column)
      * @param mixed  $value Right hand side of the expression (value)
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function orWhereLessOrEqual(string $column, $value): self
+    public function orWhereLessOrEqual(string $column, $value): BuilderInterface
     {
         return $this->whereLessOrEqual($column, $value, 'or');
     }
@@ -171,9 +174,9 @@ trait Where
      * @param string $column Left hand side of the expression (column)
      * @param mixed  $value Right hand side of the expression (value)
      * @param string $logical A logical operator used to concatenate the expression in the clause
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function whereGreater(string $column, $value, string $logical = 'and'): self
+    public function whereGreater(string $column, $value, string $logical = 'and'): BuilderInterface
     {
         return $this->where($column, $value, '>', $logical);
     }
@@ -183,9 +186,9 @@ trait Where
      * 
      * @param string $column Left hand side of the expression (column)
      * @param mixed  $value Right hand side of the expression (value)
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function orWhereGreater(string $column, $value): self
+    public function orWhereGreater(string $column, $value): BuilderInterface
     {
         return $this->whereGreater($column, $value, 'or');
     }
@@ -196,9 +199,9 @@ trait Where
      * @param string $column Left hand side of the expression (column)
      * @param mixed  $value Right hand side of the expression (value)
      * @param string $logical A logical operator used to concatenate the expression in the clause
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function whereGreaterOrEqual(string $column, $value, string $logical = 'and'): self
+    public function whereGreaterOrEqual(string $column, $value, string $logical = 'and'): BuilderInterface
     {
         return $this->where($column, $value, '>=', $logical);
     }
@@ -209,9 +212,9 @@ trait Where
      * 
      * @param string $column Left hand side of the expression (column)
      * @param mixed  $value Right hand side of the expression (value)
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function orWhereGreaterOrEqual(string $column, $value): self
+    public function orWhereGreaterOrEqual(string $column, $value): BuilderInterface
     {
         return $this->whereGreaterOrEqual($column, $value, 'or');
     }
@@ -222,9 +225,9 @@ trait Where
      * @param string $column Left hand side of the expression (column)
      * @param mixed  $value Right hand side of the expression (value)
      * @param string $logical A logical operator used to concatenate the expression in the clause
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function whereLike(string $column, $value, string $logical = 'and'): self
+    public function whereLike(string $column, $value, string $logical = 'and'): BuilderInterface
     {
         return $this->where($column, $value, 'like', $logical);
     }
@@ -234,9 +237,9 @@ trait Where
      * 
      * @param string $column Left hand side of the expression (column)
      * @param mixed  $value Right hand side of the expression (value)
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function orWhereLike(string $column, $value): self
+    public function orWhereLike(string $column, $value): BuilderInterface
     {
         return $this->whereLike($column, $value, 'or');
     }
@@ -247,9 +250,9 @@ trait Where
      * @param string $columnOrExpression Left hand side of the expression (column or an expression)
      * @param \p810\MySQL\Query|array $value Right hand side of the expression (a list of scalar values or subquery)
      * @param string $logical A logical operator used to concatenate the expression in the clause
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function whereIn(string $columnOrExpression, $value, string $logical = 'and'): self
+    public function whereIn(string $columnOrExpression, $value, string $logical = 'and'): BuilderInterface
     {
         return $this->where($columnOrExpression, $value, 'in', $logical);
     }
@@ -259,9 +262,9 @@ trait Where
      * 
      * @param string $columnOrExpression Left hand side of the expression (column or an expression)
      * @param \p810\MySQL\Query|array $value Right hand side of the expression (a list of scalar values or subquery)
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function orWhereIn(string $columnOrExpression, $value): self
+    public function orWhereIn(string $columnOrExpression, $value): BuilderInterface
     {
         return $this->whereIn($columnOrExpression, $value, 'or');
     }
@@ -272,9 +275,9 @@ trait Where
      * @param string $columnOrExpression Left hand side of the expression (column or an expression)
      * @param \p810\MySQL\Query|array $value Right hand side of the expression (a list of scalar values or subquery)
      * @param string $logical A logical operator used to concatenate the expression in the clause
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function whereNotIn(string $columnOrExpression, $value, string $logical = 'and'): self
+    public function whereNotIn(string $columnOrExpression, $value, string $logical = 'and'): BuilderInterface
     {
         return $this->where($columnOrExpression, $value, 'not in', $logical);
     }
@@ -284,9 +287,9 @@ trait Where
      * 
      * @param string $columnOrExpression Left hand side of the expression (column or an expression)
      * @param \p810\MySQL\Query|array $value Right hand side of the expression (a list of scalar values or subquery)
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function orWhereNotIn(string $columnOrExpression, $value): self
+    public function orWhereNotIn(string $columnOrExpression, $value): BuilderInterface
     {
         return $this->whereNotIn($columnOrExpression, $value, 'or');
     }
@@ -295,13 +298,15 @@ trait Where
      * Appends a raw where clause to the list of expressions
      * 
      * @param string $clause The clause to append
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function whereRaw(string $clause): self
+    public function whereRaw(string $clause): BuilderInterface
     {
-        $this->wheres[] = $clause;
+        $wheres = $this->getParameter('where') ?? [];
 
-        return $this;
+        $wheres[] = $clause;
+
+        return $this->setParameter('where', $wheres);
     }
 
     /**
@@ -320,13 +325,13 @@ trait Where
      * 
      * @param callable $cb A callback that should return a chain of clause calls
      * @param string $logical A logical operator used to concatenate the clause
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function whereNested(callable $cb, string $logical = 'and'): self
+    public function whereNested(callable $cb, string $logical = 'and'): BuilderInterface
     {
         $query = $cb(new ComplexWhere());
 
-        $clause = $this->wheres ? "$logical $query" : "$query";
+        $clause = $this->getParameter('where') ? "$logical $query" : "$query";
 
         return $this->whereRaw($clause);
     }
@@ -336,9 +341,9 @@ trait Where
      * 
      * @param callable $cb A callback that should return a chain of clause calls
      * @param string $logical A logical operator used to concatenate the clause
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function orWhereNested(callable $cb): self
+    public function orWhereNested(callable $cb): BuilderInterface
     {
         return $this->whereNested($cb, 'or');
     }
@@ -350,10 +355,12 @@ trait Where
      */
     protected function compileWhere(): ?string
     {
-        if (! $this->wheres) {
+        $wheres = $this->getParameter('where');
+
+        if (! $wheres) {
             return null;
         }
 
-        return 'where ' . Expression::listToString($this->wheres);
+        return 'where ' . Expression::listToString($wheres);
     }
 }

@@ -17,7 +17,9 @@ class ComplexWhere extends AbstractBuilder
      */
     function __toString(): string
     {
-        $clauses = Expression::listToString($this->wheres);
+        $wheres = $this->getParameter('where');
+
+        $clauses = Expression::listToString($wheres);
 
         return parentheses($clauses);
     }

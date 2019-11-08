@@ -20,6 +20,11 @@ abstract class AbstractBuilder implements BuilderInterface
     protected $input = [];
 
     /**
+     * @var array<string,mixed>
+     */
+    protected $parameters = [];
+
+    /**
      * {@inheritdoc}
      */
     public function bind($value)
@@ -59,6 +64,28 @@ abstract class AbstractBuilder implements BuilderInterface
     public function getInput(): array
     {
         return $this->input;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getParameter(string $param)
+    {
+        if (! array_key_exists($param, $this->parameters)) {
+            return null;
+        }
+
+        return $this->parameters[$param];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setParameter(string $param, $value): BuilderInterface
+    {
+        $this->parameters[$param] = $value;
+
+        return $this;
     }
 
     /**

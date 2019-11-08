@@ -28,23 +28,18 @@ class Select extends AbstractBuilder
     ];
 
     /**
-     * @var string
-     */
-    protected $columns = '*';
-
-    /**
      * Specifies which columns to return in the result set
      * 
      * @param array|string $columns
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function select($columns = '*'): self
+    public function select($columns = '*'): BuilderInterface
     {
         if (is_array($columns)) {
             $columns = commas($columns);
         }
 
-        $this->columns = $columns;
+        $this->setParameter('columns', $columns);
 
         return $this;
     }
@@ -53,9 +48,9 @@ class Select extends AbstractBuilder
      * An alias for `\p810\MySQL\Builder\Select::select()`
      * 
      * @param array|string $columns
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function columns($columns = '*'): self
+    public function columns($columns = '*'): BuilderInterface
     {
         return $this->select($columns);
     }
@@ -67,11 +62,13 @@ class Select extends AbstractBuilder
      */
     protected function compileSelect(): ?string
     {
-        if (! $this->columns) {
+        $columns = $this->getParameter('columns');
+
+        if (! $columns) {
             return null;
         }
 
-        return "select $this->columns";
+        return "select $columns";
     }
 
     /**

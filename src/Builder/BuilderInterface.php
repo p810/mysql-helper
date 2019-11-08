@@ -32,4 +32,21 @@ interface BuilderInterface
      * @return null|string
      */
     public function getCommand(): ?string;
+
+    /**
+     * Returns a value for the given parameter if it's been set, or null otherwise
+     *
+     * @param string $param The name of the parameter to get
+     * @return null|mixed
+     */
+    public function getParameter(string $param);
+
+    /**
+     * Sets a parameter to the given value
+     * 
+     * @param string $param The parameter's name
+     * @param mixed $value A value for the parameter
+     * @return \p810\MySQL\Builder\BuilderInterface
+     */
+    public function setParameter(string $param, $value): BuilderInterface;
 }

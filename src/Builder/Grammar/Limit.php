@@ -2,24 +2,19 @@
 
 namespace p810\MySQL\Builder\Grammar;
 
+use p810\MySQL\Builder\BuilderInterface;
+
 trait Limit
 {
-    /**
-     * @var null|int
-     */
-    protected $limit;
-
     /**
      * Specifies a limit of rows to return in the result set
      * 
      * @param int $limit The maximum number of rows to return
-     * @return self
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function limit(int $limit): self
+    public function limit(int $limit): BuilderInterface
     {
-        $this->limit = $limit;
-
-        return $this;
+        return $this->setParameter('limit', $limit);
     }
 
     /**
@@ -29,10 +24,12 @@ trait Limit
      */
     protected function compileLimit(): ?string
     {
-        if (! $this->limit) {
+        $limit = $this->getParameter('limit');
+
+        if ($limit === null) {
             return null;
         }
 
-        return "limit $this->limit";
+        return "limit $limit";
     }
 }
