@@ -6,9 +6,8 @@ abstract class AbstractProcessor implements ProcessorInterface
 {
     /**
      * @var array<string,callable>
-     * @psalm-suppress PropertyNotSetInConstructor
      */
-    protected $callbacks;
+    protected $callbacks = [];
 
     /**
      * {@inheritdoc}
