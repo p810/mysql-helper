@@ -38,6 +38,7 @@ interface BuilderInterface
      *
      * @param string $param The name of the parameter to get
      * @return null|mixed
+     * @psalm-ignore-nullable-return
      */
     public function getParameter(string $param);
 
