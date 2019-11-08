@@ -24,7 +24,7 @@ interface BuilderInterface
      * 
      * @return array
      */
-    public function getParameters(): array;
+    public function getInput(): array;
 
     /**
      * Returns the name of the SQL command the class represents, or null if there is none

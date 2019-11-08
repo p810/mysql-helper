@@ -56,7 +56,7 @@ abstract class AbstractBuilder implements BuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function getParameters(): array
+    public function getInput(): array
     {
         return $this->input;
     }

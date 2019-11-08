@@ -73,7 +73,7 @@ class Query
      */
     public function execute(?callable $handler = null, bool $callbackOnBool = false)
     {
-        $statement = $this->database->query($this->builder->build(), $this->builder->getParameters());
+        $statement = $this->database->query($this->builder->build(), $this->builder->getInput());
 
         if ($statement || $callbackOnBool) {
             $statement = $statement ?: null;
