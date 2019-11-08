@@ -2,15 +2,39 @@
 
 namespace p810\MySQL\Test\Builder;
 
-use p810\MySQL\Builder\Select;
 use PHPUnit\Framework\TestCase;
+use p810\MySQL\Builder\Grammar\Where;
+use p810\MySQL\Builder\AbstractBuilder;
 use p810\MySQL\Builder\BuilderInterface;
 
 class WhereTest extends TestCase
 {
-    public function test_where_equals(): Select
+    /**
+     * @todo Find a better way of storing/handling mocks, probably as part of my eventual effort to fix up the test
+     * suite overall
+     */
+    protected function getMockQueryBuilder(): BuilderInterface
     {
-        $query = new Select();
+        return new class extends AbstractBuilder
+        {
+            use Where;
+
+            /** {@inheritdoc} */
+            protected $components = [
+                'where'
+            ];
+
+            /** {@inheritdoc} */
+            public function getCommand(): ?string
+            {
+                return null;
+            }
+        };
+    }
+
+    public function test_where_equals(): BuilderInterface
+    {
+        $query = $this->getMockQueryBuilder();
 
         $query->where('foo', 'bar');
 
@@ -22,7 +46,7 @@ class WhereTest extends TestCase
     /**
      * @depends test_where_equals
      */
-    public function test_where_with_two_conditions(Select $query): Select
+    public function test_where_with_two_conditions(BuilderInterface $query): BuilderInterface
     {
         $query->whereNotEquals('bam', 'baz');
 
@@ -34,7 +58,7 @@ class WhereTest extends TestCase
     /**
      * @depends test_where_with_two_conditions
      */
-    public function test_where_with_logical_or(Select $query): Select
+    public function test_where_with_logical_or(BuilderInterface $query): BuilderInterface
     {
         $query->orWhere('fem', 'fam');
 
@@ -46,7 +70,7 @@ class WhereTest extends TestCase
     /**
      * @depends test_where_with_logical_or
      */
-    public function test_where_math_comparisons(Select $query): Select
+    public function test_where_math_comparisons(BuilderInterface $query): BuilderInterface
     {
         $query->whereLess('a', 1)
               ->orWhereLessOrEqual('a', 0)
@@ -64,7 +88,7 @@ class WhereTest extends TestCase
     /**
      * @depends test_where_math_comparisons
      */
-    public function test_where_in_and_not_in(Select $query): Select
+    public function test_where_in_and_not_in(BuilderInterface $query): BuilderInterface
     {
         $query->whereIn('id', [1, 2, 3, 4])
               ->whereNotIn('id', [5, 6]);
@@ -80,7 +104,7 @@ class WhereTest extends TestCase
     /**
      * @depends test_where_in_and_not_in
      */
-    public function test_where_like(Select $query): Select
+    public function test_where_like(BuilderInterface $query): BuilderInterface
     {
         $query->whereLike('quux', 'foobar');
 
@@ -95,7 +119,7 @@ class WhereTest extends TestCase
     /**
      * @depends test_where_like
      */
-    public function test_where_nested(Select $query): Select
+    public function test_where_nested(BuilderInterface $query)
     {
         $query->whereNested(function (BuilderInterface $q) {
             return $q->where('boo', 'far');
@@ -105,7 +129,5 @@ class WhereTest extends TestCase
             'where foo = ? and bam != ? or fem = ? and a < ? or a <= ? and b > ? or b >= ? and id in (?, ?, ?, ?) and id not in (?, ?) and quux like ? and (boo = ?)',
             $query->build()
         );
-
-        return $query;
     }
 }
