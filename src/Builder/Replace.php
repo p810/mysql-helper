@@ -10,22 +10,11 @@ class Replace extends Insert
      * @inheritdoc
      */
     protected $components = [
-        'replace',
         'priority',
         'into',
         'columns',
         'values'
     ];
-
-    /**
-     * Returns the query command
-     * 
-     * @return string
-     */
-    protected function compileReplace(): string
-    {
-        return 'replace';
-    }
 
     /**
      * Checks whether this query is using an assignment or value list and returns a string accordingly

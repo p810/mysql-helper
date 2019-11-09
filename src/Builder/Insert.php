@@ -20,7 +20,6 @@ class Insert extends AbstractBuilder
      * @inheritdoc
      */
     protected $components = [
-        'insert',
         'priority',
         'ignore',
         'into',
@@ -28,16 +27,6 @@ class Insert extends AbstractBuilder
         'values',
         'onDuplicateKeyUpdate'
     ];
-
-    /**
-     * Returns the `INSERT` keyword
-     * 
-     * @return string
-     */
-    protected function compileInsert(): string
-    {
-        return 'insert';
-    }
 
     /**
      * Specifies an "on duplicate key update" clause for the query

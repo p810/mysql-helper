@@ -15,7 +15,6 @@ class Delete extends AbstractBuilder
      * @inheritdoc
      */
     protected $components = [
-        'delete',
         'priority',
         'ignore',
         'from',
@@ -33,16 +32,6 @@ class Delete extends AbstractBuilder
     public function delete(string $table): BuilderInterface
     {
         return $this->from($table);
-    }
-
-    /**
-     * Returns the `DELETE` keyword
-     * 
-     * @return string
-     */
-    protected function compileDelete(): string
-    {
-        return 'delete';
     }
 
     /**

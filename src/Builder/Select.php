@@ -18,7 +18,7 @@ class Select extends AbstractBuilder
      * @inheritdoc
      */
     protected $components = [
-        'select',
+        'columns',
         'priority',
         'from',
         'join',
@@ -35,13 +35,7 @@ class Select extends AbstractBuilder
      */
     public function select($columns = '*'): BuilderInterface
     {
-        if (is_array($columns)) {
-            $columns = commas($columns);
-        }
-
-        $this->setParameter('columns', $columns);
-
-        return $this;
+        return $this->setParameter('columns', $columns);
     }
 
     /**
@@ -56,19 +50,19 @@ class Select extends AbstractBuilder
     }
 
     /**
-     * Compiles the select clause
+     * Compiles the column(s) string for the query
      * 
      * @return null|string
      */
-    protected function compileSelect(): ?string
+    protected function compileColumns(): ?string
     {
         $columns = $this->getParameter('columns');
 
-        if (! $columns) {
-            return null;
+        if (is_array($columns)) {
+            $columns = commas($columns);
         }
 
-        return "select $columns";
+        return $columns;
     }
 
     /**

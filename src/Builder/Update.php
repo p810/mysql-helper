@@ -6,12 +6,13 @@ class Update extends AbstractBuilder
 {
     use Grammar\Set;
     use Grammar\Where;
+    use Grammar\Table;
 
     /**
      * @inheritdoc
      */
     protected $components = [
-        'update',
+        'table',
         'set',
         'where'
     ];
@@ -24,34 +25,7 @@ class Update extends AbstractBuilder
      */
     public function update(string $table): BuilderInterface
     {
-        return $this->setParameter('table', $table);
-    }
-
-    /**
-     * An alias for `\p810\MySQL\Builder\Update::update()`
-     * 
-     * @param string $table The table to update
-     * @return \p810\MySQL\Builder\BuilderInterface
-     */
-    public function table(string $table): BuilderInterface
-    {
-        return $this->update($table);
-    }
-
-    /**
-     * Compiles the update from clause
-     * 
-     * @return null|string
-     */
-    protected function compileUpdate(): ?string
-    {
-        $table = $this->getParameter('table');
-
-        if (! $table) {
-            return null;
-        }
-
-        return "update $table";
+        return $this->table($table);
     }
 
     /**
