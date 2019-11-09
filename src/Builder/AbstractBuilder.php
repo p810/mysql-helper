@@ -47,6 +47,12 @@ abstract class AbstractBuilder implements BuilderInterface
     {
         $parts = [];
 
+        $command = $this->getCommand();
+
+        if ($command) {
+            $parts[] = $command;
+        }
+
         foreach ($this->components as $component) {
             $method = 'compile' . ucfirst($component);
 
