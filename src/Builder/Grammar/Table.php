@@ -29,6 +29,17 @@ trait Table
     }
 
     /**
+     * Specifies a table name by itself
+     * 
+     * @param string $table
+     * @return \p810\MySQL\Builder\BuilderInterface
+     */
+    public function table(string $table): BuilderInterface
+    {
+        return $this->setParameter('table', $table);
+    }
+
+    /**
      * Compiles the query's `FROM` clause
      * 
      * @return null|string
@@ -58,5 +69,15 @@ trait Table
         }
 
         return "into $into";
+    }
+
+    /**
+     * Compiles the query's table name
+     * 
+     * @return null|string
+     */
+    protected function compileTable(): ?string
+    {
+        return $this->getParameter('table');
     }
 }
