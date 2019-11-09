@@ -15,7 +15,7 @@ abstract class AbstractBuilder implements BuilderInterface
     protected $components = [];
 
     /**
-     * @var array
+     * @var mixed[]
      */
     protected $input = [];
 
