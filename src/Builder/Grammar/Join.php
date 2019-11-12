@@ -86,7 +86,10 @@ trait Join
     }
 
     /**
-     * {@see \p810\MySQL\Builder\Grammar\JoinExpression::using()}
+     * Sets a "using (...)" clause for the current `\p810\MySQL\Builder\Grammar\JoinExpression`
+     * 
+     * @param string $column The column that both tables have in common
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
     public function using(string $column): BuilderInterface
     {
