@@ -479,6 +479,18 @@ trait Where
     }
 
     /**
+     * An alias for `\p810\MySQL\Builder\Grammar\Where::whereRaw()` that specifies "or" as the logical operator
+     *
+     * @codeCoverageIgnore
+     * @param string $clause The clause to append
+     * @return \p810\MySQL\Builder\BuilderInterface
+     */
+    public function orWhereRaw(string $clause): BuilderInterface
+    {
+        return $this->whereRaw($clause, 'or');
+    }
+
+    /**
      * Appends a nested where clause
      * 
      * The callback that this method receives must take an instance of `p810\MySQL\Builder\Grammar\ComplexWhere` as its
