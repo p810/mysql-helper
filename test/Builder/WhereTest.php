@@ -111,4 +111,58 @@ class WhereTest extends TestCase
 
         $this->assertEquals('where (foo = ?)', $query->build());
     }
+
+    public function test_where_between()
+    {
+        $query = $this->getMockQueryBuilder()
+            ->whereBetween(2, 1, 3)
+            ->orWhereBetween('b', 'a', 'c');
+        
+        $this->assertEquals('where ? between ? and ? or ? between ? and ?', $query->build());
+    }
+
+    public function test_where_between_many()
+    {
+        $query = $this->getMockQueryBuilder();
+
+        $query->whereBetweenMany([
+            2 => [1, 3],
+            'b' => ['a', 'c']
+        ])->orWhereBetweenMany([
+            5 => [4, 6],
+            'e' => ['d', 'f']
+        ]);
+
+        $this->assertEquals(
+            'where ? between ? and ?, ? between ? and ? or ? between ? and ?, ? between ? and ?',
+            $query->build()
+        );
+    }
+
+    public function test_where_not_between()
+    {
+        $query = $this->getMockQueryBuilder()
+            ->whereNotBetween(2, 1, 3)
+            ->orWhereNotBetween('b', 'a', 'c');
+        
+        $this->assertEquals('where ? not between ? and ? or ? not between ? and ?', $query->build());
+    }
+
+    public function test_where_not_between_many()
+    {
+        $query = $this->getMockQueryBuilder();
+
+        $query->whereNotBetweenMany([
+            2 => [1, 3],
+            'b' => ['a', 'c']
+        ])->orWhereNotBetweenMany([
+            5 => [4, 6],
+            'e' => ['d', 'f']
+        ]);
+
+        $this->assertEquals(
+            'where ? not between ? and ?, ? not between ? and ? or ? not between ? and ?, ? not between ? and ?',
+            $query->build()
+        );
+    }
 }

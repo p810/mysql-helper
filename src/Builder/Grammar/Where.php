@@ -5,6 +5,7 @@ namespace p810\MySQL\Builder\Grammar;
 use p810\MySQL\Query;
 use p810\MySQL\Builder\BuilderInterface;
 
+use function p810\MySQL\commas;
 use function p810\MySQL\parentheses;
 
 trait Where
@@ -329,14 +330,148 @@ trait Where
     }
 
     /**
+     * Appends an expression with "between" as the comparison operator
+     * 
+     * @param int|string $expression The comparison's expression (left hand side)
+     * @param int|string $min The minimum value on the right hand side of the expression
+     * @param int|string $max The maximum value on the right hand side of the expression
+     * @param string $logical A logical operator used to concatenate the expression in the clause
+     * @return \p810\MySQL\Builder\BuilderInterface
+     */
+    public function whereBetween($expression, $min, $max, string $logical = 'and'): BuilderInterface
+    {
+        [$expression, $min, $max] = $this->bind([$expression, $min, $max]);
+
+        return $this->whereRaw("$expression between $min and $max", $logical);
+    }
+
+    /**
+     * An alias for `\p810\MySQL\Builder\Grammar\Where::whereBetween()` that specifies "or" as the logical operator
+     * 
+     * @codeCoverageIgnore
+     * @param int|string $expression The comparison's expression (left hand side)
+     * @param int|string $min The minimum value on the right hand side of the expression
+     * @param int|string $max The maximum value on the right hand side of the expression
+     * @return \p810\MySQL\Builder\BuilderInterface
+     */
+    public function orWhereBetween($expression, $min, $max): BuilderInterface
+    {
+        return $this->whereBetween($expression, $min, $max, 'or');
+    }
+
+    /**
+     * Appends multiple expressions with "between" as the comparison operator
+     * 
+     * @param array<int|string,mixed[]> $expressions An associative array mapping expressions to arrays containing the
+     *                                               min and max values to compare them to
+     * @param string $logical A logical operator used to concatenate the expression in the clause
+     * @return \p810\MySQL\Builder\BuilderInterface
+     */
+    public function whereBetweenMany(array $expressions, string $logical = 'and'): BuilderInterface
+    {
+        $compiledExpressions = [];
+
+        foreach ($expressions as $expr => $range) {
+            [$expr, $min, $max] = $this->bind([$expr, $range[0], $range[1]]);
+
+            $compiledExpressions[] = "$expr between $min and $max";
+        }
+
+        return $this->whereRaw(commas($compiledExpressions), $logical);
+    }
+
+    /**
+     * An alias for `\p810\MySQL\Builder\Grammar\Where::whereBetweenMany()` that specifies "or" as the logical operator
+     * 
+     * @codeCoverageIgnore
+     * @param array<int|string,mixed[]> $expressions An associative array mapping expressions to arrays containing the
+     *                                               min and max values to compare them to
+     * @return \p810\MySQL\Builder\BuilderInterface
+     */
+    public function orWhereBetweenMany(array $expressions): BuilderInterface
+    {
+        return $this->whereBetweenMany($expressions, 'or');
+    }
+
+    /**
+     * Appends an expression with "not between" as the comparison operator
+     * 
+     * @param int|string $expression The comparison's expression (left hand side)
+     * @param int|string $min The minimum value on the right hand side of the expression
+     * @param int|string $max The maximum value on the right hand side of the expression
+     * @param string $logical A logical operator used to concatenate the expression in the clause
+     * @return \p810\MySQL\Builder\BuilderInterface
+     */
+    public function whereNotBetween($expression, $min, $max, string $logical = 'and'): BuilderInterface
+    {
+        [$expression, $min, $max] = $this->bind([$expression, $min, $max]);
+
+        return $this->whereRaw("$expression not between $min and $max", $logical);
+    }
+
+    /**
+     * An alias for `\p810\MySQL\Builder\Grammar\Where::whereBetween()` that specifies "or" as the logical operator
+     * 
+     * @codeCoverageIgnore
+     * @param int|string $expression The comparison's expression (left hand side)
+     * @param int|string $min The minimum value on the right hand side of the expression
+     * @param int|string $max The maximum value on the right hand side of the expression
+     * @return \p810\MySQL\Builder\BuilderInterface
+     */
+    public function orWhereNotBetween($expression, $min, $max): BuilderInterface
+    {
+        return $this->whereNotBetween($expression, $min, $max, 'or');
+    }
+
+    /**
+     * Appends multiple expressions with "not between" as the comparison operator
+     * 
+     * @param array<int|string,mixed[]> $expressions An associative array mapping expressions to arrays containing the
+     *                                               min and max values to compare them to
+     * @param string $logical A logical operator used to concatenate the expression in the clause
+     * @return \p810\MySQL\Builder\BuilderInterface
+     */
+    public function whereNotBetweenMany(array $expressions, string $logical = 'and'): BuilderInterface
+    {
+        $compiledExpressions = [];
+
+        foreach ($expressions as $expr => $range) {
+            [$expr, $min, $max] = $this->bind([$expr, $range[0], $range[1]]);
+
+            $compiledExpressions[] = "$expr not between $min and $max";
+        }
+
+        return $this->whereRaw(commas($compiledExpressions), $logical);
+    }
+
+    /**
+     * An alias for `\p810\MySQL\Builder\Grammar\Where::whereNotBetweenMany()` that specifies "or" as the logical
+     * operator
+     * 
+     * @codeCoverageIgnore
+     * @param array<int|string,mixed[]> $expressions An associative array mapping expressions to arrays containing the
+     *                                               min and max values to compare them to
+     * @return \p810\MySQL\Builder\BuilderInterface
+     */
+    public function orWhereNotBetweenMany(array $expressions): BuilderInterface
+    {
+        return $this->whereNotBetweenMany($expressions, 'or');
+    }
+
+    /**
      * Appends a raw where clause to the list of expressions
      * 
      * @param string $clause The clause to append
+     * @param string $logical A logical operator used to concatenate this clause to one before it
      * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function whereRaw(string $clause): BuilderInterface
+    public function whereRaw(string $clause, string $logical = 'and'): BuilderInterface
     {
         $wheres = $this->getParameter('where') ?? [];
+
+        if ($wheres) {
+            $clause = "$logical $clause";
+        }
 
         $wheres[] = $clause;
 
@@ -365,9 +500,7 @@ trait Where
     {
         $query = $cb(new ComplexWhere());
 
-        $clause = $this->getParameter('where') ? "$logical $query" : "$query";
-
-        return $this->whereRaw($clause);
+        return $this->whereRaw($query, $logical);
     }
 
     /**
