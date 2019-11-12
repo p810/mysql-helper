@@ -26,6 +26,7 @@ class ComplexWhere extends AbstractBuilder
 
     /**
      * {@inheritdoc}
+     * @codeCoverageIgnore
      */
     public function getCommand(): ?string
     {

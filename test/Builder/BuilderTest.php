@@ -45,12 +45,13 @@ class BuilderTest extends TestCase
 
         $query->into('users')
               ->columns(['username', 'password'])
+              ->lowPriority()
               ->values(
                   ['Payton', 'password'],
                   ['Anna', 'abc123']
               );
         
-        $this->assertEquals('insert into users (username, password) values (?, ?), (?, ?)', $query->build());
+        $this->assertEquals('insert low_priority into users (username, password) values (?, ?), (?, ?)', $query->build());
     }
 
     public function test_update_builder_with_single_set()

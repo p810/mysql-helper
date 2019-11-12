@@ -26,6 +26,7 @@ class Delete extends AbstractBuilder
     /**
      * An alias for `\p810\MySQL\Builder\Delete::from()`
      * 
+     * @codeCoverageIgnore
      * @param string $table The table to remove data from
      * @return \p810\MySQL\Builder\BuilderInterface
      */
