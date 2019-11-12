@@ -97,6 +97,7 @@ trait Where
     /**
      * An alias for `\p810\MySQL\Builder\Grammar\Where::whereNotEquals()`, but specifies "or" as the logical operator
      * 
+     * @codeCoverageIgnore
      * @param string $column Left hand side of the expression (column)
      * @param mixed  $value Right hand side of the expression (value)
      * @return \p810\MySQL\Builder\BuilderInterface
@@ -109,6 +110,7 @@ trait Where
     /**
      * An alias for `\p810\MySQL\Builder\Grammar\Where::orWhereNotEquals()`
      * 
+     * @codeCoverageIgnore
      * @param string $column Left hand side of the expression (column)
      * @param mixed  $value Right hand side of the expression (value)
      * @return \p810\MySQL\Builder\BuilderInterface
@@ -159,6 +161,7 @@ trait Where
     /**
      * An alias for `\p810\MySQL\Builder\Grammar\Where::whereLessOrEqual()`, but specifies "or" as the logical operator
      * 
+     * @codeCoverageIgnore
      * @param string $column Left hand side of the expression (column)
      * @param mixed  $value Right hand side of the expression (value)
      * @return \p810\MySQL\Builder\BuilderInterface
@@ -184,6 +187,7 @@ trait Where
     /**
      * An alias for `\p810\MySQL\Builder\Grammar\Where::whereGreater()`, but specifies "or" as the logical operator
      * 
+     * @codeCoverageIgnore
      * @param string $column Left hand side of the expression (column)
      * @param mixed  $value Right hand side of the expression (value)
      * @return \p810\MySQL\Builder\BuilderInterface
@@ -210,6 +214,7 @@ trait Where
      * An alias for `\p810\MySQL\Builder\Grammar\Where::whereGreaterOrEqual()` that specifies "or" as the logical
      * operator
      * 
+     * @codeCoverageIgnore
      * @param string $column Left hand side of the expression (column)
      * @param mixed  $value Right hand side of the expression (value)
      * @return \p810\MySQL\Builder\BuilderInterface
@@ -235,6 +240,7 @@ trait Where
     /**
      * An alias for `\p810\MySQL\Builder\Grammar\Where::whereLike()` that specifies "or" as the logical operator
      * 
+     * @codeCoverageIgnore
      * @param string $column Left hand side of the expression (column)
      * @param mixed  $value Right hand side of the expression (value)
      * @return \p810\MySQL\Builder\BuilderInterface
@@ -242,6 +248,32 @@ trait Where
     public function orWhereLike(string $column, $value): BuilderInterface
     {
         return $this->whereLike($column, $value, 'or');
+    }
+
+    /**
+     * Appends an expression with "not like" as the comparison operator
+     * 
+     * @param string $column Left hand side of the expression (column)
+     * @param mixed  $value Right hand side of the expression (value)
+     * @param string $logical A logical operator used to concatenate the expression in the clause
+     * @return \p810\MySQL\Builder\BuilderInterface
+     */
+    public function whereNotLike(string $column, $value, string $logical = 'and'): BuilderInterface
+    {
+        return $this->where($column, $value, 'not like', $logical);
+    }
+
+    /**
+     * An alias for `\p810\MySQL\Builder\Grammar\Where::whereNotLike()` that specifies "or" as the logical operator
+     * 
+     * @codeCoverageIgnore
+     * @param string $column Left hand side of the expression (column)
+     * @param mixed  $value Right hand side of the expression (value)
+     * @return \p810\MySQL\Builder\BuilderInterface
+     */
+    public function orWhereNotLike(string $column, $value): BuilderInterface
+    {
+        return $this->where($column, $value, 'not like', 'or');
     }
 
     /**
@@ -260,6 +292,7 @@ trait Where
     /**
      * An alias for `\p810\MySQL\Builder\Grammar\Where::whereIn()` that specifies "or" as the logical operator
      * 
+     * @codeCoverageIgnore
      * @param string $columnOrExpression Left hand side of the expression (column or an expression)
      * @param \p810\MySQL\Query|array $value Right hand side of the expression (a list of scalar values or subquery)
      * @return \p810\MySQL\Builder\BuilderInterface
@@ -285,6 +318,7 @@ trait Where
     /**
      * An alias for `\p810\MySQL\Builder\Grammar\Where::whereNotIn()` that specifies "or" as the logical operator
      * 
+     * @codeCoverageIgnore
      * @param string $columnOrExpression Left hand side of the expression (column or an expression)
      * @param \p810\MySQL\Query|array $value Right hand side of the expression (a list of scalar values or subquery)
      * @return \p810\MySQL\Builder\BuilderInterface
@@ -339,6 +373,7 @@ trait Where
     /**
      * Appends a nested clause with "or" as the logical operator
      * 
+     * @codeCoverageIgnore
      * @param callable $cb A callback that should return a chain of clause calls
      * @param string $logical A logical operator used to concatenate the clause
      * @return \p810\MySQL\Builder\BuilderInterface
