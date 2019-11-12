@@ -34,7 +34,7 @@ trait Join
      * Appends an inner join to the query
      * 
      * @param string $table The table to join data from
-     * @return \p810\MySQL\Builder\Grammar\JoinExpression
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
     public function innerJoin(string $table): BuilderInterface
     {
@@ -45,7 +45,7 @@ trait Join
      * Appends a left join to the query
      * 
      * @param string $table The table to join data from
-     * @return \p810\MySQL\Builder\Grammar\JoinExpression
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
     public function leftJoin(string $table): BuilderInterface
     {
@@ -56,7 +56,7 @@ trait Join
      * Appends a right join to the query
      * 
      * @param string $table The table to join data from
-     * @return \p810\MySQL\Builder\Grammar\JoinExpression
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
     public function rightJoin(string $table): BuilderInterface
     {
@@ -67,7 +67,7 @@ trait Join
      * Appends a left outer join to the query
      * 
      * @param string $table The table to join data from
-     * @return \p810\MySQL\Builder\Grammar\JoinExpression
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
     public function leftOuterJoin(string $table): BuilderInterface
     {
@@ -78,7 +78,7 @@ trait Join
      * Appends a right outer join to the query
      * 
      * @param string $table The table to join data from
-     * @return \p810\MySQL\Builder\Grammar\JoinExpression
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
     public function rightOuterJoin(string $table): BuilderInterface
     {
@@ -90,6 +90,7 @@ trait Join
      * 
      * @param string $column The column that both tables have in common
      * @return \p810\MySQL\Builder\BuilderInterface
+     * @psalm-suppress PossiblyNullReference
      */
     public function using(string $column): BuilderInterface
     {
@@ -107,6 +108,7 @@ trait Join
      * @param string $logical The logical operator used to concatenate this expression to one before it
      * @return \p810\MySQL\Builder\BuilderInterface
      * @throws \BadMethodCallException if this method was called before a `JoinExpression` was instantiated
+     * @psalm-suppress PossiblyNullReference
      */
     public function on(string $left, string $right, string $operator = '=', string $logical = 'and'): BuilderInterface
     {
@@ -124,6 +126,7 @@ trait Join
      * @param string $operator The concatenating operator between the left and righthand values
      * @return \p810\MySQL\Builder\BuilderInterface
      * @throws \BadMethodCallException if this method was called before a `JoinExpression` was instantiated
+     * @psalm-suppress PossiblyNullReference
      */
     public function orOn(string $left, string $right, string $operator = '='): BuilderInterface
     {
@@ -140,6 +143,7 @@ trait Join
      * @param string $logical The logical operator used to concatenate this expression to one before it
      * @return \p810\MySQL\Builder\BuilderInterface
      * @throws \BadMethodCallException if this method was called before a `JoinExpression` was instantiated
+     * @psalm-suppress PossiblyNullReference
      */
     public function onNotEquals(string $left, string $right, string $logical = 'and'): BuilderInterface
     {
@@ -171,6 +175,7 @@ trait Join
      * @param string $right The right hand column
      * @return \p810\MySQL\Builder\BuilderInterface
      * @throws \BadMethodCallException if this method was called before a `JoinExpression` was instantiated
+     * @psalm-suppress PossiblyNullReference
      */
     public function orOnNotEquals(string $left, string $right): BuilderInterface
     {
@@ -201,6 +206,7 @@ trait Join
      * @param string $logical The logical operator used to concatenate this expression to one before it
      * @return \p810\MySQL\Builder\BuilderInterface
      * @throws \BadMethodCallException if this method was called before a `JoinExpression` was instantiated
+     * @psalm-suppress PossiblyNullReference
      */
     public function onLike(string $left, string $right, string $logical = 'and'): BuilderInterface
     {
@@ -217,6 +223,7 @@ trait Join
      * @param string $right The right hand column
      * @return \p810\MySQL\Builder\BuilderInterface
      * @throws \BadMethodCallException if this method was called before a `JoinExpression` was instantiated
+     * @psalm-suppress PossiblyNullReference
      */
     public function orOnLike(string $left, string $right): BuilderInterface
     {
@@ -234,6 +241,7 @@ trait Join
      * @param string $logical The logical operator used to concatenate this expression to one before it
      * @return \p810\MySQL\Builder\BuilderInterface
      * @throws \BadMethodCallException if this method was called before a `JoinExpression` was instantiated
+     * @psalm-suppress PossiblyNullReference
      */
     public function onNotLike(string $left, string $right, string $logical = 'and'): BuilderInterface
     {
@@ -250,6 +258,7 @@ trait Join
      * @param string $right The right hand column
      * @return \p810\MySQL\Builder\BuilderInterface
      * @throws \BadMethodCallException if this method was called before a `JoinExpression` was instantiated
+     * @psalm-suppress PossiblyNullReference
      */
     public function orOnNotLike(string $left, string $right): BuilderInterface
     {
