@@ -61,7 +61,7 @@ class Expression
     /**
      * Returns the expression as a string
      * 
-     * @param bool $withLogicalOperator Whether to include the logical operator at the end
+     * @param bool $withLogicalOperator Whether this expression is being appended to one before it
      * @return string
      */
     public function compile(bool $withLogicalOperator = false): string
@@ -110,7 +110,7 @@ class Expression
             if ($value instanceof Expression) {
                 $value = $value->compile($useLogicalOperator);
             }
-            
+
             $clauses[] = $value;
         });
 
