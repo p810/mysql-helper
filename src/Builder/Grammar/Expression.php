@@ -66,10 +66,10 @@ class Expression
      */
     public function compile(bool $withLogicalOperator = false): string
     {
+        $logicalOperator = $withLogicalOperator ? "$this->logicalOperator " : '';
+
         return sprintf('%s%s %s %s',
-            $withLogicalOperator
-                ? "$this->logicalOperator "
-                : '',
+            $logicalOperator,
             $this->left,
             $this->comparisonOperator,
             $this->getRighthandArgument()
