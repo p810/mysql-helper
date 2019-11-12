@@ -60,12 +60,42 @@ class JoinTest extends TestCase
         $this->assertEquals('inner join bans on users.user_id = bans.issuer_id or users.user_id = bans.user_id', $query->build());
     }
 
+    public function test_join_on_not_equals()
+    {
+        $query = $this->getMockQueryBuilder()
+            ->leftJoin('bans')
+            ->onNotEquals('users.user_id', 'bans.issuer_id')
+            ->orOnNotEquals('users.user_id', 'bans.user_id');
+        
+        $this->assertEquals('left join bans on users.user_id != bans.issuer_id or users.user_id != bans.user_id', $query->build());
+    }
+
+    public function test_join_on_like()
+    {
+        $query = $this->getMockQueryBuilder()
+            ->rightJoin('bans')
+            ->onLike('users.user_id', 'bans.issuer_id')
+            ->orOnLike('users.user_id', 'bans.user_id');
+        
+        $this->assertEquals('right join bans on users.user_id like bans.issuer_id or users.user_id like bans.user_id', $query->build());
+    }
+
+    public function test_join_on_not_like()
+    {
+        $query = $this->getMockQueryBuilder()
+            ->leftOuterJoin('bans')
+            ->onNotLike('users.user_id', 'bans.issuer_id')
+            ->orOnNotLike('users.user_id', 'bans.user_id');
+        
+        $this->assertEquals('left outer join bans on users.user_id not like bans.issuer_id or users.user_id not like bans.user_id', $query->build());
+    }
+
     public function test_append_predicate_throws_exception_before_setter()
     {
         $query = $this->getMockQueryBuilder();
 
         $this->expectException(BadMethodCallException::class);
 
-        $query->orOn('users.user_id', 'bans.user_id')->innerJoin('bans');
+        $query->on('users.user_id', 'bans.user_id')->rightOuterJoin('bans');
     }
 }

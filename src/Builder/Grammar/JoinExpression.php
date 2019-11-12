@@ -111,13 +111,13 @@ class JoinExpression
      * @param string $logical A logical operator to concatenate the clauses
      * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function on(string $left, string $right, string $logical = 'and'): BuilderInterface
+    public function on(string $left, string $right, string $operator = '=', string $logical = 'and'): BuilderInterface
     {
         if (! $this->method) {
             $this->method = 'on';
         }
 
-        $this->predicates[] = new Expression($left, $right, '=', $logical);
+        $this->predicates[] = new Expression($left, $right, $operator, $logical);
 
         return $this->builder;
     }

@@ -19,17 +19,15 @@ trait Join
      * 
      * @param string $type The type of join (e.g. inner, left)
      * @param string $table The table to join data from 
-     * @return \p810\MySQL\Builder\Grammar\JoinExpression
+     * @return \p810\MySQL\Builder\BuilderInterface
      */
-    protected function join(string $type, string $table): JoinExpression
+    protected function join(string $type, string $table): BuilderInterface
     {
         $joins = $this->getParameter('joins') ?? [];
 
-        $this->current = $joins[] = $expression = new JoinExpression($type, $table, $this);
+        $this->current = $joins[] = new JoinExpression($type, $table, $this);
 
-        $this->setParameter('joins', $joins);
-
-        return $expression;
+        return $this->setParameter('joins', $joins);
     }
 
     /**
@@ -38,7 +36,7 @@ trait Join
      * @param string $table The table to join data from
      * @return \p810\MySQL\Builder\Grammar\JoinExpression
      */
-    public function innerJoin(string $table): JoinExpression
+    public function innerJoin(string $table): BuilderInterface
     {
         return $this->join('inner', $table);
     }
@@ -49,7 +47,7 @@ trait Join
      * @param string $table The table to join data from
      * @return \p810\MySQL\Builder\Grammar\JoinExpression
      */
-    public function leftJoin(string $table): JoinExpression
+    public function leftJoin(string $table): BuilderInterface
     {
         return $this->join('left', $table);
     }
@@ -60,7 +58,7 @@ trait Join
      * @param string $table The table to join data from
      * @return \p810\MySQL\Builder\Grammar\JoinExpression
      */
-    public function rightJoin(string $table): JoinExpression
+    public function rightJoin(string $table): BuilderInterface
     {
         return $this->join('right', $table);
     }
@@ -71,7 +69,7 @@ trait Join
      * @param string $table The table to join data from
      * @return \p810\MySQL\Builder\Grammar\JoinExpression
      */
-    public function leftOuterJoin(string $table): JoinExpression
+    public function leftOuterJoin(string $table): BuilderInterface
     {
         return $this->join('left outer', $table);
     }
@@ -82,29 +80,194 @@ trait Join
      * @param string $table The table to join data from
      * @return \p810\MySQL\Builder\Grammar\JoinExpression
      */
-    public function rightOuterJoin(string $table): JoinExpression
+    public function rightOuterJoin(string $table): BuilderInterface
     {
         return $this->join('right outer', $table);
     }
 
     /**
-     * Appends an "on" clause to the current join with "or" as the logical operator
+     * {@see \p810\MySQL\Builder\Grammar\JoinExpression::using()}
+     */
+    public function using(string $column): BuilderInterface
+    {
+        $this->throwIfCalledBeforeSetter('using');
+
+        return $this->current->using($column);
+    }
+
+    /**
+     * Appends an "on" clause to the current `\p810\MySQL\Builder\Grammar\JoinExpression`
+     * 
+     * @param string $left The left hand column
+     * @param string $right The right hand column
+     * @param string $operator The concatenating operator between the left and righthand values
+     * @param string $logical The logical operator used to concatenate this expression to one before it
+     * @return \p810\MySQL\Builder\BuilderInterface
+     * @throws \BadMethodCallException if this method was called before a `JoinExpression` was instantiated
+     */
+    public function on(string $left, string $right, string $operator = '=', string $logical = 'and'): BuilderInterface
+    {
+        $this->throwIfCalledBeforeSetter('on');
+
+        return $this->current->on($left, $right, $operator, $logical);
+    }
+
+    /**
+     * Appends an "on" clause to the current `\p810\MySQL\Builder\Grammar\JoinExpression` with "or" as the logical
+     * operator
+     * 
+     * @param string $left The left hand column
+     * @param string $right The right hand column
+     * @param string $operator The concatenating operator between the left and righthand values
+     * @return \p810\MySQL\Builder\BuilderInterface
+     * @throws \BadMethodCallException if this method was called before a `JoinExpression` was instantiated
+     */
+    public function orOn(string $left, string $right, string $operator = '='): BuilderInterface
+    {
+        $this->throwIfCalledBeforeSetter('orOn');
+
+        return $this->current->on($left, $right, $operator, 'or');
+    }
+
+    /**
+     * Appends an "on" clause to the current `\p810\MySQL\Builder\Grammar\JoinExpression` with "!=" as the operator
+     * 
+     * @param string $left The left hand column
+     * @param string $right The right hand column
+     * @param string $logical The logical operator used to concatenate this expression to one before it
+     * @return \p810\MySQL\Builder\BuilderInterface
+     * @throws \BadMethodCallException if this method was called before a `JoinExpression` was instantiated
+     */
+    public function onNotEquals(string $left, string $right, string $logical = 'and'): BuilderInterface
+    {
+        $this->throwIfCalledBeforeSetter('orNotEquals');
+
+        return $this->current->on($left, $right, '!=', $logical);
+    }
+
+    /**
+     * An alias for `\p810\MySQL\Builder\Grammar\Join::onNotEquals()`
+     * 
+     * @codeCoverageIgnore
+     * @param string $left The left hand column
+     * @param string $right The right hand column
+     * @param string $logical The logical operator used to concatenate this expression to the one before it
+     * @return \p810\MySQL\Builder\BuilderInterface
+     * @throws \BadMethodCallException if this method was called before a `JoinExpression` was instantiated
+     */
+    public function onNot(string $left, string $right, string $logical = 'and'): BuilderInterface
+    {
+        return $this->onNotEquals($left, $right, $logical);
+    }
+
+    /**
+     * Appends an "on" clause to the current `\p810\MySQL\Builder\Grammar\JoinExpression` with "!=" as the operator and
+     * "or" as the logical operator
      * 
      * @param string $left The left hand column
      * @param string $right The right hand column
      * @return \p810\MySQL\Builder\BuilderInterface
      * @throws \BadMethodCallException if this method was called before a `JoinExpression` was instantiated
      */
-    public function orOn(string $left, string $right): BuilderInterface
+    public function orOnNotEquals(string $left, string $right): BuilderInterface
+    {
+        $this->throwIfCalledBeforeSetter('orOnNotEquals');
+
+        return $this->current->on($left, $right, '!=', 'or');
+    }
+
+    /**
+     * An alias for `\p810\MySQL\Builder\Grammar\Join::orOnNotEquals()`
+     * 
+     * @codeCoverageIgnore
+     * @param string $left The left hand column
+     * @param string $right The right hand column
+     * @return \p810\MySQL\Builder\BuilderInterface
+     * @throws \BadMethodCallException if this method was called before a `JoinExpression` was instantiated
+     */
+    public function orOnNot(string $left, string $right): BuilderInterface
+    {
+        return $this->orOnNotEquals($left, $right);
+    }
+
+    /**
+     * Appends an "on" clause to the current `\p810\MySQL\Builder\Grammar\JoinExpression` with "like" as the operator
+     * 
+     * @param string $left The left hand column
+     * @param string $right The right hand column
+     * @param string $logical The logical operator used to concatenate this expression to one before it
+     * @return \p810\MySQL\Builder\BuilderInterface
+     * @throws \BadMethodCallException if this method was called before a `JoinExpression` was instantiated
+     */
+    public function onLike(string $left, string $right, string $logical = 'and'): BuilderInterface
+    {
+        $this->throwIfCalledBeforeSetter('onLike');
+
+        return $this->current->on($left, $right, 'like', $logical);
+    }
+
+    /**
+     * Appends an "on" clause to the current `\p810\MySQL\Builder\Grammar\JoinExpression` with "like" as the operator
+     * and "or" as the logical operator
+     * 
+     * @param string $left The left hand column
+     * @param string $right The right hand column
+     * @return \p810\MySQL\Builder\BuilderInterface
+     * @throws \BadMethodCallException if this method was called before a `JoinExpression` was instantiated
+     */
+    public function orOnLike(string $left, string $right): BuilderInterface
+    {
+        $this->throwIfCalledBeforeSetter('orOnLike');
+
+        return $this->current->on($left, $right, 'like', 'or');
+    }
+
+    /**
+     * Appends an "on" clause to the current `\p810\MySQL\Builder\Grammar\JoinExpression` with "not like" as the
+     * operator
+     * 
+     * @param string $left The left hand column
+     * @param string $right The right hand column
+     * @param string $logical The logical operator used to concatenate this expression to one before it
+     * @return \p810\MySQL\Builder\BuilderInterface
+     * @throws \BadMethodCallException if this method was called before a `JoinExpression` was instantiated
+     */
+    public function onNotLike(string $left, string $right, string $logical = 'and'): BuilderInterface
+    {
+        $this->throwIfCalledBeforeSetter('onNotLike');
+
+        return $this->current->on($left, $right, 'not like', $logical);
+    }
+
+    /**
+     * Appends an "on" clause to the current `\p810\MySQL\Builder\Grammar\JoinExpression` with "not like" as the
+     * operator and "or" as the logical operator
+     * 
+     * @param string $left The left hand column
+     * @param string $right The right hand column
+     * @return \p810\MySQL\Builder\BuilderInterface
+     * @throws \BadMethodCallException if this method was called before a `JoinExpression` was instantiated
+     */
+    public function orOnNotLike(string $left, string $right): BuilderInterface
+    {
+        $this->throwIfCalledBeforeSetter('orOnNotLike');
+
+        return $this->current->on($left, $right, 'not like', 'or');
+    }
+
+    /**
+     * Raises an exception if the given method was called before a setter method (e.g. `innerJoin()`) was
+     * 
+     * @throws \BadMethodCallException if the given method was called before a `JoinExpression` was instantiated
+     */
+    protected function throwIfCalledBeforeSetter(string $method): void
     {
         if (! $this->current) {
             throw new BadMethodCallException(
-                '\p810\MySQL\Builder\Grammar\Join::orOn() cannot be called before an expression has been set' .
-                'by calling a setter method, e.g. \p810\MySQL\Builder\Grammar\Join::innerJoin()'
+                "\p810\MySQL\Builder\Grammar\Join::$method() cannot be called before an expression has been set by " .
+                "calling a setter method, e.g. \p810\MySQL\Builder\Grammar\Join::innerJoin()"
             );
         }
-        
-        return $this->current->on($left, $right, 'or');
     }
 
     /**
