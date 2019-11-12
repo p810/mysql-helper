@@ -108,7 +108,8 @@ class JoinExpression
      * 
      * @param string $left The left hand side of the clause (a column)
      * @param string $right The right hand side of the clause (another column)
-     * @param string $logical A logical operator to concatenate the clauses
+     * @param string $operator The comparison operator (middle of the expression)
+     * @param string $logical A logical operator to concatenate this clause to one before it, if needed
      * @return \p810\MySQL\Builder\BuilderInterface
      */
     public function on(string $left, string $right, string $operator = '=', string $logical = 'and'): BuilderInterface
