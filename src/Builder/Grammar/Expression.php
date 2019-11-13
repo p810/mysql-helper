@@ -3,7 +3,6 @@
 namespace p810\MySQL\Builder\Grammar;
 
 use function sprintf;
-use function array_walk;
 use function p810\MySQL\spaces;
 use function p810\MySQL\parentheses;
 
@@ -93,22 +92,20 @@ class Expression
      * 
      * @param array $expressions A list of expressions
      * @return string
-     * @todo Remove the `psalm-suppress` annotation inline below and use a union type when PHP 8 rolls around
      */
     public static function listToString(array $expressions): string
     {
         $clauses = [];
 
-        /** @psalm-suppress MissingClosureParamType */
-        array_walk($expressions, function ($value, $key) use (&$clauses) {
+        foreach ($expressions as $key => $value) {
             $useLogicalOperator = $key >= 1;
-            
-            if ($value instanceof Expression) {
+
+            if ($value instanceof self) {
                 $value = $value->compile($useLogicalOperator);
             }
 
             $clauses[] = $value;
-        });
+        }
 
         return spaces($clauses);
     }
