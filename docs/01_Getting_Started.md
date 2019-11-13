@@ -1,5 +1,5 @@
 ## Connecting to the database
-`p810\MySQL\ConnectionInterface` describes a connection to MySQL, that can be used to fluently build queries and automatically process the results. The default implementation provided by this package is `p810\MySQL\Connection` which relies on PDO as its connector. Create a new instance of this object by passing your username, password, and database: 
+`p810\MySQL\ConnectionInterface` describes a connection to MySQL, that can be used to fluently build queries and automatically process the results. The default implementation provided by this package is `p810\MySQL\Connection` which relies on PDO as its connector. Create a new instance of this object by passing your username, password, and optionally a database name:
 
 ```php
 $connection = new p810\MySQL\Connection('username', 'password', 'database');
@@ -33,7 +33,7 @@ $pdo = $connection->getConnector();
 ```
 
 ### Query processors
-`p810\MySQL\Connection` relies on an instance of `p810\MySQL\Processor\ProcessorInterface` to process queries. By default it uses an instance of `p810\MySQL\Processor\Pdo`.
+`p810\MySQL\Connection` relies on an instance of `p810\MySQL\Processor\ProcessorInterface` to process queries. By default it uses an instance of `p810\MySQL\Processor\PdoProcessor`.
 
 You can get this object by calling `p810\MySQL\ConnectionInterface::getProcessor()`, or inject your own with `p810\MySQL\ConnectionInterface::setProcessor()`.
 
@@ -78,6 +78,13 @@ To change the `PDO::ATTR_ERRMODE`, call `Connection::shouldThrowExceptions()` an
 $connection->shouldThrowExceptions(false);
 ```
 
+`Connection::shouldNotThrowExceptions()` is an alias that does the equivalent of the above example:
+
+```php
+// also sets PDO::ATTR_ERRMODE to PDO::ERRMODE_SILENT:
+$connection->shouldNotThrowExceptions();
+```
+
 ### Toggling auto-commit
 To toggle the `PDO::ATTR_AUTOCOMMIT` attribute, which tells PDO whether it should automatically commit query results, call `Connection::shouldAutoCommit()` and pass a boolean indicating whether to auto-commit or not (true or false, respectively; defaults to true):
 
@@ -85,6 +92,8 @@ To toggle the `PDO::ATTR_AUTOCOMMIT` attribute, which tells PDO whether it shoul
 // sets PDO::ATTR_AUTOCOMMIT to true:
 $connection->shouldAutoCommit();
 ```
+
+`Connection::shouldNotAutoCommit()` is an alias that can be used to disable auto-commit.
 
 ## Transactions
 To begin a [transaction](https://www.php.net/manual/en/pdo.transactions.php), call `Connection::transact()` or `Connection::beginTransaction()`, which will return a boolean indicating whether the transaction was successfully started, or throw a `PDOException` if something went wrong. If a transaction is already active for the connection it will return true.
