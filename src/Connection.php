@@ -28,17 +28,18 @@ class Connection implements ConnectionInterface
      * 
      * @param string $user The user to connect to MySQL with
      * @param string $password The password of the MySQL user
-     * @param string $database The database to connect to
+     * @param null|string $database The database to connect to
      * @param string $host The hostname of the MySQL server
      * @param bool $exceptions Specifies whether \PDO should raise an exception when it encounters an error
      * @param array $dsnParams Optional parameters to pass to the DSN used when instantiating \PDO
      * @param array $options Optional arguments to include in the construction of the \PDO instance
+     * @return void
      * @throws \PDOException if the database connection failed
      */
     function __construct(
         string $user,
         string $password,
-        string $database,
+        ?string $database = null,
         string $host = '127.0.0.1',
         bool $exceptions = true,
         array $dsnParams = [],
@@ -142,9 +143,18 @@ class Connection implements ConnectionInterface
     {
         $errLevel = $throw ? PDO::ERRMODE_EXCEPTION : PDO::ERRMODE_SILENT;
 
-        $this->database->setAttribute(PDO::ATTR_ERRMODE, $errLevel);
-        
-        return $this;
+        return $this->setAttribute(PDO::ATTR_ERRMODE, $errLevel);
+    }
+
+    /**
+     * A fluent alias for `p810\MySQL\Connection::shouldThrowExceptions()` that tells PDO not to throw exceptions
+     * 
+     * @codeCoverageIgnore
+     * @return self
+     */
+    public function shouldNotThrowExceptions(): self
+    {
+        return $this->shouldThrowExceptions(false);
     }
 
     /**
@@ -156,10 +166,19 @@ class Connection implements ConnectionInterface
     public function shouldAutoCommit(bool $shouldAutoCommit = true): self
     {
         $this->autocommit = $shouldAutoCommit;
-        
-        $this->database->setAttribute(PDO::ATTR_AUTOCOMMIT, $shouldAutoCommit);
 
-        return $this;
+        return $this->setAttribute(PDO::ATTR_AUTOCOMMIT, $shouldAutoCommit);
+    }
+
+    /**
+     * A fluent alias for `p810\MySQL\Connection::shouldAutoCommit()` that tells PDO not to auto-commit query results
+     * 
+     * @codeCoverageIgnore
+     * @return self
+     */
+    public function shouldNotAutoCommit(): self
+    {
+        return $this->shouldAutoCommit(false);
     }
 
     /**
@@ -221,7 +240,7 @@ class Connection implements ConnectionInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function select($columns = null): Query
     {
@@ -231,7 +250,7 @@ class Connection implements ConnectionInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function insert(?array $columnsToValues = null): Query
     {
@@ -245,7 +264,7 @@ class Connection implements ConnectionInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function update(?string $table = null): Query
     {
@@ -259,7 +278,7 @@ class Connection implements ConnectionInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function delete(?string $table = null): Query
     {
@@ -273,7 +292,7 @@ class Connection implements ConnectionInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function replace(?array $columnsToValues = null): Query
     {
