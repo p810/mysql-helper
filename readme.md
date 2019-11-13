@@ -111,8 +111,8 @@ When running a query via a mapper, you have the option to manipulate the `p810\M
 ```php
 $users = $mapper->read(function (\p810\MySQL\Query $query) use ($input) {
     return $query->where('username', $input['username'])
-                 ->innerJoin('profiles')
-                 ->using('user_id');
+        ->innerJoin('profiles')
+        ->using('user_id');
 });
 ```
 
@@ -143,7 +143,7 @@ A file named `.db.env` is loaded when PHPUnit is run, to get database connection
 
 ### Code quality
 ```
-$ ./vendor/bin/psalm --show-info=false
+$ ./vendor/bin/psalm
 ```
 
 ## License
