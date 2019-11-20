@@ -6,6 +6,7 @@ use PDO;
 use PDOStatement;
 use LogicException;
 use p810\MySQL\Query;
+use BadMethodCallException;
 use p810\MySQL\ConnectionInterface;
 
 use function array_map;
@@ -13,20 +14,17 @@ use function array_map;
 class DefaultMapper implements MapperInterface
 {
     /**
-     * @var string
-     * @psalm-suppress PropertyNotSetInConstructor
+     * @var null|string
      */
     public $table;
 
     /**
-     * @var string
-     * @psalm-suppress PropertyNotSetInConstructor
+     * @var null|string
      */
     public $key;
 
     /**
-     * @var string
-     * @psalm-suppress PropertyNotSetInConstructor
+     * @var null|string
      */
     protected $entity;
 
@@ -42,7 +40,6 @@ class DefaultMapper implements MapperInterface
     {
         $this->adapter = $connection;
 
-        /** @psalm-suppress UninitializedProperty */
         if (! $this->table || ! $this->entity) {
             throw new LogicException(
                 'Children of \p810\MySQL\Mapper\DefaultMapper must define their $table and $entity to use certain functionality'
@@ -184,7 +181,8 @@ class DefaultMapper implements MapperInterface
 
     /**
      * Fetches the ID of the last inserted row, if applicable
-     * 
+     *
+     * @psalm-suppress PossiblyNullArrayOffset
      * @todo Investigate whether it's possible to use LAST_INSERT_ID() over this query (currently it's returning 0 each
      *       time due to some limitation with the driver)
      * @return null|int
@@ -214,15 +212,22 @@ class DefaultMapper implements MapperInterface
      * Returns a new instance of the entity represented by the mapper
      * 
      * @param array $state The data used to construct the entity
-     * @return \p810\MySQL\Mapper\EntityInterface 
+     * @return \p810\MySQL\Mapper\EntityInterface
+     * @throws \BadMethodCallException if `\p810\MySQL\Mapper\DefaultMapper::$entity` is null
      */
     protected function getEntityFrom(array $state): EntityInterface
     {
+        if (! $this->entity) {
+            $class = get_class($this);
+
+            throw new BadMethodCallException("An entity cannot be instantiated without specifying $class::\$entity");
+        }
+
         return ($this->entity)::from($state);
     }
 
     /**
-     * Raises a \LogicException for the given $method if the property $key is not set on the mapper
+     * Raises a `\LogicException` for the given $method if the property $key is not set on the mapper
      * 
      * @param string $method The method that requires the $key property be set
      * @return void
@@ -232,7 +237,8 @@ class DefaultMapper implements MapperInterface
     {
         if (! $this->key) {
             throw new LogicException(
-                "\p810\MySQL\Mapper\DefaultMapper::$method() failed: A key is required and must be specified in Mapper::\$key"
+                "\p810\MySQL\Mapper\DefaultMapper::$method() failed: A key is required and must be specified in " .
+                get_class($this) . '::$key'
             );
         }
     }
