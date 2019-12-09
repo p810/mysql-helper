@@ -5,6 +5,7 @@ namespace p810\MySQL\Builder\Grammar;
 use p810\MySQL\Builder\BuilderInterface;
 
 use function p810\MySQL\commas;
+use function is_string;
 
 trait Table
 {
