@@ -16,8 +16,8 @@ trait Where
     /**
      * Appends an expression to the where clause
      * 
-     * @param string|\p810\MySQL\Builder\BuilderInterface $column Left hand side of the expression (column)
-     * @param mixed $value Right hand side of the expression (value)
+     * @param mixed|\p810\MySQL\Builder\BuilderInterface $column Left hand side of the expression
+     * @param mixed|\p810\MySQL\Builder\BuilderInterface $value Right hand side of the expression
      * @param string $operator Middle of the expression (comparison operator)
      * @param string $logical A logical operator used to concatenate the expression in the clause
      * @param bool $bind Determines whether the given value should be bound to the query
