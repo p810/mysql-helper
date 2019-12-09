@@ -319,7 +319,7 @@ trait Where
     /**
      * Appends an expression with "between" as the comparison operator
      * 
-     * @param mixed|\p810\MySQL\Builder\BuilderInterface $column Left hand side of the expression
+     * @param mixed|\p810\MySQL\Builder\BuilderInterface $expression Left hand side of the expression
      * @param mixed|\p810\MySQL\Builder\BuilderInterface $min The min value on the right hand side of the expression
      * @param mixed|\p810\MySQL\Builder\BuilderInterface $max The max value on the right hand side of the expression
      * @param string $logical A logical operator used to concatenate the expression in the clause
@@ -327,6 +327,8 @@ trait Where
      */
     public function whereBetween($expression, $min, $max, string $logical = 'and'): BuilderInterface
     {
+        [$min, $max] = $this->prepare([$min, $max]);
+
         return $this->where($expression, "$min and $max", 'between', $logical);
     }
 
@@ -334,7 +336,7 @@ trait Where
      * An alias for `\p810\MySQL\Builder\Grammar\Where::whereBetween()` that specifies "or" as the logical operator
      * 
      * @codeCoverageIgnore
-     * @param mixed|\p810\MySQL\Builder\BuilderInterface $column Left hand side of the expression
+     * @param mixed|\p810\MySQL\Builder\BuilderInterface $expression Left hand side of the expression
      * @param mixed|\p810\MySQL\Builder\BuilderInterface $min The min value on the right hand side of the expression
      * @param mixed|\p810\MySQL\Builder\BuilderInterface $max The max value on the right hand side of the expression
      * @return \p810\MySQL\Builder\BuilderInterface
@@ -347,7 +349,7 @@ trait Where
     /**
      * Appends an expression with "not between" as the comparison operator
      * 
-     * @param mixed|\p810\MySQL\Builder\BuilderInterface $column Left hand side of the expression
+     * @param mixed|\p810\MySQL\Builder\BuilderInterface $expression Left hand side of the expression
      * @param mixed|\p810\MySQL\Builder\BuilderInterface $min The min value on the right hand side of the expression
      * @param mixed|\p810\MySQL\Builder\BuilderInterface $max The max value on the right hand side of the expression
      * @param string $logical A logical operator used to concatenate the expression in the clause
@@ -364,7 +366,7 @@ trait Where
      * An alias for `\p810\MySQL\Builder\Grammar\Where::whereBetween()` that specifies "or" as the logical operator
      * 
      * @codeCoverageIgnore
-     * @param mixed|\p810\MySQL\Builder\BuilderInterface $column Left hand side of the expression
+     * @param mixed|\p810\MySQL\Builder\BuilderInterface $expression Left hand side of the expression
      * @param mixed|\p810\MySQL\Builder\BuilderInterface $min The min value on the right hand side of the expression
      * @param mixed|\p810\MySQL\Builder\BuilderInterface $max The max value on the right hand side of the expression
      * @return \p810\MySQL\Builder\BuilderInterface
