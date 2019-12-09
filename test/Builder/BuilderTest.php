@@ -7,7 +7,6 @@ use p810\MySQL\Builder\Insert;
 use p810\MySQL\Builder\Update;
 use p810\MySQL\Builder\Delete;
 use p810\MySQL\Builder\Replace;
-use p810\MySQL\Builder\Builder;
 use PHPUnit\Framework\TestCase;
 
 class BuilderTest extends TestCase
@@ -24,6 +23,50 @@ class BuilderTest extends TestCase
               ->limit(2);
         
         $this->assertEquals("select username, password from users where username = ? or username = ? order by username desc limit 2", $query->build());
+    }
+
+    public function test_select_builder_with_alias()
+    {
+        $query = new Select();
+
+        $query->select()
+            ->from('users', 'a')
+            ->from('bans', 'b')
+            ->where('a.user_id', 'b.user_id');
+        
+        $this->assertEquals('select * from users as a, bans as b where a.user_id = ?', $query->build());
+    }
+
+    public function test_select_builder_with_alias_after_initial_call()
+    {
+        $query = new Select();
+
+        $query->select()
+            ->from('books')
+            ->as('a')
+            ->from('topics', 'b')
+            ->where('a.topic_id', 'b.topic_id');
+        
+        $this->assertEquals('select * from books as a, topics as b where a.topic_id = ?', $query->build());
+    }
+
+    public function test_select_builder_with_temporary_table()
+    {
+        $query = new Select();
+        $temporary = new Select();
+
+        $temporary->select('issuer_id')->from('bans')->where('user_id', 1);
+
+        $query->select()
+            ->from($temporary)
+            ->as('a')
+            ->innerJoin('users', 'b')
+            ->on('a.issuer_id', 'b.user_id');
+
+        $this->assertEquals(
+            'select * from (select issuer_id from bans where user_id = ?) as a inner join users as b on a.issuer_id = b.user_id',
+            $query->build()
+        );
     }
 
     public function test_insert_builder_single_row()

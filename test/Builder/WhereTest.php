@@ -118,25 +118,18 @@ class WhereTest extends TestCase
             ->whereBetween(2, 1, 3)
             ->orWhereBetween('b', 'a', 'c');
         
-        $this->assertEquals('where ? between ? and ? or ? between ? and ?', $query->build());
+        $this->assertEquals('where 2 between ? or b between ?', $query->build());
     }
 
-    public function test_where_between_many()
+    public function test_where_between_with_subquery()
     {
-        $query = $this->getMockQueryBuilder();
+        $select = (new Select())
+            ->columns('*')
+            ->from('numbers')
+            ->where('number', 2);
+        $query = $this->getMockQueryBuilder()->whereBetween($select, 1, 3);
 
-        $query->whereBetweenMany([
-            2 => [1, 3],
-            'b' => ['a', 'c']
-        ])->orWhereBetweenMany([
-            5 => [4, 6],
-            'e' => ['d', 'f']
-        ]);
-
-        $this->assertEquals(
-            'where ? between ? and ?, ? between ? and ? or ? between ? and ?, ? between ? and ?',
-            $query->build()
-        );
+        $this->assertEquals('where (select * from numbers where number = ?) between ?', $query->build());
     }
 
     public function test_where_not_between()
@@ -145,24 +138,64 @@ class WhereTest extends TestCase
             ->whereNotBetween(2, 1, 3)
             ->orWhereNotBetween('b', 'a', 'c');
         
-        $this->assertEquals('where ? not between ? and ? or ? not between ? and ?', $query->build());
+        $this->assertEquals('where 2 not between ? or b not between ?', $query->build());
     }
 
-    public function test_where_not_between_many()
+    public function test_where_not_between_with_subquery()
     {
-        $query = $this->getMockQueryBuilder();
+        $select = (new Select())
+            ->columns('*')
+            ->from('numbers')
+            ->where('number', 2);
+        $query = $this->getMockQueryBuilder()->whereNotBetween($select, 3, 5);
 
-        $query->whereNotBetweenMany([
-            2 => [1, 3],
-            'b' => ['a', 'c']
-        ])->orWhereNotBetweenMany([
-            5 => [4, 6],
-            'e' => ['d', 'f']
-        ]);
+        $this->assertEquals('where (select * from numbers where number = ?) not between ?', $query->build());
+    }
+
+    public function test_where_is()
+    {
+        $query = $this->getMockQueryBuilder()
+            ->whereIs('1', true)
+            ->orWhereIs('true', 'true')
+            ->whereIsFalse('0')
+            ->orWhereIsFalse('false')
+            ->whereIsUnknown('foo')
+            ->orWhereIsUnknown('baz')
+            ->whereIsNull('bar')
+            ->orWhereIsNull('bam');
 
         $this->assertEquals(
-            'where ? not between ? and ?, ? not between ? and ? or ? not between ? and ?, ? not between ? and ?',
+            'where ? is true or ? is true and ? is false or ? is false and ? is unknown or ? is unknown and ? is null or ? is null',
             $query->build()
         );
+    }
+
+    public function test_where_not_is()
+    {
+        $query = $this->getMockQueryBuilder()
+            ->whereIsNot('0', true)
+            ->orWhereIsNot('false', 'true')
+            ->whereIsNotFalse('1')
+            ->orWhereIsNotFalse(true)
+            ->whereIsNotUnknown('1')
+            ->orWhereIsNotUnknown(false)
+            ->whereIsNotNull(true)
+            ->orWhereIsNotNull('false');
+
+        $this->assertEquals(
+            'where ? is not true or ? is not true and ? is not false or ? is not false and ? is not unknown or ? is not unknown and ? is not null or ? is not null',
+            $query->build()
+        );
+    }
+
+    public function test_where_null_safe()
+    {
+        $query = $this->getMockQueryBuilder()
+            ->whereNullSafe('foo', null)
+            ->orWhereNullSafe('bar', '1')
+            ->whereNullSafeEquals('bam', '2')
+            ->orWhereNullSafeEquals('baz', '3');
+
+        $this->assertEquals('where foo <=> ? or bar <=> ? and bam <=> ? or baz <=> ?', $query->build());
     }
 }
