@@ -18,14 +18,23 @@ trait Join
      * Appends a join to the query
      * 
      * @param string $type The type of join (e.g. inner, left)
-     * @param string $table The table to join data from 
+     * @param string|\p810\MySQL\Builder\BuilderInterface $table The table to join data from
+     * @param null|string $alias An optional alias for the table
      * @return \p810\MySQL\Builder\BuilderInterface
      */
-    protected function join(string $type, string $table): BuilderInterface
+    protected function join(string $type, $table, ?string $alias = null): BuilderInterface
     {
         $joins = $this->getParameter('joins') ?? [];
 
-        $this->current = $joins[] = new JoinExpression($type, $table, $this);
+        $table = $this->prepare($table);
+
+        if ($alias) {
+            $this->alias($alias, $table);
+        }
+
+        $this->setCurrentTable($table);
+
+        $this->current = $joins[] = new JoinExpression($this, $type, $table, $alias);
 
         return $this->setParameter('joins', $joins);
     }
@@ -33,56 +42,61 @@ trait Join
     /**
      * Appends an inner join to the query
      * 
-     * @param string $table The table to join data from
+     * @param string|\p810\MySQL\Builder\BuilderInterface $table The table to join data from
+     * @param null|string $alias An optional alias for the table
      * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function innerJoin(string $table): BuilderInterface
+    public function innerJoin($table, ?string $alias = null): BuilderInterface
     {
-        return $this->join('inner', $table);
+        return $this->join('inner', $table, $alias);
     }
 
     /**
      * Appends a left join to the query
      * 
-     * @param string $table The table to join data from
+     * @param string|\p810\MySQL\Builder\BuilderInterface $table The table to join data from
+     * @param null|string $alias An optional alias for the table
      * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function leftJoin(string $table): BuilderInterface
+    public function leftJoin($table, ?string $alias = null): BuilderInterface
     {
-        return $this->join('left', $table);
+        return $this->join('left', $table, $alias);
     }
 
     /**
      * Appends a right join to the query
      * 
-     * @param string $table The table to join data from
+     * @param string|\p810\MySQL\Builder\BuilderInterface $table The table to join data from
+     * @param null|string $alias An optional alias for the table
      * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function rightJoin(string $table): BuilderInterface
+    public function rightJoin($table, ?string $alias = null): BuilderInterface
     {
-        return $this->join('right', $table);
+        return $this->join('right', $table, $alias);
     }
 
     /**
      * Appends a left outer join to the query
      * 
-     * @param string $table The table to join data from
+     * @param string|\p810\MySQL\Builder\BuilderInterface $table The table to join data from
+     * @param null|string $alias An optional alias for the table
      * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function leftOuterJoin(string $table): BuilderInterface
+    public function leftOuterJoin($table, ?string $alias = null): BuilderInterface
     {
-        return $this->join('left outer', $table);
+        return $this->join('left outer', $table, $alias);
     }
 
     /**
      * Appends a right outer join to the query
      * 
-     * @param string $table The table to join data from
+     * @param string|\p810\MySQL\Builder\BuilderInterface $table The table to join data from
+     * @param null|string $alias An optional alias for the table
      * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function rightOuterJoin(string $table): BuilderInterface
+    public function rightOuterJoin($table, ?string $alias = null): BuilderInterface
     {
-        return $this->join('right outer', $table);
+        return $this->join('right outer', $table, $alias);
     }
 
     /**
@@ -102,17 +116,19 @@ trait Join
     /**
      * Appends an "on" clause to the current `\p810\MySQL\Builder\Grammar\JoinExpression`
      * 
-     * @param string $left The left hand column
-     * @param string $right The right hand column
+     * @param mixed|\p810\MySQL\Builder\BuilderInterface $left The left hand side of the expression
+     * @param mixed|\p810\MySQL\Builder\BuilderInterface $right The right hand side of the expression
      * @param string $operator The concatenating operator between the left and righthand values
      * @param string $logical The logical operator used to concatenate this expression to one before it
      * @return \p810\MySQL\Builder\BuilderInterface
      * @throws \BadMethodCallException if this method was called before a `JoinExpression` was instantiated
      * @psalm-suppress PossiblyNullReference
      */
-    public function on(string $left, string $right, string $operator = '=', string $logical = 'and'): BuilderInterface
+    public function on($left, $right, string $operator = '=', string $logical = 'and'): BuilderInterface
     {
         $this->throwIfCalledBeforeSetter('on');
+
+        [$left, $right] = $this->prepare([$left, $right]);
 
         return $this->current->on($left, $right, $operator, $logical);
     }
@@ -121,48 +137,44 @@ trait Join
      * Appends an "on" clause to the current `\p810\MySQL\Builder\Grammar\JoinExpression` with "or" as the logical
      * operator
      * 
-     * @param string $left The left hand column
-     * @param string $right The right hand column
+     * @param mixed|\p810\MySQL\Builder\BuilderInterface $left The left hand side of the expression
+     * @param mixed|\p810\MySQL\Builder\BuilderInterface $right The right hand side of the expression
      * @param string $operator The concatenating operator between the left and righthand values
      * @return \p810\MySQL\Builder\BuilderInterface
      * @throws \BadMethodCallException if this method was called before a `JoinExpression` was instantiated
      * @psalm-suppress PossiblyNullReference
      */
-    public function orOn(string $left, string $right, string $operator = '='): BuilderInterface
+    public function orOn($left, $right, string $operator = '='): BuilderInterface
     {
-        $this->throwIfCalledBeforeSetter('orOn');
-
-        return $this->current->on($left, $right, $operator, 'or');
+        return $this->on($left, $right, $operator, 'or');
     }
 
     /**
      * Appends an "on" clause to the current `\p810\MySQL\Builder\Grammar\JoinExpression` with "!=" as the operator
      * 
-     * @param string $left The left hand column
-     * @param string $right The right hand column
+     * @param mixed|\p810\MySQL\Builder\BuilderInterface $left The left hand side of the expression
+     * @param mixed|\p810\MySQL\Builder\BuilderInterface $right The right hand side of the expression
      * @param string $logical The logical operator used to concatenate this expression to one before it
      * @return \p810\MySQL\Builder\BuilderInterface
      * @throws \BadMethodCallException if this method was called before a `JoinExpression` was instantiated
      * @psalm-suppress PossiblyNullReference
      */
-    public function onNotEquals(string $left, string $right, string $logical = 'and'): BuilderInterface
+    public function onNotEquals($left, $right, string $logical = 'and'): BuilderInterface
     {
-        $this->throwIfCalledBeforeSetter('orNotEquals');
-
-        return $this->current->on($left, $right, '!=', $logical);
+        return $this->on($left, $right, '!=', $logical);
     }
 
     /**
      * An alias for `\p810\MySQL\Builder\Grammar\Join::onNotEquals()`
      * 
      * @codeCoverageIgnore
-     * @param string $left The left hand column
-     * @param string $right The right hand column
+     * @param mixed|\p810\MySQL\Builder\BuilderInterface $left The left hand side of the expression
+     * @param mixed|\p810\MySQL\Builder\BuilderInterface $right The right hand side of the expression
      * @param string $logical The logical operator used to concatenate this expression to the one before it
      * @return \p810\MySQL\Builder\BuilderInterface
      * @throws \BadMethodCallException if this method was called before a `JoinExpression` was instantiated
      */
-    public function onNot(string $left, string $right, string $logical = 'and'): BuilderInterface
+    public function onNot($left, $right, string $logical = 'and'): BuilderInterface
     {
         return $this->onNotEquals($left, $right, $logical);
     }
@@ -171,29 +183,27 @@ trait Join
      * Appends an "on" clause to the current `\p810\MySQL\Builder\Grammar\JoinExpression` with "!=" as the operator and
      * "or" as the logical operator
      * 
-     * @param string $left The left hand column
-     * @param string $right The right hand column
+     * @param mixed|\p810\MySQL\Builder\BuilderInterface $left The left hand side of the expression
+     * @param mixed|\p810\MySQL\Builder\BuilderInterface $right The right hand side of the expression
      * @return \p810\MySQL\Builder\BuilderInterface
      * @throws \BadMethodCallException if this method was called before a `JoinExpression` was instantiated
      * @psalm-suppress PossiblyNullReference
      */
-    public function orOnNotEquals(string $left, string $right): BuilderInterface
+    public function orOnNotEquals($left, $right): BuilderInterface
     {
-        $this->throwIfCalledBeforeSetter('orOnNotEquals');
-
-        return $this->current->on($left, $right, '!=', 'or');
+        return $this->onNotEquals($left, $right, 'or');
     }
 
     /**
      * An alias for `\p810\MySQL\Builder\Grammar\Join::orOnNotEquals()`
      * 
      * @codeCoverageIgnore
-     * @param string $left The left hand column
-     * @param string $right The right hand column
+     * @param mixed|\p810\MySQL\Builder\BuilderInterface $left The left hand side of the expression
+     * @param mixed|\p810\MySQL\Builder\BuilderInterface $right The right hand side of the expression
      * @return \p810\MySQL\Builder\BuilderInterface
      * @throws \BadMethodCallException if this method was called before a `JoinExpression` was instantiated
      */
-    public function orOnNot(string $left, string $right): BuilderInterface
+    public function orOnNot($left, $right): BuilderInterface
     {
         return $this->orOnNotEquals($left, $right);
     }
@@ -201,70 +211,62 @@ trait Join
     /**
      * Appends an "on" clause to the current `\p810\MySQL\Builder\Grammar\JoinExpression` with "like" as the operator
      * 
-     * @param string $left The left hand column
-     * @param string $right The right hand column
+     * @param mixed|\p810\MySQL\Builder\BuilderInterface $left The left hand side of the expression
+     * @param mixed|\p810\MySQL\Builder\BuilderInterface $right The right hand side of the expression
      * @param string $logical The logical operator used to concatenate this expression to one before it
      * @return \p810\MySQL\Builder\BuilderInterface
      * @throws \BadMethodCallException if this method was called before a `JoinExpression` was instantiated
      * @psalm-suppress PossiblyNullReference
      */
-    public function onLike(string $left, string $right, string $logical = 'and'): BuilderInterface
+    public function onLike($left, $right, string $logical = 'and'): BuilderInterface
     {
-        $this->throwIfCalledBeforeSetter('onLike');
-
-        return $this->current->on($left, $right, 'like', $logical);
+        return $this->on($left, $right, 'like', $logical);
     }
 
     /**
      * Appends an "on" clause to the current `\p810\MySQL\Builder\Grammar\JoinExpression` with "like" as the operator
      * and "or" as the logical operator
      * 
-     * @param string $left The left hand column
-     * @param string $right The right hand column
+     * @param mixed|\p810\MySQL\Builder\BuilderInterface $left The left hand side of the expression
+     * @param mixed|\p810\MySQL\Builder\BuilderInterface $right The right hand side of the expression
      * @return \p810\MySQL\Builder\BuilderInterface
      * @throws \BadMethodCallException if this method was called before a `JoinExpression` was instantiated
      * @psalm-suppress PossiblyNullReference
      */
-    public function orOnLike(string $left, string $right): BuilderInterface
+    public function orOnLike($left, $right): BuilderInterface
     {
-        $this->throwIfCalledBeforeSetter('orOnLike');
-
-        return $this->current->on($left, $right, 'like', 'or');
+        return $this->onLike($left, $right, 'or');
     }
 
     /**
      * Appends an "on" clause to the current `\p810\MySQL\Builder\Grammar\JoinExpression` with "not like" as the
      * operator
      * 
-     * @param string $left The left hand column
-     * @param string $right The right hand column
+     * @param mixed|\p810\MySQL\Builder\BuilderInterface $left The left hand side of the expression
+     * @param mixed|\p810\MySQL\Builder\BuilderInterface $right The right hand side of the expression
      * @param string $logical The logical operator used to concatenate this expression to one before it
      * @return \p810\MySQL\Builder\BuilderInterface
      * @throws \BadMethodCallException if this method was called before a `JoinExpression` was instantiated
      * @psalm-suppress PossiblyNullReference
      */
-    public function onNotLike(string $left, string $right, string $logical = 'and'): BuilderInterface
+    public function onNotLike($left, $right, string $logical = 'and'): BuilderInterface
     {
-        $this->throwIfCalledBeforeSetter('onNotLike');
-
-        return $this->current->on($left, $right, 'not like', $logical);
+        return $this->on($left, $right, 'not like', $logical);
     }
 
     /**
      * Appends an "on" clause to the current `\p810\MySQL\Builder\Grammar\JoinExpression` with "not like" as the
      * operator and "or" as the logical operator
      * 
-     * @param string $left The left hand column
-     * @param string $right The right hand column
+     * @param mixed|\p810\MySQL\Builder\BuilderInterface $left The left hand side of the expression
+     * @param mixed|\p810\MySQL\Builder\BuilderInterface $right The right hand side of the expression
      * @return \p810\MySQL\Builder\BuilderInterface
      * @throws \BadMethodCallException if this method was called before a `JoinExpression` was instantiated
      * @psalm-suppress PossiblyNullReference
      */
-    public function orOnNotLike(string $left, string $right): BuilderInterface
+    public function orOnNotLike($left, $right): BuilderInterface
     {
-        $this->throwIfCalledBeforeSetter('orOnNotLike');
-
-        return $this->current->on($left, $right, 'not like', 'or');
+        return $this->onNotLike($left, $right, 'or');
     }
 
     /**
@@ -293,6 +295,15 @@ trait Join
 
         if (! $joins) {
             return null;
+        }
+
+        foreach ($joins as $expression) {
+            $table = $expression->table;
+            $alias = $this->getTableAlias($table);
+
+            if ($alias) {
+                $expression->alias = $alias;
+            }
         }
 
         return spaces($joins);
