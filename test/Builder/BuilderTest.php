@@ -25,6 +25,21 @@ class BuilderTest extends TestCase
         $this->assertEquals("select username, password from users where username = ? or username = ? order by username desc limit 2", $query->build());
     }
 
+    public function test_select_builder_with_multiple_tables()
+    {
+        $query = new Select();
+        $temp = new Select();
+
+        $temp->select()->from('posts');
+
+        $query->select()->fromMany([
+            'a' => 'users',
+            'b' => $temp
+        ]);
+
+        $this->assertEquals('select * from users as a, (select * from posts) as b', $query->build());
+    }
+
     public function test_select_builder_with_alias()
     {
         $query = new Select();

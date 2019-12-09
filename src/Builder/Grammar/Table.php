@@ -32,6 +32,29 @@ trait Table
     }
 
     /**
+     * Specifies multiple tables for the query
+     * 
+     * If an item in the given array has a string key, the key will be used as an alias for the table
+     * 
+     * @param array<int|string,string|\p810\MySQL\Builder\BuilderInterface> $tables A list of tables to set
+     * @return \p810\MySQL\Builder\BuilderInterface
+     */
+    public function fromMany(array $tables): BuilderInterface
+    {
+        foreach ($tables as $alias => $table) {
+            $arguments = [$table];
+
+            if (is_string($alias)) {
+                $arguments[] = $alias;
+            }
+
+            $this->from(...$arguments);
+        }
+
+        return $this;
+    }
+
+    /**
      * Specifies the source table for an `INSERT` query
      * 
      * @param string $table
