@@ -21,6 +21,7 @@ trait Join
      * @param string|\p810\MySQL\Builder\BuilderInterface $table The table to join data from
      * @param null|string $alias An optional alias for the table
      * @return \p810\MySQL\Builder\BuilderInterface
+     * @psalm-suppress PossiblyInvalidArgument
      */
     protected function join(string $type, $table, ?string $alias = null): BuilderInterface
     {

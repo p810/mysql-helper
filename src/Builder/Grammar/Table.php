@@ -14,6 +14,7 @@ trait Table
      * @param string|\p810\MySQL\Builder\BuilderInterface $table The name of the table to pull data from
      * @param null|string $alias An optional alias for the table
      * @return \p810\MySQL\Builder\BuilderInterface
+     * @psalm-suppress PossiblyInvalidArgument
      */
     public function from($table, ?string $alias = null): BuilderInterface
     {
