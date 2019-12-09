@@ -8,17 +8,6 @@ use function array_key_exists;
 use function array_map;
 
 /**
- * A map of words that are reserved in PHP and may be used in SQL queries to their string representations
- * 
- * @var array<mixed,string>
- */
-const KEYWORD_AS_STRING = [
-    true  => 'true',
-    false => 'false',
-    null  => 'null'
-];
-
-/**
  * Returns the given value surrounded by parentheses
  * 
  * @param string|array $value The value to surround with parentheses; if this is an array, it will be turned into a
@@ -84,19 +73,23 @@ function makePdoDsn(string $host, ?string $database = null, array $arguments = [
 /**
  * Returns a string representation of the given reserved word in PHP, for use in a query
  * 
- * @param bool|null $value A boolean or null
+ * @param mixed $value A value that is being used in a query string
  * @param bool $nullIsUnknown Whether to return `UNKNOWN` for null, i.e. in an `IS` comparison
  * @return string
  */
 function keywordToString($value, bool $nullIsUnknown = false): string
 {
-    if (! is_bool($value) && $value !== null) {
-        return $value;
+    if ($value === true) {
+        return 'true';
+    } elseif ($value === false) {
+        return 'false';
     } elseif ($value === null && $nullIsUnknown) {
         return 'unknown';
+    } elseif ($value === null) {
+        return 'null';
     }
 
-    return KEYWORD_AS_STRING[$value];
+    return $value;
 }
 
 /**
