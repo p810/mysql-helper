@@ -42,7 +42,8 @@ class DefaultMapper implements MapperInterface
 
         if (! $this->table || ! $this->entity) {
             throw new LogicException(
-                'Children of \p810\MySQL\Mapper\DefaultMapper must define their $table and $entity to use certain functionality'
+                'Children of \p810\MySQL\Mapper\DefaultMapper must define their $table and $entity to use certain ' .
+                'functionality'
             );
         }
     }
