@@ -5,6 +5,7 @@ namespace p810\MySQL;
 use function implode;
 use function is_array;
 use function array_key_exists;
+use function array_map;
 
 /**
  * Returns the given value surrounded by parentheses
@@ -30,7 +31,7 @@ function parentheses($value): string
  */
 function commas(array $list): string
 {
-    return implode(', ', $list);
+    return implode(', ', array_map("p810\MySQL\keywordToString", $list));
 }
 
 /**
@@ -41,7 +42,7 @@ function commas(array $list): string
  */
 function spaces(array $list): string
 {
-    return implode(' ', $list);
+    return implode(' ', array_map("p810\MySQL\keywordToString", $list));
 }
 
 /**
@@ -67,4 +68,59 @@ function makePdoDsn(string $host, ?string $database = null, array $arguments = [
     }
 
     return $dsn;
+}
+
+/**
+ * Returns a string representation of the given reserved word in PHP, for use in a query
+ * 
+ * @param mixed $value A value that is being used in a query string
+ * @param bool $nullIsUnknown Whether to return `UNKNOWN` for null, i.e. in an `IS` comparison
+ * @return string
+ */
+function keywordToString($value, bool $nullIsUnknown = false): string
+{
+    if ($value === true) {
+        return 'true';
+    } elseif ($value === false) {
+        return 'false';
+    } elseif ($value === null && $nullIsUnknown) {
+        return 'unknown';
+    } elseif ($value === null) {
+        return 'null';
+    }
+
+    return $value;
+}
+
+/**
+ * Returns a string representing a call to `GREATEST()`
+ * 
+ * @param array $values A list of values
+ * @return string
+ */
+function greatest(array $values): string
+{
+    return 'greatest(' . commas($values) . ')';
+}
+
+/**
+ * Returns a string representing a call to `LEAST()`
+ * 
+ * @param array $values A list of values
+ * @return string
+ */
+function least(array $values): string
+{
+    return 'least(' . commas($values) . ')';
+}
+
+/**
+ * Returns a string representing a call to `COALESCE()`
+ * 
+ * @param array $values A list of values
+ * @return string 
+ */
+function coalesce(array $values): string
+{
+    return 'coalesce(' . commas($values) . ')';
 }

@@ -4,17 +4,31 @@ namespace p810\MySQL\Builder\Grammar;
 
 use p810\MySQL\Builder\BuilderInterface;
 
+use function p810\MySQL\commas;
+
 trait Table
 {
     /**
      * Specifies the source table for the query
      * 
-     * @param string $table
+     * @param string|\p810\MySQL\Builder\BuilderInterface $table The name of the table to pull data from
+     * @param null|string $alias An optional alias for the table
      * @return \p810\MySQL\Builder\BuilderInterface
+     * @psalm-suppress PossiblyInvalidArgument
      */
-    public function from(string $table): BuilderInterface
+    public function from($table, ?string $alias = null): BuilderInterface
     {
-        return $this->setParameter('from', $table);
+        $from = $this->getParameter('from') ?? [];
+
+        $from[] = $table = $this->prepare($table);
+
+        if ($alias) {
+            $this->alias($alias, $table);
+        }
+
+        $this->setCurrentTable($table);
+
+        return $this->setParameter('from', $from);
     }
 
     /**
@@ -48,11 +62,19 @@ trait Table
     {
         $from = $this->getParameter('from');
 
-        if (! $from) {
-            return null;
+        if ($from !== null) {
+            foreach ($from as &$table) {
+                $alias = $this->getTableAlias($table);
+
+                if ($alias) {
+                    $table = "$table as $alias";
+                }
+            }
+
+            $from = 'from ' . commas($from);
         }
 
-        return "from $from";
+        return $from;
     }
 
     /**

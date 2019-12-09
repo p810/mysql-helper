@@ -20,6 +20,11 @@ class JoinExpression
     public $table;
 
     /**
+     * @var null|string
+     */
+    public $alias;
+
+    /**
      * @var string
      * @psalm-suppress PropertyNotSetInConstructor
      */
@@ -45,15 +50,17 @@ class JoinExpression
     /**
      * Constructs the expression with the given join type (e.g. inner, left) and table
      * 
-     * @param string $type The type of join being appended
-     * @param string $table The table to fetch data from
      * @param \p810\MySQL\Builder\BuilderInterface The builder class associated with this expression
+     * @param string $type The type of join being appended
+     * @param mixed|\p810\MySQL\Builder\BuilderInterface $table The table to fetch data from, or a subquery
+     * @param null|string $alias An optional alias for the table name
      * @return void
      */
-    function __construct(string $type, string $table, BuilderInterface $builder)
+    function __construct(BuilderInterface $builder, string $type, $table, ?string $alias = null)
     {
         $this->type = $type;
         $this->table = $table;
+        $this->alias = $alias;
         $this->builder = $builder;
     }
 
@@ -66,7 +73,7 @@ class JoinExpression
     {
         return sprintf('%s join %s %s %s', 
             $this->type,
-            $this->table,
+            $this->getTable(),
             $this->method,
             $this->getPredicate()
         );
@@ -84,6 +91,24 @@ class JoinExpression
         }
 
         return Expression::listToString($this->predicates);
+    }
+
+    /**
+     * Returns the expression's table formatted for the query
+     * 
+     * If an alias was specified, it will be appended to the table name
+     * 
+     * @return string
+     */
+    public function getTable(): string
+    {
+        $table = $this->table;
+
+        if ($this->alias) {
+            $table .= " as $this->alias";
+        }
+
+        return $table;
     }
 
     /**
@@ -106,13 +131,13 @@ class JoinExpression
     /**
      * Sets an "on" clause for the join
      * 
-     * @param string $left The left hand side of the clause (a column)
-     * @param string $right The right hand side of the clause (another column)
+     * @param mixed|\p810\MySQL\Builder\BuilderInterface $left The left hand side of the expression
+     * @param mixed|\p810\MySQL\Builder\BuilderInterface $right The right hand side of the expression
      * @param string $operator The comparison operator (middle of the expression)
      * @param string $logical A logical operator to concatenate this clause to one before it, if needed
      * @return \p810\MySQL\Builder\BuilderInterface
      */
-    public function on(string $left, string $right, string $operator = '=', string $logical = 'and'): BuilderInterface
+    public function on($left, $right, string $operator = '=', string $logical = 'and'): BuilderInterface
     {
         if (! $this->method) {
             $this->method = 'on';

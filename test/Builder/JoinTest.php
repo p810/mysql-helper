@@ -60,6 +60,26 @@ class JoinTest extends TestCase
         $this->assertEquals('inner join bans on users.user_id = bans.issuer_id or users.user_id = bans.user_id', $query->build());
     }
 
+    public function test_single_aliased_join_on()
+    {
+        $query = $this->getMockQueryBuilder()
+            ->innerJoin('bans', 'b')
+            ->on('b.user_id', 'a.user_id');
+
+        $this->assertEquals('inner join bans as b on b.user_id = a.user_id', $query->build());
+    }
+
+    public function test_multiple_aliased_join_on_after_initial_call()
+    {
+        $query = $this->getMockQueryBuilder()
+            ->innerJoin('bans')
+            ->on('b.user_id', 'a.user_id')
+            ->as('b')
+            ->orOn('b.issuer_id', 'c.user_id');
+
+        $this->assertEquals('inner join bans as b on b.user_id = a.user_id or b.issuer_id = c.user_id', $query->build());
+    }
+
     public function test_join_on_not_equals()
     {
         $query = $this->getMockQueryBuilder()

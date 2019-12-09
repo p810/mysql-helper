@@ -13,6 +13,17 @@ interface BuilderInterface
     public function bind($value);
 
     /**
+     * Checks if a given value is an instance of `\p810\MySQL\Builder\BuilderInterface` and, if so, builds it and
+     * pushes its bindings onto the current query's input array, then returns the query string. Otherwise the value is
+     * returned as is.
+     * 
+     * @param mixed|\p810\MySQL\Builder\BuilderInterface $value Any part of a query that may be a subquery that should
+     *                                                          be compiled
+     * @return array|int|string
+     */
+    public function prepare($value);
+
+    /**
      * Compiles a SQL query from the current object's state
      * 
      * @return string
@@ -50,4 +61,13 @@ interface BuilderInterface
      * @return \p810\MySQL\Builder\BuilderInterface
      */
     public function setParameter(string $param, $value): BuilderInterface;
+
+    /**
+     * Adds the given alias to an array of aliases, optionally associated to a given table
+     * 
+     * @param string $alias A table's alias
+     * @param null|string $table An optional table name
+     * @return \p810\MySQL\Builder\BuilderInterface
+     */
+    public function alias(string $alias, ?string $table = null): BuilderInterface;
 }
