@@ -669,7 +669,7 @@ trait Where
      * first argument and return that object. An example of how that callback might look is:
      *
      * ```php
-     * $query->whereNested(function (BuilderInterface $q) {
+     * $query->whereNested(function (BuilderInterface $q): BuilderInterface {
      *     return $q->where('foo', 'bar')->orWhere('bam', 'baz');
      * });
      * ```
@@ -684,7 +684,7 @@ trait Where
     {
         $query = $cb(new ComplexWhere());
 
-        return $this->whereRaw($query, $logical);
+        return $this->whereRaw($this->prepare($query), $logical);
     }
 
     /**
