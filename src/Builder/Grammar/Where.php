@@ -679,6 +679,7 @@ trait Where
      * @param callable $cb A callback that should return a chain of clause calls
      * @param string $logical A logical operator used to concatenate the clause
      * @return \p810\MySQL\Builder\BuilderInterface
+     * @psalm-suppress PossiblyInvalidArgument
      */
     public function whereNested(callable $cb, string $logical = 'and'): BuilderInterface
     {
